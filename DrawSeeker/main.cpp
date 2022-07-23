@@ -130,13 +130,21 @@ bool readShaderSource(const char* name, std::vector<GLchar>& buffer)
 }
 
 
-// 矩形の頂点の位置
-constexpr Object::Vertex rectangleVertex[] =
+// 八面体の頂点の位置
+constexpr Object::Vertex octahedronVertex[] =
 {
- { -0.5f, -0.5f },
- { 0.5f, -0.5f },
- { 0.5f, 0.5f },
- { -0.5f, 0.5f }
+ { 0.0f, 1.0f, 0.0f },
+ { -1.0f, 0.0f, 0.0f },
+ { 0.0f, -1.0f, 0.0f },
+ { 1.0f, 0.0f, 0.0f },
+ { 0.0f, 1.0f, 0.0f },
+ { 0.0f, 0.0f, 1.0f },
+ { 0.0f, -1.0f, 0.0f },
+ { 0.0f, 0.0f, -1.0f },
+ { -1.0f, 0.0f, 0.0f },
+ { 0.0f, 0.0f, 1.0f },
+ { 1.0f, 0.0f, 0.0f },
+ { 0.0f, 0.0f, -1.0f }
 };
 
 int main()
@@ -206,7 +214,7 @@ int main()
 	const GLuint program(createProgram(vsrc, fsrc));
 
 	// 図形データを作成する
-	std::unique_ptr<const Shape> shape(new Shape(2, 4, rectangleVertex));
+	std::unique_ptr<const Shape> shape(new Shape(3, 12, octahedronVertex));
 
 	// ウィンドウが開いている間繰り返す
 	while (glfwWindowShouldClose(window) == GL_FALSE)
