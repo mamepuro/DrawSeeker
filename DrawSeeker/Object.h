@@ -32,6 +32,12 @@ public:
 		glVertexAttribPointer(0, size, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(0);
 	}
+	// 頂点配列オブジェクトの結合
+	void bind() const
+	{
+		// 描画する頂点配列オブジェクトを指定する
+		glBindVertexArray(vao);
+	}
 	// デストラクタ
 	virtual ~Object()
 	{
@@ -40,4 +46,10 @@ public:
 		// 頂点バッファオブジェクトを削除する
 		glDeleteBuffers(1, &vbo);
 	}
-}
+private:
+	// コピーコンストラクタによるコピー禁止
+	Object(const Object& o);
+	// 代入によるコピー禁止
+	Object& operator=(const Object& o);
+
+};
