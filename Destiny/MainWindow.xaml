@@ -1,0 +1,15 @@
+﻿<Window x:Class="Destiny.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:OpenTK="clr-namespace:OpenTK;assembly=OpenTK.GLControl" 
+        xmlns:local="clr-namespace:Destiny"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <WindowsFormsHost>
+            <OpenTK:GLControl x:Name="glControl" Load="glControl_Load" Resize="glControl_Resize" Paint="glControl_Paint" MouseClick="glControl_MouseClick" />
+        </WindowsFormsHost>
+    </Grid>
+</Window>

@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "dgSpecHash": "U5eJBRQecZMArUTq85liIOysgXuTIM8aFWhPn5mPFlvXYxyykoci/TmPsaHu4HDC+TA4FoZeqXkAOxcJemAyvg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\Destiny\\Destiny\\Destiny.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ayata\\.nuget\\packages\\opentk\\3.1.0\\opentk.3.1.0.nupkg.sha512",
+    "C:\\Users\\ayata\\.nuget\\packages\\opentk.glcontrol\\3.1.0\\opentk.glcontrol.3.1.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "パッケージ 'OpenTK 3.1.0' はプロジェクトのターゲット フレームワーク 'net6.0-windows7.0' ではなく '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' を使用して復元されました。このパッケージは、使用しているプロジェクトとの完全な互換性がない可能性があります。",
+      "libraryId": "OpenTK",
+      "targetGraphs": [
+        "net6.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "パッケージ 'OpenTK.GLControl 3.1.0' はプロジェクトのターゲット フレームワーク 'net6.0-windows7.0' ではなく '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' を使用して復元されました。このパッケージは、使用しているプロジェクトとの完全な互換性がない可能性があります。",
+      "libraryId": "OpenTK.GLControl",
+      "targetGraphs": [
+        "net6.0-windows7.0"
+      ]
+    }
+  ]
+}
