@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,6 +68,7 @@ namespace Destiny
             {1,7,3,5 },
 
             {0,6,2,4 }
+            /**/
         };
 
         private void glControl_Load(object sender, EventArgs e)
@@ -199,13 +201,15 @@ namespace Destiny
             Debug.Print(((int)pixels[0]).ToString() + "," + ((int)pixels[1]).ToString() + "," + ((int)pixels[2]).ToString() + "," + glControl.Size.Width + "," +  glControl.Size.Height);
             for(int index = 0;index < vertexes.Count;index++)
             {
+                //Green の色をIDとする
                 if (vertexes[index].ID == pixels[2])
                 {
                     vertexes[index].VertexX += 0.1;
                     break;
                 }
             }
-            
+            glControl.Refresh();
+
             /*
             GL.RenderMode(RenderingMode.Select);
             Debug.Print("Clicked");
@@ -243,11 +247,46 @@ namespace Destiny
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            glControl.Refresh();// 3次元表示を更新する 	//----------------(12)
+            //glControl.Refresh();// 3次元表示を更新する 	//----------------(12)
             int[] viewport = new int[4];
             GL.GetInteger(GetPName.Viewport, viewport);
             //Debug.Print(viewport[0].ToString() + "," + viewport[1].ToString() + "," + viewport[2].ToString() + "," + viewport[3].ToString());
         }
+
+        /// <summary>
+        /// ボタンが押されたときの挙動
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_saveObjFile_Click(object sender, RoutedEventArgs e)
+        {
+            using (StreamWriter streamWriter = new StreamWriter(@"C:\Test\test.obj", false, Encoding.UTF8))
+            {
+                streamWriter.WriteLine("# Test Code");
+                for(int vertexCount =0;vertexCount <vertexes.Count;vertexCount++)
+                {
+                    streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
+                }
+                streamWriter.WriteLine("vn 0 0 -1");
+                streamWriter.WriteLine("vn -1 0 0");
+                streamWriter.WriteLine("vn 1 0 0");
+                streamWriter.WriteLine("vn 0 -1 0");
+                streamWriter.WriteLine("vn 0 1 0");
+                streamWriter.WriteLine("vn 0 0 1");
+
+                for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
+                {
+                    string s = "f ";
+                        for (int faceID = 0; faceID < faceIndex.GetLength(1); faceID++)
+                        {
+                        int vertexIndex = faceIndex[faceCount, faceID];
+                        s += (vertexIndex+1).ToString() + "//1 ";
+                        }
+                    streamWriter.WriteLine(s);
+                }
+            }
+        }
+
         /*オブジェクトのピック処理を以下に記述*/
         private void PreProcessOfObjectPick(int sizebuffer, int[] selectBuffer, 
             uint pointX, uint pointY, 
@@ -394,7 +433,36 @@ namespace Destiny
                 selectedObj.PickedPos = new Vector3((float)ox, (float)oy, (float)oz);
             }
             return selectedObjects;
-
         }
+        /*
+        [System.Security.Permissions.UIPermission(
+        System.Security.Permissions.SecurityAction.Demand,
+        Window = System.Security.Permissions.UIPermissionWindow.AllWindows)]
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            //キーの本来の処理を
+            //させたくないときは、trueを返す
+            if ((keyData & Keys.KeyCode) == Keys.Left)
+            {
+                OnDown();
+                return true;
+            }
+            else if ((keyData & Keys.KeyCode) == Keys.Right)
+            {
+                OnUp();
+                return true;
+            }
+            else if ((keyData & Keys.KeyCode) == Keys.Up)
+            {
+                OnUp();
+                return true;
+            }
+            else if ((keyData & Keys.KeyCode) == Keys.Down)
+            {
+                OnDown();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }*/
     }
 }

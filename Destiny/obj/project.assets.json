@@ -67,11 +67,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\Destiny\\Destiny\\Destiny.csproj",
+      "projectUniqueName": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\DrawSeeker\\Destiny\\Destiny.csproj",
       "projectName": "Destiny",
-      "projectPath": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\Destiny\\Destiny\\Destiny.csproj",
+      "projectPath": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\DrawSeeker\\Destiny\\Destiny.csproj",
       "packagesPath": "C:\\Users\\ayata\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\Destiny\\Destiny\\obj\\",
+      "outputPath": "C:\\Users\\ayata\\OneDrive - 筑波大学\\ドキュメント\\Develop\\DrawSeeker\\Destiny\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ayata\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -6,10 +6,15 @@
         xmlns:OpenTK="clr-namespace:OpenTK;assembly=OpenTK.GLControl" 
         xmlns:local="clr-namespace:Destiny"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="800">
     <Grid>
-        <WindowsFormsHost>
+        <WindowsFormsHost Margin="0,0,0,76">
             <OpenTK:GLControl x:Name="glControl" Load="glControl_Load" Resize="glControl_Resize" Paint="glControl_Paint" MouseClick="glControl_MouseClick" />
+
         </WindowsFormsHost>
+        <Button x:Name="button_saveObjFile" Content="出力" HorizontalAlignment="Left" Margin="44,434,0,0" VerticalAlignment="Top" Width="96" Background="#FFE20F0F" Click="button_saveObjFile_Click"/>
+
+
+
     </Grid>
 </Window>
