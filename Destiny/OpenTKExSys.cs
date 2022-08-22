@@ -126,5 +126,15 @@ namespace Destiny
             resultvector.W = matrix.M41 * pvector.X + matrix.M42 * pvector.Y +
                 matrix.M43 * pvector.Z + matrix.M44 * pvector.W;
         }
+
+        public static Vector3d GetNormalVector(Vector3d v1, Vector3d v2 , Vector3d v3)
+        {
+            Vector3d normal = new Vector3d(0,0,0);
+            normal.X = (v2.Y - v1.Y) * (v3.Z - v2.Z) - (v2.Z - v1.Z) * (v3.Y - v2.Y);
+            normal.Y = (v2.Z - v1.Z) * (v3.X - v2.X) - (v2.X - v1.X) * (v3.Z - v2.Z);
+            normal.Z = (v2.X - v1.X) * (v3.Y - v2.Y) - (v2.Y - v1.Y) * (v3.X - v2.X);
+            normal.Normalize();
+            return normal;
+        }
     }
 }

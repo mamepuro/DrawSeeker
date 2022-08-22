@@ -37,6 +37,7 @@ namespace Destiny
         private Matrix4 _modelView;
         private int[] _viewport = new int[4];
         private int SelectedPartId = 0;
+        private float scale = 1.0f;
         public MainWindow()
         {
             InitializeComponent();
@@ -45,32 +46,44 @@ namespace Destiny
             myTimer.Start();
 
         }
+        
         int angle = 0;
         double w = 0.5, h = 0.2, d = 0.7;
         int vertexcount = 8;
         new List<Vertex> vertexes = new List<Vertex>();
         Vector3d[] pos = new Vector3d[] {
-            /*0*/new Vector3d(0.5, 0.2, -0.7),
-            /*1*/new Vector3d(0.5, 0.2, 0.7),
-            /*2*/new Vector3d(0.5, -0.2, -0.7),
-            /*3*/new Vector3d(0.5, -0.2, 0.7),
-            /*4*/new Vector3d(-0.5, -0.2, -0.7),
-            /*5*/new Vector3d(-0.5, -0.2, 0.7),
-            /*6*/new Vector3d(-0.5, 0.2, -0.7),
-            /*7*/new Vector3d(-0.5, 0.2, 0.7)
+            /*0*/new Vector3d(0, 0, 0),
+            /*1*/new Vector3d(0.5, 0, 0),
+            /*2*/new Vector3d(0, 0.5, 0),
+            /*3*/new Vector3d(0.5, 0.5, 0),
+            /*4*/new Vector3d(0, 0, 0.5),
+            /*5*/new Vector3d(0.5, 0, 0.5),
+            /*6*/new Vector3d(0, 0.5, 0.5),
+            /*7*/new Vector3d(0.5, 0.5, 0.5)
         };
         int[,] faceIndex = new int[,]
         {
-            {0, 1, 2, 3,},
-            {4, 5, 6,7},
-            {1,7,0,6},
-            {3,2,5,4 },
-            {1,7,3,5 },
-
-            {0,6,2,4 }
+            {7,3,2,6},
+            {4, 5, 7,6},
+            {1,0,4,5},//
+            {1,0,2,3},
+            {5,1,3,7 },
+            {0,4,6,2 }
             /**/
         };
-
+        
+        System.Drawing.Color[] colors = new System.Drawing.Color[]
+        {
+            System.Drawing.Color.Yellow,
+            System.Drawing.Color.Blue,
+            System.Drawing.Color.Red,
+            System.Drawing.Color.Green,
+            System.Drawing.Color.OrangeRed,
+            System.Drawing.Color.SkyBlue,
+            System.Drawing.Color.Purple,
+            System.Drawing.Color.Brown,
+            System.Drawing.Color.LightGreen,
+        };
         private void glControl_Load(object sender, EventArgs e)
         { //--(4)
             GL.ClearColor(System.Drawing.Color.White); // 背景色の設定
@@ -118,29 +131,37 @@ namespace Destiny
             glControl.SwapBuffers(); //---------------------------------------(8)
         }
 
+        private void glControl_KeyPress(object sender, KeyboardEventArgs e)
+        {
+
+        }
         private void drawBox()
         {
             GL.PushMatrix();
             {
-                GL.Rotate(angle, 0, 1, 0); 	//-------------------------(9)
-                angle =10; //-------------------------------------------(10)
+                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                GL.Scale(scale, scale, scale);
+                //angle =10; //-------------------------------------------(10)
                 for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
                 {
-                    if (faceCount == 0)
+                    if (false)
                     {
                         
                         GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
                         System.Drawing.Color.Yellow);// 赤の直方体を描画*/
                     }
-                    else
+                    else 
                     {
                         
                         GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
-                        new Color4(255, 0, 0, 0));// 赤の直方体を描画*/
+                        colors[faceCount]);// 赤の直方体を描画*/
                     }
-                    GL.Begin(PrimitiveType.TriangleStrip);
+                    GL.Begin(PrimitiveType.TriangleFan);
                     {
-                        GL.Normal3(Vector3.UnitZ);
+                        int vertexIndex1 = faceIndex[faceCount, 0];
+                        int vertexIndex2 = faceIndex[faceCount, 1];
+                        int vertexIndex3 = faceIndex[faceCount, 2];
+                        GL.Normal3(OpenTKExSys.GetNormalVector(vertexes[vertexIndex1].VertexPosition, vertexes[vertexIndex2].VertexPosition, vertexes[vertexIndex3].VertexPosition));
                         for (int faceID = 0; faceID < faceIndex.GetLength(1); faceID++)
                         {
                             int vertexIndex = faceIndex[faceCount, faceID];
@@ -159,7 +180,7 @@ namespace Destiny
         {
             GL.PushMatrix();
             GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
-
+            GL.Scale(scale, scale, scale);
             for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
             {
                 GL.PointSize(15);
@@ -168,7 +189,7 @@ namespace Destiny
                 //GL.ClearColor(0.0f, 1.0f, 0.0f, 0.0f);
                 GL.Begin(PrimitiveType.Points);
 
-
+                GL.Scale(2, 2, 2);
                 {
                     for (int faceID = 0; faceID < faceIndex.GetLength(1); faceID++)
                     {
@@ -245,12 +266,30 @@ namespace Destiny
             */
         }
 
+        private void glControl_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            //上向きにホイールを回した
+            if(e.Delta > 0)
+            {
+                scale += 0.1f;
+            }
+            else
+            {
+                scale -= 0.1f;
+                if(scale <= 0)
+                {
+                    scale = 0.1f;
+                }
+            }
+            glControl.Refresh();
+        }
         private void Timer1_Tick(object sender, EventArgs e)
         {
             //glControl.Refresh();// 3次元表示を更新する 	//----------------(12)
             int[] viewport = new int[4];
             GL.GetInteger(GetPName.Viewport, viewport);
             //Debug.Print(viewport[0].ToString() + "," + viewport[1].ToString() + "," + viewport[2].ToString() + "," + viewport[3].ToString());
+            glControl.Refresh();
         }
 
         /// <summary>
@@ -287,6 +326,18 @@ namespace Destiny
             }
         }
 
+
+
+        private void glControl_OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.A)
+            {
+                angle += 1;
+                Debug.Print("Unko");
+            }
+            glControl.Refresh();
+        }
+
         /*オブジェクトのピック処理を以下に記述*/
         private void PreProcessOfObjectPick(int sizebuffer, int[] selectBuffer, 
             uint pointX, uint pointY, 
@@ -311,7 +362,7 @@ namespace Destiny
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
-
+            
             GL.MatrixMode(MatrixMode.Modelview); // 視界の設定
             Matrix4 look = Matrix4.LookAt(3.0f * Vector3.UnitX + 2.0f * Vector3.UnitY,
               Vector3.Zero, Vector3.UnitY);
