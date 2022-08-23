@@ -38,15 +38,21 @@ namespace Destiny
         private int[] _viewport = new int[4];
         private int SelectedPartId = 0;
         private float scale = 1.0f;
+        private float PENTA_radius = (float)Math.Sqrt(25 - 10 * Math.Sqrt(5))/10;
+        private float OCTO_radius = 1 / (2*(float)Math.Sqrt(3));
+        const float dihedralAngle_OCTO = 109.47f;
+        //private float 
         public MainWindow()
         {
             InitializeComponent();
             myTimer.Tick += new EventHandler(Timer1_Tick);
             myTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             myTimer.Start();
-
+            SetPENTA_UNIT_pos();
+            SetOCTO_UNIT_pos();
+            //Debug.Print("ANS = "+((4 * PENTA_radius * PENTA_radius - 1) / (4 * PENTA_radius * PENTA_radius + 1)).ToString());
         }
-        
+
         int angle = 0;
         double w = 0.5, h = 0.2, d = 0.7;
         int vertexcount = 8;
@@ -61,6 +67,42 @@ namespace Destiny
             /*6*/new Vector3d(0, 0.5, 0.5),
             /*7*/new Vector3d(0.5, 0.5, 0.5)
         };
+        new List<Vertex> PENTA_UNIT_vertexes = new List<Vertex>();
+        Vector3d[] PENTA_UNIT_pos = new Vector3d[] {
+            /*0*/new Vector3d(-0.5, 0, 0),
+/*2(SQRTはコンパイル時に定数でないためとりあえず0,0,0で宣言する)*/new Vector3d(0, 0, 0),
+            /*1*/new Vector3d(0.5, 0, 0),
+
+            /*3*/new Vector3d(0, 0, 0),
+        };
+        new List<Vertex> OCTO_UNIT_vertexes = new List<Vertex>();
+        Vector3d[] OCTO_UNIT_pos = new Vector3d[] {
+            /*0*/new Vector3d(-0.5, 0, 0),
+/*2(SQRTはコンパイル時に定数でないためとりあえず0,0,0で宣言する)*/new Vector3d(0, 0, 0),
+            /*1*/new Vector3d(0.5, 0, 0),
+
+            /*3*/new Vector3d(0, 0, 0),
+        };
+        new List<Vertex> OCTO_vertexes = new List<Vertex>();
+        Vector3d[] OCTO_pos = new Vector3d[] {
+            /*0*/new Vector3d(-0.5, 0, 0),
+            /*1*/new Vector3d(0.5, 0, 0),
+            /*2*/new Vector3d(0, 0.5, 0),
+            /*3*/new Vector3d(0, -0.5, 0),
+            /*4*/new Vector3d(0, 0, 0.5),
+            /*5*/new Vector3d(0, 0, -0.5),
+        };
+        private void SetPENTA_UNIT_pos()
+        {
+            PENTA_UNIT_pos[1] = new Vector3d(0, PENTA_radius, 0);
+            PENTA_UNIT_pos[3] = new Vector3d(0, -PENTA_radius, 0);
+        }
+        private void SetOCTO_UNIT_pos()
+        {
+            OCTO_UNIT_pos[1] = new Vector3d(0, OCTO_radius, 0);
+            OCTO_UNIT_pos[3] = new Vector3d(0, -OCTO_radius, 0);
+        }
+
         int[,] faceIndex = new int[,]
         {
             {7,3,2,6},
@@ -71,7 +113,50 @@ namespace Destiny
             {0,4,6,2 }
             /**/
         };
-        
+        int[,] faceIndex_OCTO = new int[,]
+        {
+            {1,2,4},
+            {0,2,4},
+            {0,3,4},//
+            {3,1,4},
+            {1,2,5},
+            {0,2,5},
+            {0,3,5},//
+            {3,1,5},
+            /**/
+        };
+        int[,] faceIndex_PENTA_UNIT = new int[,]
+        {
+            {0,2,1},
+            {0,3,2}
+        };
+        int[,] faceIndex_OCTO_UNIT = new int[,]
+{
+            {0,2,1},
+            {0,3,2}
+};
+        int[] rotate_PENTA_UNIT = new int[]
+            {
+                0,
+                72,
+                72*2,
+                72*3,
+                72*4,
+                72*5,
+            };
+        int[] rotateface_OCTO_UNIT = new int[]
+    {
+                0,
+                120,
+                240
+    };
+        int[] rotateUnit_OCTO_UNIT = new int[]
+        {
+            0,
+            90,
+            180,
+            270,
+        };
         System.Drawing.Color[] colors = new System.Drawing.Color[]
         {
             System.Drawing.Color.Yellow,
@@ -84,6 +169,7 @@ namespace Destiny
             System.Drawing.Color.Brown,
             System.Drawing.Color.LightGreen,
         };
+
         private void glControl_Load(object sender, EventArgs e)
         { //--(4)
             GL.ClearColor(System.Drawing.Color.White); // 背景色の設定
@@ -92,6 +178,21 @@ namespace Destiny
             {
                 Vertex vertex = new Vertex((byte)vindex, pos[vindex]);
                 vertexes.Add(vertex);
+            }
+            for (int vindex = 0; vindex < OCTO_pos.Length; vindex++)
+            {
+                Vertex vertex = new Vertex((byte)vindex, OCTO_pos[vindex]);
+                OCTO_vertexes.Add(vertex);
+            }
+            for (int vindex = 0; vindex < PENTA_UNIT_pos.Length; vindex++)
+            {
+                Vertex vertex = new Vertex((byte)vindex, PENTA_UNIT_pos[vindex]);
+                PENTA_UNIT_vertexes.Add(vertex);
+            }
+            for (int vindex = 0; vindex < OCTO_UNIT_pos.Length; vindex++)
+            {
+                Vertex vertex = new Vertex((byte)vindex, OCTO_UNIT_pos[vindex]);
+                OCTO_UNIT_vertexes.Add(vertex);
             }
         }
 
@@ -124,16 +225,144 @@ namespace Destiny
               ClearBufferMask.DepthBufferBit);
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,System.Drawing.Color.Green);// 赤の直方体を描画
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
-            DrawVertexPoint();
+            DrawReferLine();
+            //DrawVertexPoint();
 
-            drawBox(); //------------------------------------------------------(7)
-
+            //drawBox(); //------------------------------------------------------(7)
+            //DrawPENTA();
+            DrawOCTO_UNIT(0);
+            //drawOCTO();
             glControl.SwapBuffers(); //---------------------------------------(8)
         }
 
         private void glControl_KeyPress(object sender, KeyboardEventArgs e)
         {
 
+        }
+        private void DrawReferLine()
+        {
+            GL.PushMatrix();
+            {
+                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                GL.Scale(scale, scale, scale);
+                GL.Disable(EnableCap.Lighting);
+                //angle =10; //-------------------------------------------(10)
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color3((byte)255, (byte)0, (byte)0);
+                GL.Vertex3(2,2, 0);
+                GL.Vertex3(2.5, 2, 0);
+                GL.End();
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color3((byte)0, (byte)255, (byte)0);
+                GL.Vertex3(2, 2, 0);
+                GL.Vertex3(2, 2.5, 0);
+                GL.End();
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color3((byte)0, (byte)0, (byte)255);
+                GL.Vertex3(2, 2, 0);
+                GL.Vertex3(2, 2, 0.5);
+                GL.End();
+                GL.Enable(EnableCap.Lighting);
+            }
+            GL.PopMatrix();
+        }
+        private void DrawOCTO_UNIT(float faceAngle)
+        {
+            //faceAngle =　面内のユニットの回転角
+            GL.PushMatrix();
+            {
+                for (int faceCount = 0; faceCount < faceIndex_OCTO_UNIT.GetLength(0); faceCount++)
+                {
+                    for (int faceID = 0; faceID < faceIndex_OCTO_UNIT.GetLength(1); faceID++)
+                    {
+                        GL.Scale(scale, scale, scale);
+                    GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                        GL.PushMatrix();
+
+                        GL.Translate(0, OCTO_radius, 0);
+                GL.Rotate(faceAngle, 0, 0, 1);
+                GL.Translate(0, -OCTO_radius, 0);
+
+
+                    //angle =10; //-------------------------------------------(10)
+                    GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
+                System.Drawing.Color.Red);// 赤の直方体を描画*/
+                GL.Normal3(-Vector3.UnitZ);
+                GL.Begin(PrimitiveType.Triangles);
+
+
+
+
+                        int vertexIndex = faceIndex_OCTO_UNIT[faceCount, faceID];
+                        double x = OCTO_UNIT_vertexes[vertexIndex].VertexX;
+                        double y = OCTO_UNIT_vertexes[vertexIndex].VertexY;
+                        double z = OCTO_UNIT_vertexes[vertexIndex].VertexZ;
+   
+                        GL.Vertex3(x, y, z);
+                        
+                    }
+                }
+
+                GL.End();
+                GL.PopMatrix();
+            }
+            GL.PopMatrix();
+        }
+        private void DrawOCTO()
+        {
+            GL.PushMatrix();
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    DrawOCTO_UNIT(rotateface_OCTO_UNIT[i]);
+                }
+            }
+            GL.PopMatrix();
+        }
+        private void DrawPENTA_UNIT(float faceAngle)
+        {
+            //faceAngle =　面内のユニットの回転角
+            GL.PushMatrix();
+            {
+                GL.Scale(scale, scale, scale);
+                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                GL.Translate(0, PENTA_radius, 0);
+                GL.Rotate(faceAngle, 0, 0, 1);
+                GL.Translate(0, -PENTA_radius, 0);
+                
+                //angle =10; //-------------------------------------------(10)
+                GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
+                System.Drawing.Color.Yellow);// 赤の直方体を描画*/
+                GL.Normal3(-Vector3.UnitZ);
+                GL.Begin(PrimitiveType.TriangleFan);
+                for (int faceCount = 0; faceCount < faceIndex_PENTA_UNIT.GetLength(0); faceCount++)
+                {
+
+                    for (int faceID = 0; faceID < faceIndex_PENTA_UNIT.GetLength(1); faceID++)
+                    {
+
+                        int vertexIndex = faceIndex_PENTA_UNIT[faceCount, faceID];
+                        double x = PENTA_UNIT_vertexes[vertexIndex].VertexX;
+                        double y = PENTA_UNIT_vertexes[vertexIndex].VertexY;
+                        double z = PENTA_UNIT_vertexes[vertexIndex].VertexZ;
+                        GL.Vertex3(x, y, z);
+                    }
+                }
+
+                GL.End();
+            }
+            GL.PopMatrix();
+        }
+        private void DrawPENTA()
+        {
+            GL.PushMatrix();
+            {
+                for(int i = 0; i<5;i++)
+                {
+                    DrawPENTA_UNIT(rotate_PENTA_UNIT[i]);
+                }
+            }
+            GL.PopMatrix();
         }
         private void drawBox()
         {
@@ -175,6 +404,45 @@ namespace Destiny
                 }
             }
             GL.PopMatrix();
+        }
+        private void drawOCTO()
+        {
+            GL.PushMatrix();
+            {
+                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                GL.Scale(scale, scale, scale);
+                //angle =10; //-------------------------------------------(10)
+                for (int faceCount = 0; faceCount < faceIndex_OCTO.GetLength(0); faceCount++)
+                {
+                    if (false)
+                    {
+
+                        GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
+                        System.Drawing.Color.Yellow);// 赤の直方体を描画*/
+                    }
+                    else
+                    {
+
+                        GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
+                        colors[faceCount]);// 赤の直方体を描画*/
+                    }
+                    GL.Begin(PrimitiveType.TriangleFan);
+                    {
+
+                        GL.Normal3(Vector3.UnitZ);
+                        for (int faceID = 0; faceID < faceIndex_OCTO.GetLength(1); faceID++)
+                        {
+                            int vertexIndex = faceIndex_OCTO[faceCount, faceID];
+                            double x = OCTO_vertexes[vertexIndex].VertexX;
+                            double y = OCTO_vertexes[vertexIndex].VertexY;
+                            double z = OCTO_vertexes[vertexIndex].VertexZ;
+                            GL.Vertex3(x, y, z);
+                        }
+                    }
+                    GL.End();
+                }
+            }
+        GL.PopMatrix();
         }
         private void DrawVertexPoint()
         {
