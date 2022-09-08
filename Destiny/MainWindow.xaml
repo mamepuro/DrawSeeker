@@ -8,8 +8,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="800">
     <Grid>
-        <WindowsFormsHost Margin="0,0,0,76">
-            <OpenTK:GLControl x:Name="glControl" Load="glControl_Load" Resize="glControl_Resize" Paint="glControl_Paint" MouseClick="glControl_MouseClick" MouseWheel="glControl_MouseWheel" KeyDown="glControl_OnKeyDown"/>
+        <WindowsFormsHost Margin="0,0,0,76" MouseUp="glControl_MouseUp">
+            <OpenTK:GLControl x:Name="glControl" Load="glControl_Load" Resize="glControl_Resize" Paint="glControl_Paint" MouseClick="glControl_MouseClick" MouseWheel="glControl_MouseWheel" KeyDown="glControl_OnKeyDown" MouseMove="glControl_MouseMove" MouseUp="glControl_MouseUp" MouseDown="glControl_MouseDown"/>
 
         </WindowsFormsHost>
         <Button x:Name="button_saveObjFile" Content="出力" HorizontalAlignment="Left" Margin="44,434,0,0" VerticalAlignment="Top" Width="96" Background="#FFE20F0F" Click="button_saveObjFile_Click"/>

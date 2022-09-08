@@ -136,5 +136,21 @@ namespace Destiny
             normal.Normalize();
             return normal;
         }
+
+        /// <summary>
+        /// 2つのベクトルの外積を求め、法線ベクトルを返す
+        /// </summary>
+        /// <param name="v1">ベクトル1</param>
+        /// <param name="v2">ベクトル2</param>
+        /// <returns></returns>
+        public static Vector3d GetNormalVector(Vector3d v1, Vector3d v2)
+        {
+            Vector3d normal = new Vector3d(0, 0, 0);
+            normal.X = v1.Y * v2.Z - v1.Z * v2.Y;
+            normal.Y = v1.Z * v2.X - v1.X * v2.Z;
+            normal.Z = v1.X * v2.Y - v1.Y * v2.X;
+            normal.Normalize();
+            return normal;
+        }
     }
 }
