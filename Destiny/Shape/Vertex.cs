@@ -40,5 +40,13 @@ namespace Destiny
             VertexY = pos.Y;
             VertexZ = pos.Z;
         }
+        public Vertex(byte iD, double x, double y, double z)
+        {
+            ID = iD;
+            VertexX = x;
+            VertexY = y;
+            VertexZ = z;
+            VertexPosition = new Vector3d(x, y, z);
+        }
     }
 }

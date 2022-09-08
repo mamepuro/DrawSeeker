@@ -258,11 +258,12 @@ namespace Destiny
         { //--(4)
             GL.ClearColor(System.Drawing.Color.White); // 背景色の設定
             GL.Enable(EnableCap.DepthTest); // デプスバッファの使用
+            /*
             for (int vindex = 0; vindex < vertexcount; vindex++)
             {
                 Vertex vertex = new Vertex((byte)vindex, pos[vindex]);
                 vertexes.Add(vertex);
-            }
+            }*/
             for (int vindex = 0; vindex < OCTO_pos.Length; vindex++)
             {
                 Vertex vertex = new Vertex((byte)vindex, OCTO_pos[vindex]);
@@ -278,6 +279,8 @@ namespace Destiny
                 Vertex vertex = new Vertex((byte)vindex, OCTO_UNIT_pos[vindex]);
                 OCTO_UNIT_vertexes.Add(vertex);
             }
+            System.Console.WriteLine("===============DEBUG LOG===============");
+           
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -319,9 +322,9 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             DrawReferLine();
             //DrawVertexPoint();
-
+            Seeker_MainSystem.LoadObjFlie(@"C:\Users\endo\dev\DrawSeeker\Destiny\Data\cube.obj", vertexes);
             //drawBox(); //------------------------------------------------------(7)
-            DrawPENTA();
+            //DrawPENTA();
             //DrawOCTO_UNIT(0);
             //DrawOCTO();
             glControl.SwapBuffers(); //---------------------------------------(8)

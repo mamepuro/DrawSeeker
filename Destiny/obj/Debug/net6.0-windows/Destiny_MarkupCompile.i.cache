@@ -1,19 +1,19 @@
 ﻿Destiny
 1.0.0.0
 
-winexe
+exe
 C#
 .cs
-C:\Users\ayata\OneDrive - 筑波大学\ドキュメント\Develop\DrawSeeker\Destiny\obj\Debug\net6.0-windows\
+C:\Users\endo\dev\DrawSeeker\Destiny\obj\Debug\net6.0-windows\
 Destiny
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\ayata\OneDrive - 筑波大学\ドキュメント\Develop\DrawSeeker\Destiny\App.xaml
+C:\Users\endo\dev\DrawSeeker\Destiny\App.xaml
 11407045341
 
-91702242274
-2051742019488
+10-2131454961
+205-1761220402
 MainWindow.xaml;
 
 False
