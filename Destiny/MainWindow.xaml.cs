@@ -83,7 +83,8 @@ namespace Destiny
 
 
         int vertexcount = 8;
-        new List<Vertex> vertexes = new List<Vertex>();
+        List<Vertex> vertexes = new List<Vertex>();
+        List<int[]> edges = new List<int[]>();
         Vector3d[] pos = new Vector3d[] {
             /*0*/new Vector3d(0, 0, 0),
             /*1*/new Vector3d(0.5, 0, 0),
@@ -254,8 +255,47 @@ namespace Destiny
             System.Drawing.Color.LightGreen,
         };
 
+        private void DrawUnit(List<Vertex> vertices, List<int[]> faces)
+        {
+            GL.PushMatrix();
+            GL.Scale(scale, scale, scale);
+            GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+            GL.Begin(BeginMode.Points);
+            for (int vertexpoint = 0; vertexpoint <vertices.Count; vertexpoint++)
+            {
+                Vertex vertex = vertices[vertexpoint];
+                GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+            }
+            GL.End();
+            GL.PopMatrix();
+            //エッジの描画
+
+            int[] indexes = new int[3];
+            for(int faceIndex = 0;faceIndex < faces.Count;faceIndex++)
+            {
+                indexes[0] = faces[faceIndex][0];
+                indexes[1] = faces[faceIndex][1];
+                indexes[2] = faces[faceIndex][2];
+                GL.PushMatrix();
+                GL.Scale(scale, scale, scale);
+                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                GL.Begin(BeginMode.Lines);
+                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
+                {
+                    Vertex vertex = vertices[indexes[vertexpoint]];
+                    Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
+                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
+                }
+                GL.End();
+                GL.PopMatrix();
+            }
+
+        }
         private void glControl_Load(object sender, EventArgs e)
         { //--(4)
+
+
             GL.ClearColor(System.Drawing.Color.White); // 背景色の設定
             GL.Enable(EnableCap.DepthTest); // デプスバッファの使用
             /*
@@ -280,7 +320,15 @@ namespace Destiny
                 OCTO_UNIT_vertexes.Add(vertex);
             }
             System.Console.WriteLine("===============DEBUG LOG===============");
-           
+            Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
+            Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
+            Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
+            var initialX = new double[] { 5.0, 1.0 };
+            int iteration = 100;
+            double learningRate = 0.1;
+            double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
+            Console.WriteLine(answer[0].ToString()+ " "+answer[1].ToString());
+            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -322,11 +370,12 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             DrawReferLine();
             //DrawVertexPoint();
-            Seeker_MainSystem.LoadObjFlie(@"C:\Users\endo\dev\DrawSeeker\Destiny\Data\cube.obj", vertexes);
+            DrawUnit(vertexes, edges);
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawOCTO_UNIT(0);
             //DrawOCTO();
+
             glControl.SwapBuffers(); //---------------------------------------(8)
         }
 
@@ -759,19 +808,19 @@ namespace Destiny
                 {
                     streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
                 }
-                streamWriter.WriteLine("vn 0 0 -1");
+                streamWriter.WriteLine("vn 0 0 1");
                 streamWriter.WriteLine("vn -1 0 0");
                 streamWriter.WriteLine("vn 1 0 0");
                 streamWriter.WriteLine("vn 0 -1 0");
                 streamWriter.WriteLine("vn 0 1 0");
                 streamWriter.WriteLine("vn 0 0 1");
 
-                for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
+                for (int faceCount = 0; faceCount < edges.Count; faceCount++)
                 {
                     string s = "f ";
-                    for (int faceID = 0; faceID < faceIndex.GetLength(1); faceID++)
+                    for (int faceID = 0; faceID < edges[0].Length; faceID++)
                     {
-                        int vertexIndex = faceIndex[faceCount, faceID];
+                        int vertexIndex = edges[faceCount][faceID];
                         s += (vertexIndex + 1).ToString() + "//1 ";
                     }
                     streamWriter.WriteLine(s);
@@ -789,12 +838,21 @@ namespace Destiny
             }
             if(e.KeyCode == Keys.W)
             {
-
+                vertexes[5].VertexZ -= 0.1;
+                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
+                Console.WriteLine("VertexZ = " + vertexes[5].VertexPosition.Z);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
             }
             if(e.KeyCode == Keys.R)
             {
                 _rotateAngleY = 0;
                 _rotateAngleZ = 0;
+            }
+            if(e.KeyCode == Keys.S)
+            {
+                vertexes[5].VertexZ += 0.1;
+                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
             }
             glControl.Refresh();
         }
