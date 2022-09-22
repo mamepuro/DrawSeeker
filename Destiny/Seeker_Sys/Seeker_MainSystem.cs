@@ -305,7 +305,7 @@ namespace Destiny
             + Math.Acos(((x[15] - verteices[5].VertexPosition.X) * (x[9] - verteices[5].VertexPosition.X) + (x[16] - verteices[5].VertexPosition.Y) * (x[10] - verteices[5].VertexPosition.Y) + (x[17] - verteices[5].VertexPosition.Z) * (x[11] - verteices[5].VertexPosition.Z))
             / (Math.Sqrt((x[15] - verteices[5].VertexPosition.X) * (x[15] - verteices[5].VertexPosition.X) + (x[16] - verteices[5].VertexPosition.Y) * (x[16] - verteices[5].VertexPosition.Y) + (x[17] - verteices[5].VertexPosition.Z) * (x[17] - verteices[5].VertexPosition.Z))
             * Math.Sqrt((x[9] - verteices[5].VertexPosition.X) * (x[9] - verteices[5].VertexPosition.X) + (x[10] - verteices[5].VertexPosition.Y) * (x[10] - verteices[5].VertexPosition.Y) + (x[11] - verteices[5].VertexPosition.Z) * (x[11] - verteices[5].VertexPosition.Z))))) * (180 / Math.PI)));*/
-            Func<double[], double> f = x =>
+            Func<double[], double> f = (double[] x) =>
             (2 * Math.PI - ((Math.Acos(((x[0] - x[18]) * (x[3] - x[18]) + (x[1] - x[19]) * (x[4] - x[19]) + (x[2] - x[20]) * (x[5] - x[20]))
             / (Math.Sqrt((x[0] - x[18]) * (x[0] - x[18]) + (x[1] - x[19]) * (x[1] - x[19]) + (x[2] - x[20]) * (x[2] - x[20]))
             * Math.Sqrt((x[3] - x[18]) * (x[3] - x[18]) + (x[4] - x[19]) * (x[4] - x[19]) + (x[5] - x[20]) * (x[5] - x[20]))))

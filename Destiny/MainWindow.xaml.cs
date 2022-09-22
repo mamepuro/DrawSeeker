@@ -275,7 +275,19 @@ namespace Destiny
             {
                 indexes[0] = faces[faceIndex][0];
                 indexes[1] = faces[faceIndex][1];
-                indexes[2] = faces[faceIndex][2];
+                indexes[2] = faces[faceIndex][2];                
+                GL.PushMatrix();
+                GL.Scale(scale, scale, scale);
+                GL.Rotate(angle, 0, 1, 0);
+
+                GL.Begin(BeginMode.Triangles);
+                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
+                {
+                    Vertex vertex = vertices[indexes[vertexpoint]];
+                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                }
+                GL.End();
+                GL.PopMatrix();
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
@@ -289,19 +301,7 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
-                /*
-                GL.PushMatrix();
-                GL.Scale(scale, scale, scale);
-                GL.Rotate(angle, 0, 1, 0);
-                GL.Begin(BeginMode.Triangles);
-                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
-                {
-                    Vertex vertex = vertices[indexes[vertexpoint]];
-                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                }
-                GL.End();
-                GL.PopMatrix();
-                */
+
             }
 
 
