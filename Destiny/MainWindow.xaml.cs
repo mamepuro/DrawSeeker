@@ -289,7 +289,22 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
+                /*
+                GL.PushMatrix();
+                GL.Scale(scale, scale, scale);
+                GL.Rotate(angle, 0, 1, 0);
+                GL.Begin(BeginMode.Triangles);
+                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
+                {
+                    Vertex vertex = vertices[indexes[vertexpoint]];
+                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                }
+                GL.End();
+                GL.PopMatrix();
+                */
             }
+
+
 
         }
         private void glControl_Load(object sender, EventArgs e)
@@ -368,7 +383,7 @@ namespace Destiny
               ClearBufferMask.DepthBufferBit);
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,System.Drawing.Color.Green);// 赤の直方体を描画
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
-            DrawReferLine();
+            //DrawReferLine();
             //DrawVertexPoint();
             DrawUnit(vertexes, edges);
             //drawBox(); //------------------------------------------------------(7)
@@ -851,6 +866,30 @@ namespace Destiny
             if(e.KeyCode == Keys.S)
             {
                 vertexes[5].VertexZ += 0.1;
+                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+            }
+            if (e.KeyCode == Keys.F)
+            {
+                vertexes[5].VertexX -= 0.1;
+                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+            }
+            if (e.KeyCode == Keys.H)
+            {
+                vertexes[5].VertexX += 0.1;
+                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+            }
+            if (e.KeyCode == Keys.G)
+            {
+                vertexes[5].VertexY -= 0.1;
+                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+            }
+            if (e.KeyCode == Keys.T)
+            {
+                vertexes[5].VertexY += 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
             }

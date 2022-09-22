@@ -24,7 +24,7 @@ using System.IO;
 
 namespace Destiny
 {
-    internal static class Seeker_MainSystem
+    internal  class Seeker_MainSystem
     {
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
@@ -76,15 +76,9 @@ namespace Destiny
                             //頂点の描画
 
                             //面の描画
-                            /*
-                            GL.Begin(BeginMode.Triangles);
-                            for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
-                            {
-                                Vertex vertex = vertices[indexes[vertexpoint]];
-                                GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                            }
-                            GL.End();
-                            */
+                            
+
+                            
                         }
 
                     }
@@ -179,6 +173,25 @@ namespace Destiny
                             _UppercolumnPointsIndex++;
                         }
                     }
+                }
+            }
+        }
+
+        private void ShowPositions(double[] list)
+        {
+            for(int i =0;i < list.Length;i++)
+            {
+                if(i % 3 == 0)
+                {
+                    Console.WriteLine("v" + ((int)(i / 3)).ToString() + "X  :" + list[i].ToString());
+                }
+                if (i % 3 == 1)
+                {
+                    Console.WriteLine("v" + ((int)(i / 3)).ToString() + "Y  :" + list[i].ToString());
+                }
+                else
+                {
+                    Console.WriteLine("v" + ((int)(i / 3)).ToString() + "Z  :" + list[i].ToString());
                 }
             }
         }
@@ -293,7 +306,7 @@ namespace Destiny
             / (Math.Sqrt((x[15] - verteices[5].VertexPosition.X) * (x[15] - verteices[5].VertexPosition.X) + (x[16] - verteices[5].VertexPosition.Y) * (x[16] - verteices[5].VertexPosition.Y) + (x[17] - verteices[5].VertexPosition.Z) * (x[17] - verteices[5].VertexPosition.Z))
             * Math.Sqrt((x[9] - verteices[5].VertexPosition.X) * (x[9] - verteices[5].VertexPosition.X) + (x[10] - verteices[5].VertexPosition.Y) * (x[10] - verteices[5].VertexPosition.Y) + (x[11] - verteices[5].VertexPosition.Z) * (x[11] - verteices[5].VertexPosition.Z))))) * (180 / Math.PI)));*/
             Func<double[], double> f = x =>
-            (2*Math.PI - ((Math.Acos(((x[0] - x[18]) * (x[3] - x[18]) + (x[1] - x[19]) * (x[4] - x[19]) + (x[2] - x[20]) * (x[5] - x[20]))
+            (2 * Math.PI - ((Math.Acos(((x[0] - x[18]) * (x[3] - x[18]) + (x[1] - x[19]) * (x[4] - x[19]) + (x[2] - x[20]) * (x[5] - x[20]))
             / (Math.Sqrt((x[0] - x[18]) * (x[0] - x[18]) + (x[1] - x[19]) * (x[1] - x[19]) + (x[2] - x[20]) * (x[2] - x[20]))
             * Math.Sqrt((x[3] - x[18]) * (x[3] - x[18]) + (x[4] - x[19]) * (x[4] - x[19]) + (x[5] - x[20]) * (x[5] - x[20]))))
 
@@ -338,7 +351,7 @@ namespace Destiny
 
             + Math.Acos(((x[15] - x[18]) * (x[9] - x[18]) + (x[16] - x[19]) * (x[10] - x[19]) + (x[17] - x[20]) * (x[11] - x[20]))
             / (Math.Sqrt((x[15] - x[18]) * (x[15] - x[18]) + (x[16] - x[19]) * (x[16] - x[19]) + (x[17] - x[20]) * (x[17] - x[20]))
-            * Math.Sqrt((x[9] - x[18]) * (x[9] - x[18]) + (x[10] - x[19]) * (x[10] - x[19]) + (x[11] - x[20]) * (x[11] - x[20]))))) * (180 / Math.PI)));
+            * Math.Sqrt((x[9] - x[18]) * (x[9] - x[18]) + (x[10] - x[19]) * (x[10] - x[19]) + (x[11] - x[20]) * (x[11] - x[20])))))));
             var initialX = new double[]
             {
                 verteices[4].VertexX,
