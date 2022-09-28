@@ -275,11 +275,12 @@ namespace Destiny
             {
                 indexes[0] = faces[faceIndex][0];
                 indexes[1] = faces[faceIndex][1];
-                indexes[2] = faces[faceIndex][2];                
+                indexes[2] = faces[faceIndex][2];  
+                /*
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(angle, 0, 1, 0);
-
+                
                 GL.Begin(BeginMode.Triangles);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
@@ -288,6 +289,7 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
+                */
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
@@ -343,7 +345,7 @@ namespace Destiny
             double learningRate = 0.1;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine(answer[0].ToString()+ " "+answer[1].ToString());
-            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -856,7 +858,7 @@ namespace Destiny
                 vertexes[5].VertexZ -= 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[5].VertexPosition.Z);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
             }
             if(e.KeyCode == Keys.R)
             {
@@ -867,31 +869,31 @@ namespace Destiny
             {
                 vertexes[5].VertexZ += 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
             }
             if (e.KeyCode == Keys.F)
             {
                 vertexes[5].VertexX -= 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
             }
             if (e.KeyCode == Keys.H)
             {
                 vertexes[5].VertexX += 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
             }
             if (e.KeyCode == Keys.G)
             {
                 vertexes[5].VertexY -= 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
             }
             if (e.KeyCode == Keys.T)
             {
                 vertexes[5].VertexY += 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
             }
             glControl.Refresh();
         }
