@@ -62,6 +62,7 @@ namespace Destiny
         float rad = (90 - dihedralAngle_OCTO / 2) * (float)Math.PI / 180;
         float rotatey;
         float rotatez;
+        private bool isDisplayUnit = false;
         /// <summary>
         /// 多面体の面の中心部分の回転軸
         /// </summary>
@@ -388,6 +389,10 @@ namespace Destiny
             //DrawReferLine();
             //DrawVertexPoint();
             DrawUnit(vertexes, edges);
+            if(isDisplayUnit)
+            {
+                drawOCTO();
+            }
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawOCTO_UNIT(0);
@@ -792,32 +797,6 @@ namespace Destiny
         /// <param name="e"></param>
         private void button_saveObjFile_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            using (StreamWriter streamWriter = new StreamWriter(@"C:\Test\test.obj", false, Encoding.UTF8))
-            {
-                streamWriter.WriteLine("# Test Code");
-                for (int vertexCount = 0; vertexCount < vertexes.Count; vertexCount++)
-                {
-                    streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
-                }
-                streamWriter.WriteLine("vn 0 0 -1");
-                streamWriter.WriteLine("vn -1 0 0");
-                streamWriter.WriteLine("vn 1 0 0");
-                streamWriter.WriteLine("vn 0 -1 0");
-                streamWriter.WriteLine("vn 0 1 0");
-                streamWriter.WriteLine("vn 0 0 1");
-
-                for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
-                {
-                    string s = "f ";
-                    for (int faceID = 0; faceID < faceIndex.GetLength(1); faceID++)
-                    {
-                        int vertexIndex = faceIndex[faceCount, faceID];
-                        s += (vertexIndex + 1).ToString() + "//1 ";
-                    }
-                    streamWriter.WriteLine(s);
-                }
-            }*/
             using (StreamWriter streamWriter = new StreamWriter(@"C:\Test\test.obj", false, Encoding.UTF8))
             {
                 streamWriter.WriteLine("# Test Code");
@@ -948,6 +927,11 @@ namespace Destiny
                     Debug.Print(_mouseX.ToString() + ", " + _mouseY.ToString() + ": ");
                 }
             }
+        }
+
+        private void button_AssembleUnitShape(object sender, RoutedEventArgs e)
+        {
+            isDisplayUnit = true;
         }
 
         /*オブジェクトのピック処理を以下に記述*/

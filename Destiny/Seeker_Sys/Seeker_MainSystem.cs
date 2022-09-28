@@ -265,6 +265,11 @@ namespace Destiny
 
             return ret;
         }
+        /// <summary>
+        /// 再急降下法により可展性を維持した形状に変形する
+        /// </summary>
+        /// <param name="verteices">ユニットのすべての頂点情報を持つリスト</param>
+        /// <param name="manipulatedVertexPointIndex">内部頂点のリスト(予定)</param>
         public static void SetAdjustedUnitVertexes(List<Vertex> verteices, int manipulatedVertexPointIndex)
         {
             HashSet<int> connectVertxPoint = new HashSet<int>();
@@ -315,7 +320,6 @@ namespace Destiny
     / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
     * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)));
 
-            Console.WriteLine((ans * (180 / Math.PI)).ToString() + ":");
             Func<double[], double> f = (double[] x) =>
             {
                 double arcCosSum = 0;
@@ -345,35 +349,6 @@ namespace Destiny
 
             //とりあえず100頂点分用意する
             var initialX = new double[300];
-            /*{/*
-                verteices[4].VertexX,
-                verteices[4].VertexY,
-                verteices[4].VertexZ,
-
-                verteices[1].VertexX,
-                verteices[1].VertexY,
-                verteices[1].VertexZ,
-
-                verteices[2].VertexX,
-                verteices[2].VertexY,
-                verteices[2].VertexZ,
-
-                verteices[6].VertexX,
-                verteices[6].VertexY,
-                verteices[6].VertexZ,
-
-                verteices[7].VertexX,
-                verteices[7].VertexY,
-                verteices[7].VertexZ,
-
-                verteices[8].VertexX,
-                verteices[8].VertexY,
-                verteices[8].VertexZ,
-
-                verteices[5].VertexX,
-                verteices[5].VertexY,
-                verteices[5].VertexZ,
-            };*/
             //頂点数*3個分変数を再急降下法用に格納する
             for(int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
             {
@@ -414,69 +389,6 @@ namespace Destiny
             {
                 verteices[i].VertexPosition = new Vector3d(verteices[i].VertexX, verteices[i].VertexY, verteices[i].VertexZ);
             }
-            /*
-            verteices[4].VertexX = answer[0];
-            verteices[4].VertexY = answer[1];
-            verteices[4].VertexZ = answer[2];
-            verteices[1].VertexX = answer[3];
-            verteices[1].VertexY = answer[4];
-            verteices[1].VertexZ = answer[5];
-            verteices[2].VertexX = answer[6];
-            verteices[2].VertexY = answer[7];
-            verteices[2].VertexZ = answer[8];
-            verteices[6].VertexX = answer[9];
-            verteices[6].VertexY = answer[10];
-            verteices[6].VertexZ = answer[11];
-            verteices[7].VertexX = answer[12];
-            verteices[7].VertexY = answer[13];
-            verteices[7].VertexZ = answer[14];
-            verteices[8].VertexX = answer[15];
-            verteices[8].VertexY = answer[16];
-            verteices[8].VertexZ = answer[17];
-            verteices[5].VertexX = answer[18];
-            verteices[5].VertexY = answer[19];
-            verteices[5].VertexZ = answer[20];
-            verteices[4].VertexPosition = new Vector3d(verteices[4].VertexX, verteices[4].VertexY, verteices[4].VertexZ);
-            verteices[1].VertexPosition = new Vector3d(verteices[1].VertexX, verteices[1].VertexY, verteices[1].VertexZ);
-            verteices[2].VertexPosition = new Vector3d(verteices[2].VertexX, verteices[2].VertexY, verteices[2].VertexZ);
-            verteices[6].VertexPosition = new Vector3d(verteices[6].VertexX, verteices[6].VertexY, verteices[6].VertexZ);
-            verteices[7].VertexPosition = new Vector3d(verteices[7].VertexX, verteices[7].VertexY, verteices[7].VertexZ);
-            verteices[8].VertexPosition = new Vector3d(verteices[8].VertexX, verteices[8].VertexY, verteices[8].VertexZ);
-            verteices[5].VertexPosition = new Vector3d(verteices[5].VertexX, verteices[5].VertexY, verteices[5].VertexZ);
-            */
-            Console.WriteLine("1=" + (Math.Acos((answer[0] * answer[3] + answer[1] * answer[4] + answer[2] * answer[5])
-            / (Math.Sqrt(answer[0] * answer[0] + answer[1] * answer[1] + answer[2] * answer[2])
-            * Math.Sqrt(answer[3] * answer[3] + answer[4] * answer[4] + answer[5] * answer[5])))).ToString());
-            Console.WriteLine("2=" + (1).ToString());
-            Console.WriteLine("3=" + (1).ToString());
-            Console.WriteLine("4=" + (1).ToString());
-            Console.WriteLine("5=" + (1).ToString());
-            Console.WriteLine("2=" + (1).ToString());
-            ans = 
-    Math.Acos((v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z)
-    / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
-    * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
-
-    + Math.Acos((v3.X * v2.X + v3.Y * v2.Y + v3.Z * v2.Z)
-    / (Math.Sqrt(v3.X * v3.X + v3.Y * v3.Y + v3.Z * v3.Z)
-    * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
-
-    + Math.Acos((v3.X * v4.X + v3.Y * v4.Y + v3.Z * v4.Z)
-    / (Math.Sqrt(v3.X * v3.X + v3.Y * v3.Y + v3.Z * v3.Z)
-    * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)))
-
-    + Math.Acos((v1.X * v5.X + v1.Y * v5.Y + v1.Z * v5.Z)
-    / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
-    * Math.Sqrt(v5.X * v5.X + v5.Y * v5.Y + v5.Z * v5.Z)))
-
-    + Math.Acos((v6.X * v5.X + v6.Y * v5.Y + v6.Z * v5.Z)
-    / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
-    * Math.Sqrt(v5.X * v5.X + v5.Y * v5.Y + v5.Z * v5.Z)))
-
-    + Math.Acos((v6.X * v4.X + v6.Y * v4.Y + v6.Z * v4.Z)
-    / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
-    * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)));
-           
             v1 = verteices[4].VertexPosition - verteices[5].VertexPosition;//0~2
             v2 = verteices[1].VertexPosition - verteices[5].VertexPosition;//3~5
             v3 = verteices[2].VertexPosition - verteices[5].VertexPosition;//6~8
