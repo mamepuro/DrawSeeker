@@ -94,3 +94,5 @@ C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6.0-windows\Destiny.pdb
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6.0-windows\Destiny.genruntimeconfig.cache
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6.0-windows\ref\Destiny.dll
+C:\Users\endo\dev\DrawSeeker\Destiny\obj\Debug\net6.0-windows\SubWindow.g.cs
+C:\Users\endo\dev\DrawSeeker\Destiny\obj\Debug\net6.0-windows\SubWindow.baml
