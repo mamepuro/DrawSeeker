@@ -96,3 +96,4 @@ C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6.0-windows\ref\Destiny.dll
 C:\Users\endo\dev\DrawSeeker\Destiny\obj\Debug\net6.0-windows\SubWindow.g.cs
 C:\Users\endo\dev\DrawSeeker\Destiny\obj\Debug\net6.0-windows\SubWindow.baml
+C:\Users\endo\dev\DrawSeeker\Destiny\bin\Debug\net6.0-windows\GlmSharp.dll

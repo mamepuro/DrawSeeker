@@ -21,6 +21,8 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
+using GlmSharp;
+
 
 namespace Destiny
 {
@@ -335,16 +337,7 @@ namespace Destiny
                 Vertex vertex = new Vertex((byte)vindex, OCTO_UNIT_pos[vindex]);
                 OCTO_UNIT_vertexes.Add(vertex);
             }
-            System.Console.WriteLine("===============DEBUG LOG===============");
-            Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
-            Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
-            var initialX = new double[] { 5.0, 1.0 };
-            int iteration = 100;
-            double learningRate = 0.1;
-            double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
-            Console.WriteLine(answer[0].ToString() + " " + answer[1].ToString());
-            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
+            System.Console.WriteLine("---------------------Sub Window Successfuly built.-----------------------");
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -371,7 +364,7 @@ namespace Destiny
             GL.Enable(EnableCap.Lighting);
             float[] position1 = new float[] { 3.0f, 2.0f, 3.0f, 0.0f };
             GL.Light(LightName.Light0, LightParameter.Position, position);
-            GL.Enable(EnableCap.Light0); // 光源をオンにする
+            //GL.Enable(EnableCap.Light0); // 光源をオンにする
             float[] position2 = new float[] { 3.0f, 2.0f, 3.0f, 0.0f };
             // ライト 0 の設定と使用
             GL.Light(LightName.Light2, LightParameter.Position, position2);
@@ -387,11 +380,7 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-            DrawUnit(vertexes, edges);
-            if (isDisplayUnit)
-            {
                 DrawOCTO();
-            }
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawOCTO_UNIT(0);
@@ -483,7 +472,7 @@ namespace Destiny
                     }
                     GL.End();
                     GL.PopMatrix();*/
-                    DrawUnitPart(vertexes, edges);
+                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges);
                     GL.PopMatrix();
                 }
 
@@ -495,41 +484,46 @@ namespace Destiny
         private void DrawUnitPart(List<Vertex> vertices, List<int[]> faces)
         {
             int[] indexes = new int[3];
+
+            GL.Disable(EnableCap.Lighting);
             for (int faceIndex = 0; faceIndex < faces.Count; faceIndex++)
             {
                 indexes[0] = faces[faceIndex][0];
                 indexes[1] = faces[faceIndex][1];
                 indexes[2] = faces[faceIndex][2];
-                
 
-                /*
-                GL.Begin(BeginMode.Triangles);
-                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
-                {
-                    Vertex vertex = vertices[indexes[vertexpoint]];
-                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                }
-                GL.End();*/
-                
                 GL.Begin(BeginMode.Lines);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
                     Vertex vertex = vertices[indexes[vertexpoint]];
                     Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
+                    GL.Color4(0x0, 0x0, 0x255, 0x255);
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
                     GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
                 }
                 GL.End();
+                GL.Begin(BeginMode.Triangles);
+                //GL.Color4(0x0, 0xff, 0xff, 0x20);
+                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
+                {
+                    Vertex vertex = vertices[indexes[vertexpoint]];
+                    GL.Color4((byte)0, (byte)255, (byte)255, (byte)255);
+                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                }
+                GL.End();
+                
+
 
             }
+            GL.Enable(EnableCap.Lighting);
         }
         private void DrawOCTO()
         {
             GL.PushMatrix();
             {
-                for (int flag = 0; flag < 2; flag++)
+                for (int flag = 0; flag < 1; flag++)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < 1; i++)
                     {
                         for (int j = 0; j < 3; j++)
                         {
@@ -749,58 +743,7 @@ namespace Destiny
         /// <param name="e"></param>
         private void glControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-
-            //GL.ReadBuffer(ReadBufferMode.ColorAttachment1);
-            float[] pixels = new float[3];
-            GL.ReadPixels(e.X, glControl.Size.Height - e.Y, 1, 1, PixelFormat.Rgb, PixelType.Float, pixels);
-            pixels[0] = pixels[0] * 255;
-            pixels[1] = pixels[1] * 255;
-            pixels[2] = pixels[2] * 255;
-            Debug.Print(((int)pixels[0]).ToString() + "," + ((int)pixels[1]).ToString() + "," + ((int)pixels[2]).ToString() + "," + glControl.Size.Width + "," + glControl.Size.Height);
-            for (int index = 0; index < vertexes.Count; index++)
-            {
-                //Green の色をIDとする
-                if (vertexes[index].ID == pixels[2])
-                {
-                    vertexes[index].VertexX += 0.1;
-                    break;
-                }
-            }
-            glControl.Refresh();
-
-            /*
-            GL.RenderMode(RenderingMode.Select);
-            Debug.Print("Clicked");
-            GL.RenderMode(RenderingMode.Render);
-            */
-            /*
-            int[] viewport = new int[4];
-            GL.GetInteger(GetPName.Viewport, viewport);
-            int winW = viewport[2];
-            int winH = viewport[3];
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                int sizeBuffer = 2048;
-                int[] pickSelectBuffer = new int[sizeBuffer];
-
-                PreProcessOfObjectPick(
-                    sizeBuffer, pickSelectBuffer,
-                    (uint)e.X, (uint)e.Y, 5, 5);
-                //DrawSelection();
-
-                IList<SelectedObject> selectedObjs = ObjectPickAfterProcessing(pickSelectBuffer,
-                    (uint)e.X, (uint)e.Y);
-
-                SelectedPartId = 0;
-                if (selectedObjs.Count > 0)
-                {
-                    int[] selectFlg = selectedObjs[0].Name;
-                    System.Diagnostics.Debug.WriteLine("selectFlg[1] = " + selectFlg[1]);
-                    SelectedPartId = selectFlg[1];
-                }
-                glControl.Invalidate();
-            }
-            */
+            //メインウィンドウのみで操作を受け付ける
         }
 
         private void glControl_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -830,6 +773,8 @@ namespace Destiny
             Debug.Print("_isDragging" + _isDraggingRightButton);
         }
 
+        /*以下操作系統のコード*/
+
         /// <summary>
         /// ボタンが押されたときの挙動
         /// </summary>
@@ -837,36 +782,12 @@ namespace Destiny
         /// <param name="e"></param>
         private void button_saveObjFile_Click(object sender, RoutedEventArgs e)
         {
-            using (StreamWriter streamWriter = new StreamWriter(@"C:\Test\test.obj", false, Encoding.UTF8))
-            {
-                streamWriter.WriteLine("# Test Code");
-                for (int vertexCount = 0; vertexCount < vertexes.Count; vertexCount++)
-                {
-                    streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
-                }
-                streamWriter.WriteLine("vn 0 0 1");
-                streamWriter.WriteLine("vn -1 0 0");
-                streamWriter.WriteLine("vn 1 0 0");
-                streamWriter.WriteLine("vn 0 -1 0");
-                streamWriter.WriteLine("vn 0 1 0");
-                streamWriter.WriteLine("vn 0 0 1");
-
-                for (int faceCount = 0; faceCount < edges.Count; faceCount++)
-                {
-                    string s = "f ";
-                    for (int faceID = 0; faceID < edges[0].Length; faceID++)
-                    {
-                        int vertexIndex = edges[faceCount][faceID];
-                        s += (vertexIndex + 1).ToString() + "//1 ";
-                    }
-                    streamWriter.WriteLine(s);
-                }
-            }
+            //サブウィンドウは何もしない
         }
 
         private void button_AssembleUnitShape(object sender, RoutedEventArgs e)
         {
-            isDisplayUnit = true;
+
         }
 
         private void glControl_OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -875,69 +796,9 @@ namespace Destiny
             {
                 angle += 1;
             }
-            if (e.KeyCode == Keys.W)
-            {
-                vertexes[5].VertexZ -= 0.1;
-                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Console.WriteLine("VertexZ = " + vertexes[5].VertexPosition.Z);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
-            }
-            if (e.KeyCode == Keys.R)
-            {
-                _rotateAngleY = 0;
-                _rotateAngleZ = 0;
-            }
-            if (e.KeyCode == Keys.S)
-            {
-                vertexes[5].VertexZ += 0.1;
-                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
-            }
-            if (e.KeyCode == Keys.F)
-            {
-                vertexes[5].VertexX -= 0.1;
-                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
-            }
-            if (e.KeyCode == Keys.H)
-            {
-                vertexes[5].VertexX += 0.1;
-                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
-            }
-            if (e.KeyCode == Keys.G)
-            {
-                vertexes[5].VertexY -= 0.1;
-                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
-            }
-            if (e.KeyCode == Keys.T)
-            {
-                vertexes[5].VertexY += 0.1;
-                vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5);
-            }
-            glControl.Refresh();
         }
 
         private void glControl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (_isDraggingRightButton)
-            {
-                float currentMouseX = e.X;
-                float currentMouseY = e.Y;
-                Vector3d mouseMove = new Vector3d(0, currentMouseX - _mouseX, currentMouseY - _mouseY);
-                Vector3d v1 = new Vector3d(0, _mouseX, _mouseY);
-                Vector3d v2 = new Vector3d(0, currentMouseY, currentMouseY);
-                _rotato = OpenTKExSys.GetNormalVector(mouseMove, mouseMove);
-                _rotateAngleY = MathF.Sqrt((currentMouseX - _mouseX) * (currentMouseX - _mouseX));
-                _rotateAngleZ = MathF.Sqrt((currentMouseY - _mouseY) * (currentMouseY - _mouseY));
-            }
-            glControl.Refresh();
-
-        }
-
-        private void checkMouseButtonPushing(System.Windows.Forms.MouseEventArgs e)
         {
 
         }
@@ -970,156 +831,6 @@ namespace Destiny
                     Debug.Print(_mouseX.ToString() + ", " + _mouseY.ToString() + ": ");
                 }
             }
-        }
-
-
-
-        /*オブジェクトのピック処理を以下に記述*/
-        private void PreProcessOfObjectPick(int sizebuffer, int[] selectBuffer,
-            uint pointX, uint pointY,
-            uint deltaX, uint deltaY)
-        {
-            //Selection初期化
-            GL.SelectBuffer(sizebuffer, selectBuffer);
-            GL.RenderMode(RenderingMode.Select);
-
-            int[] viewport = new int[4];
-            GL.GetInteger(GetPName.Viewport, viewport);
-            //名前スタックの初期化
-            GL.InitNames();
-
-            GL.MatrixMode(MatrixMode.Projection);
-            //GL.PushMatrix();
-            GL.LoadIdentity();
-            OpenTKExSys.GluPickMatrix(pointX, viewport[3] - pointY, deltaX, deltaY, viewport);
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4,
-                                 (float)glControl.Size.Width / (float)glControl.Size.Height,
-                                 0.1f, 64.0f);
-
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-
-            GL.MatrixMode(MatrixMode.Modelview); // 視界の設定
-            Matrix4 look = Matrix4.LookAt(3.0f * Vector3.UnitX + 2.0f * Vector3.UnitY,
-              Vector3.Zero, Vector3.UnitY);
-        }
-
-        private IList<SelectedObject> ObjectPickAfterProcessing(int[] selecetedBuffer,
-            uint pointX, uint pointY)
-        {
-            GL.MatrixMode(MatrixMode.Projection); // projectionの設定
-            Matrix4 projection =
-              Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4,
-              (float)glControl.Size.Width / (float)glControl.Size.Height,
-              0.1f, 64.0f);
-            _perspectiveProjection = projection;
-            GL.LoadMatrix(ref projection);
-
-            GL.MatrixMode(MatrixMode.Modelview); // 視界の設定
-            Matrix4 look = Matrix4.LookAt(3.0f * Vector3.UnitX + 2.0f * Vector3.UnitY,
-              Vector3.Zero, Vector3.UnitY);
-            _modelView = look;
-            GL.LoadMatrix(ref look);
-
-            IList<SelectedObject> selectedObjects = new List<SelectedObject>();
-
-            //ヒットしたオブジェクトの数
-            int hits = GL.RenderMode(RenderingMode.Render);
-            Debug.Print("Hits = " + hits.ToString());
-
-            if (hits <= 0)
-            {
-                return selectedObjects;
-            }
-
-            IList<PickedObject> pickedObjects = new List<PickedObject>();
-            for (int i = 0; i < hits; i++)
-            {
-                pickedObjects.Add(new PickedObject());
-            }
-            int iSel = 0;
-            for (int i = 0; i < pickedObjects.Count; i++)
-            {
-                uint nameDepth = (uint)selecetedBuffer[iSel];
-                System.Diagnostics.Debug.Assert(nameDepth <= 4);
-                pickedObjects[i].NameDepth = nameDepth;
-                iSel++;
-                pickedObjects[i].MinDepth = (float)selecetedBuffer[iSel] / 0x7fffffff;
-                iSel++;
-                pickedObjects[i].MaxDepth = (float)selecetedBuffer[iSel] / 0x7fffffff;
-                iSel++;
-                for (int j = 0; j < nameDepth; j++)
-                {
-                    pickedObjects[i].Name[j] = selecetedBuffer[iSel];
-                    iSel++;
-                }
-            }
-            // sort picked object in the order of min depth
-            for (int i = 0; i < pickedObjects.Count; i++)
-            {
-                for (int j = i + 1; j < pickedObjects.Count; j++)
-                {
-                    if (pickedObjects[i].MinDepth > pickedObjects[j].MinDepth)
-                    {
-                        PickedObject tmp = pickedObjects[i];
-                        pickedObjects[i] = pickedObjects[j];
-                        pickedObjects[j] = tmp;
-                    }
-                }
-            }
-            for (int i = 0; i < pickedObjects.Count; i++)
-            {
-                System.Diagnostics.Debug.WriteLine("pickedObjects[" + i + "]");
-                System.Diagnostics.Debug.WriteLine("NameDepth = " + pickedObjects[i].NameDepth + " " +
-                    "MinDepth = " + pickedObjects[i].MinDepth + " " +
-                    "MaxDepth = " + pickedObjects[i].MaxDepth);
-                for (int j = 0; j < pickedObjects[i].NameDepth; j++)
-                {
-                    System.Diagnostics.Debug.Write("Name[" + j + "] = " + pickedObjects[i].Name[j] + " ");
-                }
-                System.Diagnostics.Debug.WriteLine("");
-            }
-
-            selectedObjects.Clear();
-            for (int i = 0; i < pickedObjects.Count; i++)
-            {
-                System.Diagnostics.Debug.Assert(pickedObjects[i].NameDepth <= 4);
-                SelectedObject selectedObj = new SelectedObject();
-                selectedObj.NameDepth = 3;
-                for (int itmp = 0; itmp < 3; itmp++)
-                {
-                    selectedObj.Name[itmp] = pickedObjects[i].Name[itmp];
-                }
-                selectedObjects.Add(selectedObj);
-
-                double ox, oy, oz;
-                {
-                    double[] mvMatrix = new double[16];
-                    double[] pjMatrix = new double[16];
-                    int[] viewport = new int[4];
-
-                    GL.GetInteger(GetPName.Viewport, viewport);
-
-                    GL.GetDouble(GetPName.ModelviewMatrix, mvMatrix);
-
-                    GL.GetDouble(GetPName.ProjectionMatrix, pjMatrix);
-
-                    //Tao.OpenGl.Glu.gluUnProject(
-                    //    (double)pointX,
-                    //    (double)viewport[3] - pointY,
-                    //    pickedObjects[i].MinDepth * 0.5,
-                    //    mvMatrix, pjMatrix, viewport,
-                    //    out ox, out oy, out oz);
-                    OpenTKExSys.GluUnProject(
-                        pointX,
-                        viewport[3] - pointY,
-                        pickedObjects[i].MinDepth * 0.5,
-                        mvMatrix, pjMatrix, viewport,
-                        out ox, out oy, out oz);
-                }
-                selectedObj.PickedPos = new Vector3((float)ox, (float)oy, (float)oz);
-            }
-            return selectedObjects;
         }
 }
 }

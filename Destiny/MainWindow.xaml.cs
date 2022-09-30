@@ -84,8 +84,8 @@ namespace Destiny
 
 
         int vertexcount = 8;
-        List<Vertex> vertexes = new List<Vertex>();
-        List<int[]> edges = new List<int[]>();
+        public static List<Vertex> vertexes = new List<Vertex>();
+        public static List<int[]> edges = new List<int[]>();
         Vector3d[] pos = new Vector3d[] {
             /*0*/new Vector3d(0, 0, 0),
             /*1*/new Vector3d(0.5, 0, 0),
@@ -256,7 +256,7 @@ namespace Destiny
             System.Drawing.Color.LightGreen,
         };
 
-        private void DrawUnit(List<Vertex> vertices, List<int[]> faces)
+        private void DrawUnit(List<Vertex> vertices, List<int[]> faces, bool isRotate)
         {
             GL.PushMatrix();
             GL.Scale(scale, scale, scale);
@@ -389,10 +389,6 @@ namespace Destiny
             //DrawReferLine();
             //DrawVertexPoint();
             DrawUnit(vertexes, edges);
-            if(isDisplayUnit)
-            {
-                DrawOCTO();
-            }
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawOCTO_UNIT(0);
@@ -425,208 +421,6 @@ namespace Destiny
                 GL.Vertex3(0, 0, 3);
                 GL.End();
                 GL.Enable(EnableCap.Lighting);
-            }
-            GL.PopMatrix();
-        }
-        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag)
-        {
-            //faceAngle =　面内のユニットの回転角
-            {
-                for (int faceCount = 0; faceCount < faceIndex_OCTO_UNIT.GetLength(0); faceCount++)
-                {
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-                    if (flag == 0)
-                    {
-
-                        GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
-                        GL.Rotate(_rotateAngleY, 0, 1, 0);
-                        GL.Rotate(_rotateAngleZ, 0, 0, -1);
-
-                        GL.Rotate(UnitAngle, 0, 1, 0);
-                        GL.Translate(0, 0, -0.5);
-                        GL.Translate(0, rotatey, rotatez);
-                        GL.Rotate(faceAngle, -nor_axis);
-                        GL.Translate(0, -rotatey, -rotatez);
-                        GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, 1, 0, 0);
-                        GL.Normal3(-Vector3.UnitZ);
-                    }
-                    else
-                    {
-                        GL.Rotate(180, 1, 0, 0);
-                        GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
-                        GL.Rotate(_rotateAngleY, 0, -1, 0);
-                        GL.Rotate(_rotateAngleZ, 0, 0, 1);
-                        GL.Rotate(UnitAngle, 0, 1, 0);
-                        GL.Translate(0, 0, -0.5);
-                        GL.Translate(0, rotatey, rotatez);
-                        GL.Rotate(faceAngle, -nor_axis);
-                        GL.Translate(0, -rotatey, -rotatez);
-                        GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, 1, 0, 0);
-                        GL.Normal3(Vector3.UnitZ);
-                    }
-
-                    /*
-                    //angle =10; //-------------------------------------------(10)
-                    GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
-                colors[faceCount]);
-                    GL.Normal3(Vector3d.Cross((OCTO_UNIT_vertexes[1].VertexPosition - OCTO_UNIT_vertexes[0].VertexPosition), OCTO_UNIT_vertexes[2].VertexPosition - OCTO_UNIT_vertexes[0].VertexPosition));
-                    GL.Begin(PrimitiveType.Polygon);
-                    for (int faceID = 0; faceID < faceIndex_OCTO_UNIT.GetLength(1); faceID++)
-                    {
-
-                        int vertexIndex = faceIndex_OCTO_UNIT[faceCount, faceID];
-                        double x = OCTO_UNIT_vertexes[vertexIndex].VertexX;
-                        double y = OCTO_UNIT_vertexes[vertexIndex].VertexY;
-                        double z = OCTO_UNIT_vertexes[vertexIndex].VertexZ;
-
-                        GL.Vertex3(x, y, z);
-                    }
-                    GL.End();
-                    GL.PopMatrix();*/
-                    DrawUnitPart(vertexes, edges);
-                    GL.PopMatrix();
-                }
-
-
-            }
-            GL.PopMatrix();
-        }
-
-        private void DrawUnitPart(List<Vertex> vertices, List<int[]> faces)
-        {
-            int[] indexes = new int[3];
-            for (int faceIndex = 0; faceIndex < faces.Count; faceIndex++)
-            {
-                indexes[0] = faces[faceIndex][0];
-                indexes[1] = faces[faceIndex][1];
-                indexes[2] = faces[faceIndex][2];
-                /*
-                GL.PushMatrix();
-                GL.Scale(scale, scale, scale);
-                GL.Rotate(angle, 0, 1, 0);
-                
-                GL.Begin(BeginMode.Triangles);
-                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
-                {
-                    Vertex vertex = vertices[indexes[vertexpoint]];
-                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                }
-                GL.End();
-                GL.PopMatrix();
-                */
-                GL.Begin(BeginMode.Lines);
-                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
-                {
-                    Vertex vertex = vertices[indexes[vertexpoint]];
-                    Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
-                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
-                }
-                GL.End();
-
-            }
-        }
-        private void DrawOCTO()
-        {
-            GL.PushMatrix();
-            {
-                //正八面体の上半分と下半分
-                for (int flag = 0; flag < 2; flag++)
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag);
-                        }
-
-                    }
-                }
-
-            }
-            GL.PopMatrix();
-        }
-        private void DrawPENTA_UNIT(float faceAngle, int count, int is_halfUp)
-        {
-            //faceAngle =　面内のユニットの回転角
-            GL.PushMatrix();
-            {
-                GL.Scale(scale, scale, scale);
-                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
-                GL.Rotate(_rotateAngleY, 0, 1, 0);
-                GL.Rotate(_rotateAngleZ, 0, 0, -1);
-                if(is_halfUp == 1)
-                {
-                    GL.Rotate(180, 0, 0, 1);
-                    GL.Rotate(36, 0, 1, 0);
-                }
-                GL.Translate(0, -PENTA_innerball_radius, 0);
-                //立体部分の表示
-                if (count != 0)
-                {
-                    GL.Rotate(rotate_PENTA_UNIT[count - 1], 0, 1, 0);
-                    GL.Translate(0, 0, -PENTA_radius);
-                    GL.Rotate(Seeker_Sys.Seeker_ShapeData.dihedralAngle_PENTA, -1, 0, 0);
-                    GL.Translate(0, 0, PENTA_radius);
-                }
-
-                DrawPENTA_FACE(faceAngle);
-            }
-            GL.PopMatrix();
-        }
-        /// <summary>
-        /// 正五角形の表示
-        /// </summary>
-        private void DrawPENTA_FACE(float faceAngle)
-        {
-            //ここまでxz表面に平行なの正五角形の描画
-            GL.Rotate(90, 1, 0, 0);
-            GL.Translate(0, -PENTA_radius, 0);
-            //ここまでユニットの描画
-            GL.Translate(0, PENTA_radius, 0);
-            GL.Rotate(faceAngle, 0, 0, 1);
-            GL.Translate(0, -PENTA_radius, 0);
-            //angle =10; //-------------------------------------------(10)
-            GL.Material(MaterialFace.FrontAndBack, MaterialParameter.Diffuse,
-            System.Drawing.Color.Yellow);// 赤の直方体を描画*/  
-            //GL.Normal3(Vector3.UnitX);
-            GL.Normal3(Vector3d.Cross((PENTA_UNIT_vertexes[1].VertexPosition - PENTA_UNIT_vertexes[0].VertexPosition), PENTA_UNIT_vertexes[2].VertexPosition - PENTA_UNIT_vertexes[0].VertexPosition));
-            GL.Begin(PrimitiveType.TriangleFan);
-            for (int faceCount = 0; faceCount < faceIndex_PENTA_UNIT.GetLength(0); faceCount++)
-            {
-
-                for (int faceID = 0; faceID < faceIndex_PENTA_UNIT.GetLength(1); faceID++)
-                {
-
-                    int vertexIndex = faceIndex_PENTA_UNIT[faceCount, faceID];
-                    double x = PENTA_UNIT_vertexes[vertexIndex].VertexX;
-                    double y = PENTA_UNIT_vertexes[vertexIndex].VertexY;
-                    double z = PENTA_UNIT_vertexes[vertexIndex].VertexZ;
-                    GL.Vertex3(x, y, z);
-                }
-            }
-
-            GL.End();
-        }
-        private void DrawPENTA()
-        {
-            GL.PushMatrix();
-            {
-                //正十二面体の上半分と下半分
-                for(int is_hafUP = 0;is_hafUP < 2;is_hafUP++)
-                {
-                    //正十二面体の半分
-                    for (int PENTAhalf = 0; PENTAhalf < 6; PENTAhalf++)
-                    {
-                        for (int i = 0; i < 5; i++)
-                        {
-                            DrawPENTA_UNIT(rotate_PENTA_UNIT[i], PENTAhalf, is_hafUP);
-                        }
-                    }
-                }
-
-
             }
             GL.PopMatrix();
         }
