@@ -24,8 +24,24 @@ using System.IO;
 
 namespace Destiny
 {
-    internal  class Seeker_MainSystem
+    internal class Seeker_MainSystem
     {
+        /// <summary>
+        /// ユニットの3Dモデルの右端の頂点インデックス
+        /// </summary>
+        private static int rightEndVertexIndex = 0;
+        /// <summary>
+        /// ユニットの3Dモデルの左端の頂点インデックス
+        /// </summary>
+        private static int leftEndVertexIndex = 0;
+        /// <summary>
+        /// ユニットの3Dモデルの一番上の頂点インデックス
+        /// </summary>
+        private static int topVertexIndex = 0;
+        /// <summary>
+        /// ユニットの外周上(エッジ上)に存在する頂点のインデックス
+        /// </summary>
+        private static HashSet<int> VertexIndexOnUnitEdges = new HashSet<int>();
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
             byte iD = 0;
@@ -73,18 +89,21 @@ namespace Destiny
                             indexes[2] = int.Parse((param[3].Split('/'))[0]) - 1;
                             int[] edgeInfo = new int[] { indexes[0], indexes[1], indexes[2] };
                             faces.Add(edgeInfo);
-                            //頂点の描画
+                            //頂点の描画a
 
                             //面の描画
-                            
 
-                            
+
+
                         }
 
                     }
                 }
             }
             AddVertexConnectionInfomation(faces, vertices);
+            SetEndVertexInformation(vertices);
+            SetVertexIndexOnUnitEdges(vertices);
+
         }
         public static void GetTriangleUnitObjFile(int split, string fileName)
         {
@@ -183,14 +202,14 @@ namespace Destiny
         /// </summary>
         public static void AddVertexConnectionInfomation(List<int[]> faces, List<Vertex> vertices)
         {
-            for(int i = 0; i< faces.Count;i++)
+            for (int i = 0; i < faces.Count; i++)
             {
                 int[] vertexIndex = new int[3];
-                for(int vindex =0;vindex < 3;vindex++)
+                for (int vindex = 0; vindex < 3; vindex++)
                 {
                     vertexIndex[vindex] = faces[i][vindex];
                 }
-                for(int vindex = 0;vindex<3;vindex++)
+                for (int vindex = 0; vindex < 3; vindex++)
                 {
                     int[] connectVertexPair = new int[]
                     {
@@ -206,9 +225,9 @@ namespace Destiny
             }
             //頂点[5]周りの接続情報表示
             Console.WriteLine("頂点[5]周りの接続情報を開示します");
-            foreach(var c in vertices[5].connectVertexId)
+            foreach (var c in vertices[5].connectVertexId)
             {
-                foreach(var nc in c)
+                foreach (var nc in c)
                 {
                     Console.WriteLine(nc);
                 }
@@ -216,11 +235,100 @@ namespace Destiny
             }
         }
 
+        /// <summary>
+        /// ユニットの上端、左端、右端の頂点の情報を格納する
+        /// </summary>
+        /// <param name="vertices">頂点情報のリスト</param>
+        public static void SetEndVertexInformation(List<Vertex> vertices)
+        {
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの端点の情報を探索を開始します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            double maxX = 0;
+            double minX = 0;
+            double maxY = 0;
+            foreach (var v in vertices)
+            {
+                if (maxX < v.VertexX)
+                {
+                    rightEndVertexIndex = v.ID;
+                    maxX = v.VertexX;
+                    //continue;
+                }
+                if (v.VertexX < minX)
+                {
+                    leftEndVertexIndex = v.ID;
+                    minX = v.VertexX;
+                    //continue;
+                }
+                if (maxY < v.VertexY)
+                {
+                    topVertexIndex = v.ID;
+                    maxY = v.VertexY;
+                }
+            }
+            Console.WriteLine("左端は頂点 " + leftEndVertexIndex + "です。(座標 " + vertices[leftEndVertexIndex].VertexPosition.ToString() + ")");
+            Console.WriteLine("右端は頂点 " + rightEndVertexIndex + "です。(座標 " + vertices[rightEndVertexIndex].VertexPosition.ToString() + ")");
+            Console.WriteLine("上端は頂点 " + topVertexIndex + "です。(座標 " + vertices[topVertexIndex].VertexPosition.ToString()+ ")");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの端点の情報を探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+
+        /// <summary>
+        /// ユニットの外周上に存在する頂点情報を格納する
+        /// </summary>
+        /// <param name="vertices">頂点情報のリスト</param>
+        private static void SetVertexIndexOnUnitEdges(List<Vertex> vertices)
+        {
+            int c = 0;
+            Vector3d leftoToTop = vertices[topVertexIndex].VertexPosition - vertices[leftEndVertexIndex].VertexPosition;
+            Console.WriteLine("L -> T : " + leftoToTop.ToString());
+            Vector3d rightToTop = vertices[topVertexIndex].VertexPosition - vertices[rightEndVertexIndex].VertexPosition;
+            Vector3d leftToRight = vertices[rightEndVertexIndex].VertexPosition - vertices[leftEndVertexIndex].VertexPosition;
+            Console.WriteLine("L -> R : " + leftToRight.ToString());
+            Vector3d leftVertex = vertices[leftEndVertexIndex].VertexPosition;
+            Vector3d rightVertex = vertices[rightEndVertexIndex].VertexPosition;
+            Vector3d topVertex = vertices[topVertexIndex].VertexPosition;
+            Console.WriteLine("~~~~~~~~~~~ユニットの外周上の点の探索を開始します。~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("左端は頂点 " + leftEndVertexIndex + "です。(座標 " + leftVertex.ToString() + ")");
+            Console.WriteLine("右端は頂点 " + rightEndVertexIndex + "です。(座標 " + rightVertex.ToString() + ")");
+            Console.WriteLine("上端は頂点 " + topVertexIndex + "です。(座標 " + topVertex.ToString() + ")");
+            foreach (var v in vertices)
+            {
+                
+                Vector3d lv = v.VertexPosition - leftVertex;
+                Vector3d rv = v.VertexPosition - rightVertex;
+                Vector3d tv = v.VertexPosition - topVertex;
+                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = "+ Vector3d.Dot(lv, leftoToTop).ToString()) ;
+                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, leftToRight).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, rightToTop).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, leftoToTop).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, leftToRight).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, rightToTop).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, leftoToTop).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, leftToRight).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, rightToTop).ToString());
+                if (Vector3d.Dot(lv, leftToRight) == 1 || Vector3d.Dot(lv, leftoToTop) == 1 || Vector3d.Dot(lv, rightToTop) == 1
+                    || Vector3d.Dot(lv, leftToRight) == -1 || Vector3d.Dot(lv, leftoToTop) == -1 || Vector3d.Dot(lv, rightToTop) == -1
+                     || Vector3d.Dot(rv, leftToRight) == 1 || Vector3d.Dot(rv, leftoToTop) == 1 || Vector3d.Dot(rv, rightToTop) == 1
+                      || Vector3d.Dot(rv, leftToRight) == -1 || Vector3d.Dot(rv, leftoToTop) == -1 || Vector3d.Dot(rv, rightToTop) == -1
+                       || Vector3d.Dot(tv, leftToRight) == 1 || Vector3d.Dot(tv, leftoToTop) == 1 || Vector3d.Dot(tv, rightToTop) == 1
+                        || Vector3d.Dot(tv, leftToRight) == -1 || Vector3d.Dot(tv, leftoToTop) == -1 || Vector3d.Dot(tv, rightToTop) == -1)
+                {
+                    if(!VertexIndexOnUnitEdges.Contains(v.ID))
+                    {
+                        VertexIndexOnUnitEdges.Add(v.ID);
+                        Console.WriteLine("ユニットの外周上の点として、頂点 "+v.ID.ToString() +"を登録しました。");
+                    }
+                }
+                c++;
+            }
+            Console.WriteLine("~~~~~~~~~~~ユニットの外周上の点の探索を終了します。~~~~~~~~~~~~~~~~~~");
+
+        }
+
         private void ShowPositions(double[] list)
         {
-            for(int i =0;i < list.Length;i++)
+            for (int i = 0; i < list.Length; i++)
             {
-                if(i % 3 == 0)
+                if (i % 3 == 0)
                 {
                     Console.WriteLine("v" + ((int)(i / 3)).ToString() + "X  :" + list[i].ToString());
                 }
@@ -249,7 +357,7 @@ namespace Destiny
             double Vx2, double Vy2, double Vz2)
         {
             double ret = Math.Acos(
-                (Vx1 * Vx2 + Vy1 * Vy2 + Vz1 *  Vz2)
+                (Vx1 * Vx2 + Vy1 * Vy2 + Vz1 * Vz2)
                 /
                 (
                     (
@@ -274,17 +382,17 @@ namespace Destiny
         {
             HashSet<int> connectVertxPoint = new HashSet<int>();
             List<Vertex> connectVertex = new List<Vertex>();
-            foreach(var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
+            foreach (var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
             {
                 foreach (var point in pair)
                 {
-                    if(!connectVertxPoint.Contains(point))
+                    if (!connectVertxPoint.Contains(point))
                     {
                         connectVertxPoint.Add(point);
                     }
                 }
             }
-            foreach(var point in connectVertxPoint)
+            foreach (var point in connectVertxPoint)
             {
                 connectVertex.Add(verteices[point]);
             }
@@ -320,10 +428,11 @@ namespace Destiny
     / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
     * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)));
 
+            //再急降下法の損失関数の式
             Func<double[], double> f = (double[] x) =>
             {
                 double arcCosSum = 0;
-                foreach(var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
+                foreach (var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
                 {
                     int pos1XIndex = pair[0] * 3;
                     int pos1YIndex = pair[0] * 3 + 1;
@@ -334,8 +443,31 @@ namespace Destiny
                     int centerXIndex = manipulatedVertexPointIndex * 3;
                     int centerYIndex = manipulatedVertexPointIndex * 3 + 1;
                     int centerZIndex = manipulatedVertexPointIndex * 3 + 2;
-
-                    arcCosSum += GetArcCos(
+                    if (VertexIndexOnUnitEdges.Contains(pair[0]))
+                    {
+                        arcCosSum += GetArcCos(
+                        verteices[pair[0]].VertexX - x[centerXIndex],
+                        verteices[pair[0]].VertexY - x[centerYIndex],
+                        x[pos1ZIndex] - x[centerZIndex],
+                        x[pos2XIndex] - x[centerXIndex],
+                        x[pos2YIndex] - x[centerYIndex],
+                        x[pos2ZIndex] - x[centerZIndex]
+                        );
+                    }
+                    else if (VertexIndexOnUnitEdges.Contains(pair[1]))
+                    {
+                        arcCosSum += GetArcCos(
+                        x[pos1XIndex] - x[centerXIndex],
+                        x[pos1YIndex] - x[centerYIndex],
+                        x[pos1ZIndex] - x[centerZIndex],
+                        verteices[pair[1]].VertexX - x[centerXIndex],
+                        verteices[pair[1]].VertexY - x[centerYIndex],
+                        x[pos2ZIndex] - x[centerZIndex]
+                        );
+                    }
+                    else
+                    {
+                        arcCosSum += GetArcCos(
                         x[pos1XIndex] - x[centerXIndex],
                         x[pos1YIndex] - x[centerYIndex],
                         x[pos1ZIndex] - x[centerZIndex],
@@ -343,20 +475,22 @@ namespace Destiny
                         x[pos2YIndex] - x[centerYIndex],
                         x[pos2ZIndex] - x[centerZIndex]
                         );
+                    }
+
                 }
-            return (2 *Math.PI - arcCosSum) * (2 * Math.PI - arcCosSum);
+                return (2 * Math.PI - arcCosSum) * (2 * Math.PI - arcCosSum);
             };
 
             //とりあえず100頂点分用意する
             var initialX = new double[300];
             //頂点数*3個分変数を再急降下法用に格納する
-            for(int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
+            for (int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
             {
-                if(initialXIndex % 3 == 0)
+                if (initialXIndex % 3 == 0)
                 {
                     initialX[initialXIndex] = verteices[(int)(initialXIndex / 3)].VertexX;
                 }
-                else if(initialXIndex % 3 == 1)
+                else if (initialXIndex % 3 == 1)
                 {
                     initialX[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexY;
                 }
@@ -368,6 +502,7 @@ namespace Destiny
             int iteration = 100;
             double learningRate = 0.01;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
+            //最適化処理の結果を格納する
             for (int i = 0; i < verteices.Count * 3; i++)
             {
                 {
@@ -385,7 +520,7 @@ namespace Destiny
                     }
                 }
             }
-            for(int i = 0;i < verteices.Count; i++)
+            for (int i = 0; i < verteices.Count; i++)
             {
                 verteices[i].VertexPosition = new Vector3d(verteices[i].VertexX, verteices[i].VertexY, verteices[i].VertexZ);
             }
@@ -395,7 +530,7 @@ namespace Destiny
             v4 = verteices[6].VertexPosition - verteices[5].VertexPosition;//9~11
             v5 = verteices[7].VertexPosition - verteices[5].VertexPosition;//12~14
             v6 = verteices[8].VertexPosition - verteices[5].VertexPosition;//15~17
-            ans = 
+            ans =
     Math.Acos((v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z)
     / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
     * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
@@ -419,7 +554,7 @@ namespace Destiny
     + Math.Acos((v6.X * v4.X + v6.Y * v4.Y + v6.Z * v4.Z)
     / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
     * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)));
-            Console.WriteLine((ans*(180/Math.PI)).ToString() + ":");
+            Console.WriteLine((ans * (180 / Math.PI)).ToString() + ":");
         }
     }
 }

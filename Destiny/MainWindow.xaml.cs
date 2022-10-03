@@ -304,7 +304,23 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
-
+                if(isDisplayUnit)
+                {
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
+                    GL.Begin(BeginMode.Lines);
+                    for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
+                    {
+                        Vertex vertex = vertices[indexes[vertexpoint]];
+                        Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
+                    }
+                    GL.End();
+                    GL.PopMatrix();
+                }
             }
 
 
@@ -388,7 +404,7 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-            DrawUnit(vertexes, edges);
+            DrawUnit(vertexes, edges, false);
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawOCTO_UNIT(0);
@@ -691,7 +707,14 @@ namespace Destiny
 
         private void button_AssembleUnitShape(object sender, RoutedEventArgs e)
         {
-            isDisplayUnit = true;
+            if(isDisplayUnit)
+            {
+                isDisplayUnit = false;
+            }
+            else
+            {
+                isDisplayUnit = true;
+            }
         }
 
         private void glControl_OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -747,6 +770,7 @@ namespace Destiny
 
         private void glControl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+
             if (_isDraggingRightButton)
             {
                 float currentMouseX = e.X;

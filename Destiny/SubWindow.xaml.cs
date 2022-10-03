@@ -521,9 +521,9 @@ namespace Destiny
         {
             GL.PushMatrix();
             {
-                for (int flag = 0; flag < 1; flag++)
+                for (int flag = 0; flag < 2; flag++)
                 {
-                    for (int i = 0; i < 1; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         for (int j = 0; j < 3; j++)
                         {
@@ -801,6 +801,20 @@ namespace Destiny
         private void glControl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
 
+            if (_isDraggingRightButton)
+            {
+                Console.WriteLine("~~~~~~~~~~~~~~~SubWindow Activatesd~~~~~~~~~~~~~~~~~~~~");
+                Console.WriteLine("MouseMove Detected: isDragging = " + _isDraggingRightButton.ToString());
+                float currentMouseX = e.X;
+                float currentMouseY = e.Y;
+                Vector3d mouseMove = new Vector3d(0, currentMouseX - _mouseX, currentMouseY - _mouseY);
+                Vector3d v1 = new Vector3d(0, _mouseX, _mouseY);
+                Vector3d v2 = new Vector3d(0, currentMouseY, currentMouseY);
+                _rotato = OpenTKExSys.GetNormalVector(mouseMove, mouseMove);
+                _rotateAngleY = MathF.Sqrt((currentMouseX - _mouseX) * (currentMouseX - _mouseX));
+                _rotateAngleZ = MathF.Sqrt((currentMouseY - _mouseY) * (currentMouseY - _mouseY));
+            }
+            glControl.Refresh();
         }
 
         private void glControl_MouseUp(object sender, MouseButtonEventArgs e)
