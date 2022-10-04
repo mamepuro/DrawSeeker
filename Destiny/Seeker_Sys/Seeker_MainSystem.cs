@@ -42,6 +42,10 @@ namespace Destiny
         /// ユニットの外周上(エッジ上)に存在する頂点のインデックス
         /// </summary>
         private static HashSet<int> VertexIndexOnUnitEdges = new HashSet<int>();
+        /// <summary>
+        /// ユニットの底辺部分に存在する頂点のインデックス
+        /// </summary>
+        public static HashSet<int> VertexIndexOnUnitButtomEdge = new HashSet<int>();
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
             byte iD = 0;
@@ -103,6 +107,7 @@ namespace Destiny
             AddVertexConnectionInfomation(faces, vertices);
             SetEndVertexInformation(vertices);
             SetVertexIndexOnUnitEdges(vertices);
+            SetVertexIndexOnUnitButtomEdges(vertices);
 
         }
         public static void GetTriangleUnitObjFile(int split, string fileName)
@@ -296,21 +301,32 @@ namespace Destiny
                 Vector3d lv = v.VertexPosition - leftVertex;
                 Vector3d rv = v.VertexPosition - rightVertex;
                 Vector3d tv = v.VertexPosition - topVertex;
-                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = "+ Vector3d.Dot(lv, leftoToTop).ToString()) ;
-                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, leftToRight).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, rightToTop).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, leftoToTop).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, leftToRight).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, rightToTop).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, leftoToTop).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, leftToRight).ToString());
-                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, rightToTop).ToString());
-                if (Vector3d.Dot(lv, leftToRight) == 1 || Vector3d.Dot(lv, leftoToTop) == 1 || Vector3d.Dot(lv, rightToTop) == 1
-                    || Vector3d.Dot(lv, leftToRight) == -1 || Vector3d.Dot(lv, leftoToTop) == -1 || Vector3d.Dot(lv, rightToTop) == -1
-                     || Vector3d.Dot(rv, leftToRight) == 1 || Vector3d.Dot(rv, leftoToTop) == 1 || Vector3d.Dot(rv, rightToTop) == 1
-                      || Vector3d.Dot(rv, leftToRight) == -1 || Vector3d.Dot(rv, leftoToTop) == -1 || Vector3d.Dot(rv, rightToTop) == -1
-                       || Vector3d.Dot(tv, leftToRight) == 1 || Vector3d.Dot(tv, leftoToTop) == 1 || Vector3d.Dot(tv, rightToTop) == 1
-                        || Vector3d.Dot(tv, leftToRight) == -1 || Vector3d.Dot(tv, leftoToTop) == -1 || Vector3d.Dot(tv, rightToTop) == -1)
+                /*
+                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = "+ Vector3d.Dot(lv, leftoToTop).ToString() + " Prod = " + (lv.Length * leftoToTop.Length).ToString()) ;
+                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, leftToRight).ToString() + " Prod = " + (lv.Length * leftToRight.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, rightToTop).ToString() + " Prod = " + (lv.Length * rightToTop.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, leftoToTop).ToString() + " Prod = " + (rv.Length * leftoToTop.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, leftToRight).ToString() + " Prod = " + (rv.Length * leftToRight.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  rv = " + rv.ToString() + "  Dot = " + Vector3d.Dot(rv, rightToTop).ToString() + " Prod = " + (rv.Length * rightToTop.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, leftoToTop).ToString() + " Prod = " + (tv.Length * leftoToTop.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, leftToRight).ToString() + " Prod = " + (tv.Length * leftToRight.Length).ToString());
+                Console.WriteLine("c = " + c.ToString() + "  tv = " + tv.ToString() + "  Dot = " + Vector3d.Dot(tv, rightToTop).ToString() + " Prod = " + (tv.Length * rightToTop.Length).ToString());
+                */
+                //少数の計算結果の誤差による誤判定を防ぐため差で比較する
+                //誤差許容範囲はerror_toleranceに格納する
+                const double errorTolerance = 0.00000001;
+                double Diff_LV_LR = Math.Abs(Math.Abs(Vector3d.Dot(lv, leftToRight)) - lv.Length * leftToRight.Length);
+                double Diff_LV_LT = Math.Abs(Math.Abs(Vector3d.Dot(lv, leftoToTop)) - lv.Length * leftoToTop.Length);
+                double Diff_LV_RT = Math.Abs(Math.Abs(Vector3d.Dot(lv, rightToTop)) - lv.Length * rightToTop.Length);
+                double Diff_RV_LR = Math.Abs(Math.Abs(Vector3d.Dot(rv, leftToRight)) - rv.Length * leftToRight.Length);
+                double Diff_RV_LT = Math.Abs(Math.Abs(Vector3d.Dot(rv, leftoToTop)) - rv.Length * leftoToTop.Length);
+                double Diff_RV_RT = Math.Abs(Math.Abs(Vector3d.Dot(rv, rightToTop)) - rv.Length * rightToTop.Length);
+                double Diff_TV_LR = Math.Abs(Math.Abs(Vector3d.Dot(tv, leftToRight)) - tv.Length * leftToRight.Length);
+                double Diff_TV_LT = Math.Abs(Math.Abs(Vector3d.Dot(tv, leftoToTop)) - tv.Length * leftoToTop.Length);
+                double Diff_TV_RT = Math.Abs(Math.Abs(Vector3d.Dot(tv, rightToTop)) - tv.Length * rightToTop.Length);
+                if (Diff_LV_LR < errorTolerance || Diff_LV_LT < errorTolerance || Diff_LV_RT < errorTolerance
+                     || Diff_RV_LR < errorTolerance ||  Diff_RV_LT < errorTolerance || Diff_RV_RT < errorTolerance
+                       ||  Diff_TV_LR < errorTolerance || Diff_TV_LT < errorTolerance || Diff_TV_RT < errorTolerance)
                 {
                     if(!VertexIndexOnUnitEdges.Contains(v.ID))
                     {
@@ -322,6 +338,27 @@ namespace Destiny
             }
             Console.WriteLine("~~~~~~~~~~~ユニットの外周上の点の探索を終了します。~~~~~~~~~~~~~~~~~~");
 
+        }
+
+        /// <summary>
+        /// ユニットの底辺上に存在する頂点情報を格納する
+        /// </summary>
+        /// <param name="vertices">頂点情報のリスト</param>
+        private static void SetVertexIndexOnUnitButtomEdges(List<Vertex> vertices)
+        {
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を開始します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            foreach (Vertex v in vertices)
+            {
+                if(v.VertexY == vertices[leftEndVertexIndex].VertexY)
+                {
+                    if(!VertexIndexOnUnitButtomEdge.Contains(v.ID))
+                    {
+                        Console.WriteLine("頂点 " + v.ID.ToString() + "を底辺上の頂点として登録しました。");
+                        VertexIndexOnUnitButtomEdge.Add(v.ID);
+                    }
+                }
+            }
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
 
         private void ShowPositions(double[] list)
@@ -434,6 +471,7 @@ namespace Destiny
                 double arcCosSum = 0;
                 foreach (var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
                 {
+                    //Console.WriteLine("Connect ID = " + pair[0].ToString() + " " + pair[1].ToString());
                     int pos1XIndex = pair[0] * 3;
                     int pos1YIndex = pair[0] * 3 + 1;
                     int pos1ZIndex = pair[0] * 3 + 2;
@@ -443,8 +481,21 @@ namespace Destiny
                     int centerXIndex = manipulatedVertexPointIndex * 3;
                     int centerYIndex = manipulatedVertexPointIndex * 3 + 1;
                     int centerZIndex = manipulatedVertexPointIndex * 3 + 2;
-                    if (VertexIndexOnUnitEdges.Contains(pair[0]))
+                    if(VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
                     {
+                        //Console.WriteLine("一番目が呼ばれています");
+                        arcCosSum += GetArcCos(
+                        verteices[pair[0]].VertexX - x[centerXIndex],
+                        verteices[pair[0]].VertexY - x[centerYIndex],
+                        x[pos1ZIndex] - x[centerZIndex],
+                        verteices[pair[1]].VertexX - x[centerXIndex],
+                        verteices[pair[1]].VertexY - x[centerYIndex],
+                        x[pos2ZIndex] - x[centerZIndex]
+                        );
+                    }
+                    else if (VertexIndexOnUnitEdges.Contains(pair[0]))
+                    {
+                        //Console.WriteLine("2番目が呼ばれています");
                         arcCosSum += GetArcCos(
                         verteices[pair[0]].VertexX - x[centerXIndex],
                         verteices[pair[0]].VertexY - x[centerYIndex],
@@ -456,6 +507,7 @@ namespace Destiny
                     }
                     else if (VertexIndexOnUnitEdges.Contains(pair[1]))
                     {
+                        //Console.WriteLine("3番目が呼ばれています");
                         arcCosSum += GetArcCos(
                         x[pos1XIndex] - x[centerXIndex],
                         x[pos1YIndex] - x[centerYIndex],
@@ -467,6 +519,7 @@ namespace Destiny
                     }
                     else
                     {
+                        //Console.WriteLine("4番目が呼ばれています");
                         arcCosSum += GetArcCos(
                         x[pos1XIndex] - x[centerXIndex],
                         x[pos1YIndex] - x[centerYIndex],

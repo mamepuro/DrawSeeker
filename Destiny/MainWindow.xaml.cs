@@ -293,7 +293,12 @@ namespace Destiny
                 */
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
+
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                if (isDisplayUnit)
+                {
+                    //GL.Rotate(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
                 GL.Begin(BeginMode.Lines);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
@@ -310,6 +315,10 @@ namespace Destiny
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(180, 0, 0, 1);
                     GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
+                    if (isDisplayUnit)
+                    {
+                        //GL.Rotate(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    }
                     GL.Begin(BeginMode.Lines);
                     for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                     {
@@ -680,28 +689,84 @@ namespace Destiny
             }*/
             using (StreamWriter streamWriter = new StreamWriter(@"C:\Users\endo\test.obj", false, Encoding.UTF8))
             {
-                streamWriter.WriteLine("# Test Code");
-                for (int vertexCount = 0; vertexCount < vertexes.Count; vertexCount++)
+                if(!isDisplayUnit)
                 {
-                    streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
-                }
-                streamWriter.WriteLine("vn 0 0 1");
-                streamWriter.WriteLine("vn -1 0 0");
-                streamWriter.WriteLine("vn 1 0 0");
-                streamWriter.WriteLine("vn 0 -1 0");
-                streamWriter.WriteLine("vn 0 1 0");
-                streamWriter.WriteLine("vn 0 0 1");
-
-                for (int faceCount = 0; faceCount < edges.Count; faceCount++)
-                {
-                    string s = "f ";
-                    for (int faceID = 0; faceID < edges[0].Length; faceID++)
+                    streamWriter.WriteLine("# Test Code");
+                    for (int vertexCount = 0; vertexCount < vertexes.Count; vertexCount++)
                     {
-                        int vertexIndex = edges[faceCount][faceID];
-                        s += (vertexIndex + 1).ToString() + "//1 ";
+                        streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
                     }
-                    streamWriter.WriteLine(s);
+                    streamWriter.WriteLine("vn 0 0 1");
+                    streamWriter.WriteLine("vn -1 0 0");
+                    streamWriter.WriteLine("vn 1 0 0");
+                    streamWriter.WriteLine("vn 0 -1 0");
+                    streamWriter.WriteLine("vn 0 1 0");
+                    streamWriter.WriteLine("vn 0 0 1");
+
+                    for (int faceCount = 0; faceCount < edges.Count; faceCount++)
+                    {
+                        string s = "f ";
+                        for (int faceID = 0; faceID < edges[0].Length; faceID++)
+                        {
+                            int vertexIndex = edges[faceCount][faceID];
+                            s += (vertexIndex + 1).ToString() + "//1 ";
+                        }
+                        streamWriter.WriteLine(s);
+                    }
                 }
+                else
+                {
+                    streamWriter.WriteLine("# Test Code");
+                    //ユニットの頂点数 * 2 - 底辺の頂点数分頂点情報を格納する
+                    for (int vertexCount = 0; vertexCount < vertexes.Count + (vertexes.Count - Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count); vertexCount++)
+                    {
+                        if(vertexCount < vertexes.Count)
+                        {
+                            streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
+                        }
+                        else
+                        {
+                            streamWriter.WriteLine("v " + vertexes[vertexCount - vertexes.Count + Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count].VertexX 
+                                + " -" + vertexes[vertexCount - vertexes.Count + Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count].VertexY 
+                                + " " + vertexes[vertexCount - vertexes.Count + Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count].VertexZ);
+                        }
+                       
+                    }
+                    streamWriter.WriteLine("vn 0 0 1");
+                    streamWriter.WriteLine("vn -1 0 0");
+                    streamWriter.WriteLine("vn 1 0 0");
+                    streamWriter.WriteLine("vn 0 -1 0");
+                    streamWriter.WriteLine("vn 0 1 0");
+                    streamWriter.WriteLine("vn 0 0 1");
+
+                    for (int faceCount = 0; faceCount < edges.Count * 2; faceCount++)
+                    {
+                        string s = "f ";
+                        for (int faceID = 0; faceID < edges[0].Length; faceID++)
+                        {
+                            if(faceCount < edges.Count)
+                            {
+                                int vertexIndex = edges[faceCount][faceID];
+                                s += (vertexIndex + 1).ToString() + "//1 ";
+                            }
+                            else
+                            {
+                                int vertexIndex = edges[faceCount - edges.Count][faceID];
+                                //底辺上の頂点の場合は何もしない
+                                if(Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Contains(vertexIndex))
+                                {
+                                    s += (vertexIndex + 1).ToString() + "//1 ";
+                                }
+                                else
+                                {
+                                    s += (vertexIndex - Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count + 1 + edges.Count + 1).ToString() + "//1 ";
+                                }
+                            }
+                        }
+                        streamWriter.WriteLine(s);
+                    }
+                }
+
             }
         }
 
