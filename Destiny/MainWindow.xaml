@@ -13,6 +13,7 @@
 
         </WindowsFormsHost>
         <Button x:Name="button_saveObjFile" Content="出力" HorizontalAlignment="Left" Margin="44,434,0,0" VerticalAlignment="Top" Width="96" Background="#FFE20F0F" Click="button_saveObjFile_Click"/>
+        <Button x:Name="button" Content="生成" Margin="208,428,470,24" Click="button_AssembleUnitShape"/>
 
 
 

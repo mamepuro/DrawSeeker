@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 C:\Users\endo\dev\DrawSeeker\Destiny\App.xaml
-11407045341
+2-269869989
 
-14-2030098826
-205-1761220402
-MainWindow.xaml;
+15-990501590
+206-422761394
+MainWindow.xaml;SubWindow.xaml;
 
-True
+False
 
