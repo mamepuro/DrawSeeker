@@ -46,6 +46,14 @@ namespace Destiny
         /// ユニットの底辺部分に存在する頂点のインデックス
         /// </summary>
         public static HashSet<int> VertexIndexOnUnitButtomEdge = new HashSet<int>();
+        /// <summary>
+        /// ユニットの内部頂点のインデックス
+        /// </summary>
+        public static HashSet<int> InnnerVertexIndex = new HashSet<int>();
+        /// <summary>
+        /// ユニットの底辺上でかつ左右端点でない頂点のインデックス
+        /// </summary>
+        public static HashSet<int> InnerVertexIndexOnButtomEdge = new HashSet<int>();
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
             byte iD = 0;
@@ -108,7 +116,9 @@ namespace Destiny
             SetEndVertexInformation(vertices);
             SetVertexIndexOnUnitEdges(vertices);
             SetVertexIndexOnUnitButtomEdges(vertices);
-
+            SetInnerVertex(vertices);
+            SetInnerVertexOnButtomEdge(vertices);
+            
         }
         public static void GetTriangleUnitObjFile(int split, string fileName)
         {
@@ -226,6 +236,16 @@ namespace Destiny
                     {
                         vertices[vertexIndex[vindex]].connectVertexId.Add(connectVertexPair);
                     }
+                }
+            }
+            //デバッグ用
+            Console.WriteLine("-------------------------接続情報の開示を行います-------------------------");
+            foreach (Vertex vertex in vertices)
+            {
+                Console.WriteLine("_________頂点 " + vertex.ID + "___________________");
+                foreach (var c in vertex.connectVertexId)
+                {
+                    Console.WriteLine(string.Join(", ", c));
                 }
             }
             //頂点[5]周りの接続情報表示
@@ -361,6 +381,41 @@ namespace Destiny
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
 
+        /// <summary>
+        /// ユニットの内部頂点を格納する
+        /// </summary>
+        /// <param name="vertices">頂点情報リスト</param>
+        private static void SetInnerVertex(List<Vertex> vertices)
+        {
+            foreach (Vertex v in vertices)
+            {
+                if(!VertexIndexOnUnitEdges.Contains(v.ID)
+                    && !VertexIndexOnUnitButtomEdge.Contains(v.ID))
+                {
+                    InnnerVertexIndex.Add(v.ID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// ユニットの底辺のうち左右端点でない頂点のインデックスを格納する
+        /// </summary>
+        /// <param name="vertices"></param>
+        private static void SetInnerVertexOnButtomEdge(List<Vertex> vertices)
+        {
+            Console.WriteLine("~~~~~~~~~~~~~~~~~底辺上に存在する内部頂点を探索します~~~~~~~~~~~~~~~~~~~~~");
+            foreach(var v in VertexIndexOnUnitButtomEdge)
+            {
+                if(v != leftEndVertexIndex 
+                    && v != rightEndVertexIndex)
+                {
+                    InnerVertexIndexOnButtomEdge.Add(v);
+                    Console.WriteLine("底辺上の内部頂点として頂点 " + v + " を登録しました。");
+                }
+            }
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~底辺上に存在する内部頂点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+
         private void ShowPositions(double[] list)
         {
             for (int i = 0; i < list.Length; i++)
@@ -410,13 +465,48 @@ namespace Destiny
 
             return ret;
         }
+
+        public static void GetInnerAngleSum(int vertexIndex, List<Vertex> verteices)
+        {
+            double arcCosSum = 0;
+            foreach (var pair in verteices[vertexIndex].connectVertexId)
+                    {
+                        //Console.WriteLine("Connect ID = " + pair[0].ToString() + " " + pair[1].ToString());
+                        int pos1XIndex = pair[0];
+                        int pos1YIndex = pair[0];
+                        int pos1ZIndex = pair[0];
+                        int pos2XIndex = pair[1];
+                        int pos2YIndex = pair[1];
+                        int pos2ZIndex = pair[1];
+                        int centerXIndex = vertexIndex;
+                        int centerYIndex = vertexIndex;
+                        int centerZIndex = vertexIndex;
+                            //Console.WriteLine("4番目が呼ばれています");
+                            arcCosSum += GetArcCos(
+                            verteices[pos1XIndex].VertexX - verteices[centerXIndex].VertexX,
+                            verteices[pos1YIndex].VertexY - verteices[centerYIndex].VertexY,
+                            verteices[pos1ZIndex].VertexZ - verteices[centerZIndex].VertexZ,
+                            verteices[pos2XIndex].VertexX - verteices[centerXIndex].VertexX,
+                            verteices[pos2YIndex].VertexY - verteices[centerYIndex].VertexY,
+                            verteices[pos2ZIndex].VertexZ - verteices[centerZIndex].VertexZ
+                            );
+
+                    }
+            arcCosSum = arcCosSum / (Math.PI) * 180 ;
+            Console.WriteLine("頂点 " + vertexIndex.ToString() + " 周りの角度 " + arcCosSum.ToString());
+        }
+
         /// <summary>
         /// 再急降下法により可展性を維持した形状に変形する
         /// </summary>
         /// <param name="verteices">ユニットのすべての頂点情報を持つリスト</param>
         /// <param name="manipulatedVertexPointIndex">内部頂点のリスト(予定)</param>
-        public static void SetAdjustedUnitVertexes(List<Vertex> verteices, int manipulatedVertexPointIndex)
+        public static void SetAdjustedUnitVertexes(List<Vertex> verteices, 
+            int manipulatedVertexPointIndex, 
+            HashSet<int> innerVertexIndexes, 
+            HashSet<int> innerVertexIndexesOnBottomEdge)
         {
+            //内部頂点と接続している頂点のインデックス集合
             HashSet<int> connectVertxPoint = new HashSet<int>();
             List<Vertex> connectVertex = new List<Vertex>();
             foreach (var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
@@ -429,109 +519,157 @@ namespace Destiny
                     }
                 }
             }
+            //リストに再格納
             foreach (var point in connectVertxPoint)
             {
                 connectVertex.Add(verteices[point]);
             }
 
-            Vector3d v1 = verteices[4].VertexPosition - verteices[5].VertexPosition;//0~2
-            Vector3d v2 = verteices[1].VertexPosition - verteices[5].VertexPosition;//3~5
-            Vector3d v3 = verteices[2].VertexPosition - verteices[5].VertexPosition;//6~8
-            Vector3d v4 = verteices[6].VertexPosition - verteices[5].VertexPosition;//9~11
-            Vector3d v5 = verteices[7].VertexPosition - verteices[5].VertexPosition;//12~14
-            Vector3d v6 = verteices[8].VertexPosition - verteices[5].VertexPosition;//15~17
-            double ans =
-    Math.Acos((v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z)
-    / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
-    * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
-
-    + Math.Acos((v3.X * v2.X + v3.Y * v2.Y + v3.Z * v2.Z)
-    / (Math.Sqrt(v3.X * v3.X + v3.Y * v3.Y + v3.Z * v3.Z)
-    * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
-
-    + Math.Acos((v3.X * v4.X + v3.Y * v4.Y + v3.Z * v4.Z)
-    / (Math.Sqrt(v3.X * v3.X + v3.Y * v3.Y + v3.Z * v3.Z)
-    * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)))
-
-    + Math.Acos((v1.X * v5.X + v1.Y * v5.Y + v1.Z * v5.Z)
-    / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
-    * Math.Sqrt(v5.X * v5.X + v5.Y * v5.Y + v5.Z * v5.Z)))
-
-    + Math.Acos((v6.X * v5.X + v6.Y * v5.Y + v6.Z * v5.Z)
-    / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
-    * Math.Sqrt(v5.X * v5.X + v5.Y * v5.Y + v5.Z * v5.Z)))
-
-    + Math.Acos((v6.X * v4.X + v6.Y * v4.Y + v6.Z * v4.Z)
-    / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
-    * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)));
-
             //再急降下法の損失関数の式
             Func<double[], double> f = (double[] x) =>
             {
+                //底辺の内部頂点周りの角度の和
+                double sumOfInnerVertexOnButtomEdgeAngle = 0;
                 double arcCosSum = 0;
-                foreach (var pair in verteices[manipulatedVertexPointIndex].connectVertexId)
+                double error = 0;
+                //内部頂点が2piになるように最適化処理をする
+                foreach (var innervertex in innerVertexIndexes)
                 {
-                    //Console.WriteLine("Connect ID = " + pair[0].ToString() + " " + pair[1].ToString());
-                    int pos1XIndex = pair[0] * 3;
-                    int pos1YIndex = pair[0] * 3 + 1;
-                    int pos1ZIndex = pair[0] * 3 + 2;
-                    int pos2XIndex = pair[1] * 3;
-                    int pos2YIndex = pair[1] * 3 + 1;
-                    int pos2ZIndex = pair[1] * 3 + 2;
-                    int centerXIndex = manipulatedVertexPointIndex * 3;
-                    int centerYIndex = manipulatedVertexPointIndex * 3 + 1;
-                    int centerZIndex = manipulatedVertexPointIndex * 3 + 2;
-                    if(VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
+                    foreach (var pair in verteices[innervertex].connectVertexId)
                     {
-                        //Console.WriteLine("一番目が呼ばれています");
-                        arcCosSum += GetArcCos(
-                        verteices[pair[0]].VertexX - x[centerXIndex],
-                        verteices[pair[0]].VertexY - x[centerYIndex],
-                        x[pos1ZIndex] - x[centerZIndex],
-                        verteices[pair[1]].VertexX - x[centerXIndex],
-                        verteices[pair[1]].VertexY - x[centerYIndex],
-                        x[pos2ZIndex] - x[centerZIndex]
-                        );
-                    }
-                    else if (VertexIndexOnUnitEdges.Contains(pair[0]))
-                    {
-                        //Console.WriteLine("2番目が呼ばれています");
-                        arcCosSum += GetArcCos(
-                        verteices[pair[0]].VertexX - x[centerXIndex],
-                        verteices[pair[0]].VertexY - x[centerYIndex],
-                        x[pos1ZIndex] - x[centerZIndex],
-                        x[pos2XIndex] - x[centerXIndex],
-                        x[pos2YIndex] - x[centerYIndex],
-                        x[pos2ZIndex] - x[centerZIndex]
-                        );
-                    }
-                    else if (VertexIndexOnUnitEdges.Contains(pair[1]))
-                    {
-                        //Console.WriteLine("3番目が呼ばれています");
-                        arcCosSum += GetArcCos(
-                        x[pos1XIndex] - x[centerXIndex],
-                        x[pos1YIndex] - x[centerYIndex],
-                        x[pos1ZIndex] - x[centerZIndex],
-                        verteices[pair[1]].VertexX - x[centerXIndex],
-                        verteices[pair[1]].VertexY - x[centerYIndex],
-                        x[pos2ZIndex] - x[centerZIndex]
-                        );
-                    }
-                    else
-                    {
-                        //Console.WriteLine("4番目が呼ばれています");
-                        arcCosSum += GetArcCos(
-                        x[pos1XIndex] - x[centerXIndex],
-                        x[pos1YIndex] - x[centerYIndex],
-                        x[pos1ZIndex] - x[centerZIndex],
-                        x[pos2XIndex] - x[centerXIndex],
-                        x[pos2YIndex] - x[centerYIndex],
-                        x[pos2ZIndex] - x[centerZIndex]
-                        );
-                    }
+                        //Console.WriteLine("Connect ID = " + pair[0].ToString() + " " + pair[1].ToString());
+                        int pos1XIndex = pair[0] * 3;
+                        int pos1YIndex = pair[0] * 3 + 1;
+                        int pos1ZIndex = pair[0] * 3 + 2;
+                        int pos2XIndex = pair[1] * 3;
+                        int pos2YIndex = pair[1] * 3 + 1;
+                        int pos2ZIndex = pair[1] * 3 + 2;
+                        int centerXIndex = manipulatedVertexPointIndex * 3;
+                        int centerYIndex = manipulatedVertexPointIndex * 3 + 1;
+                        int centerZIndex = manipulatedVertexPointIndex * 3 + 2;
+                        if (VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
+                        {
+                            //Console.WriteLine("一番目が呼ばれています");
+                            arcCosSum += GetArcCos(
+                            verteices[pair[0]].VertexX - x[centerXIndex],
+                            verteices[pair[0]].VertexY - x[centerYIndex],
+                            x[pos1ZIndex] - x[centerZIndex],
+                            verteices[pair[1]].VertexX - x[centerXIndex],
+                            verteices[pair[1]].VertexY - x[centerYIndex],
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                        else if (VertexIndexOnUnitEdges.Contains(pair[0]))
+                        {
+                            //Console.WriteLine("2番目が呼ばれています");
+                            arcCosSum += GetArcCos(
+                            verteices[pair[0]].VertexX - x[centerXIndex],
+                            verteices[pair[0]].VertexY - x[centerYIndex],
+                            x[pos1ZIndex] - x[centerZIndex],
+                            x[pos2XIndex] - x[centerXIndex],
+                            x[pos2YIndex] - x[centerYIndex],
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                        else if (VertexIndexOnUnitEdges.Contains(pair[1]))
+                        {
+                            //Console.WriteLine("3番目が呼ばれています");
+                            arcCosSum += GetArcCos(
+                            x[pos1XIndex] - x[centerXIndex],
+                            x[pos1YIndex] - x[centerYIndex],
+                            x[pos1ZIndex] - x[centerZIndex],
+                            verteices[pair[1]].VertexX - x[centerXIndex],
+                            verteices[pair[1]].VertexY - x[centerYIndex],
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                        else
+                        {
+                            //Console.WriteLine("4番目が呼ばれています");
+                            arcCosSum += GetArcCos(
+                            x[pos1XIndex] - x[centerXIndex],
+                            x[pos1YIndex] - x[centerYIndex],
+                            x[pos1ZIndex] - x[centerZIndex],
+                            x[pos2XIndex] - x[centerXIndex],
+                            x[pos2YIndex] - x[centerYIndex],
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
 
+                    }
+                    error += (2 * Math.PI - arcCosSum) * (2 * Math.PI - arcCosSum);
+                    arcCosSum = 0;
                 }
-                return (2 * Math.PI - arcCosSum) * (2 * Math.PI - arcCosSum);
+                foreach (var buttomvertex in innerVertexIndexesOnBottomEdge)
+                {
+                    foreach (var pair in verteices[buttomvertex].connectVertexId)
+                    {
+                        //Console.WriteLine("Connect ID = " + pair[0].ToString() + " " + pair[1].ToString());
+                        int pos1XIndex = pair[0] * 3;
+                        int pos1YIndex = pair[0] * 3 + 1;
+                        int pos1ZIndex = pair[0] * 3 + 2;
+                        int pos2XIndex = pair[1] * 3;
+                        int pos2YIndex = pair[1] * 3 + 1;
+                        int pos2ZIndex = pair[1] * 3 + 2;
+                        int centerXIndex = buttomvertex * 3;
+                        int centerYIndex = buttomvertex * 3 + 1;
+                        int centerZIndex = buttomvertex * 3 + 2;
+                        if (VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
+                        {
+                            //Console.WriteLine("一番目が呼ばれています");
+                            sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
+                            verteices[pair[0]].VertexX - verteices[buttomvertex].VertexX,
+                            verteices[pair[0]].VertexY - verteices[buttomvertex].VertexY,
+                            x[pos1ZIndex] - x[centerZIndex],
+                            verteices[pair[1]].VertexX - verteices[buttomvertex].VertexX,
+                            verteices[pair[1]].VertexY - verteices[buttomvertex].VertexY,
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                        else if (VertexIndexOnUnitEdges.Contains(pair[0]))
+                        {
+                            //Console.WriteLine("2番目が呼ばれています");
+                            sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
+                            verteices[pair[0]].VertexX - verteices[buttomvertex].VertexX,
+                            verteices[pair[0]].VertexY - verteices[buttomvertex].VertexY,
+                            x[pos1ZIndex] - x[centerZIndex],
+                            x[pos2XIndex] - verteices[buttomvertex].VertexX,
+                            x[pos2YIndex] - verteices[buttomvertex].VertexY,
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                        else if (VertexIndexOnUnitEdges.Contains(pair[1]))
+                        {
+                            //Console.WriteLine("3番目が呼ばれています");
+                            sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
+                            x[pos1XIndex] - verteices[buttomvertex].VertexX,
+                            x[pos1YIndex] - verteices[buttomvertex].VertexY,
+                            x[pos1ZIndex] - x[centerZIndex],
+                            verteices[pair[1]].VertexX - verteices[buttomvertex].VertexX,
+                            verteices[pair[1]].VertexY - verteices[buttomvertex].VertexY,
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                        else
+                        {
+                            //Console.WriteLine("4番目が呼ばれています");
+                            sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
+                            x[pos1XIndex] - verteices[buttomvertex].VertexX,
+                            x[pos1YIndex] - verteices[buttomvertex].VertexY,
+                            x[pos1ZIndex] - x[centerZIndex],
+                            x[pos2XIndex] - verteices[buttomvertex].VertexX,
+                            x[pos2YIndex] - verteices[buttomvertex].VertexY,
+                            x[pos2ZIndex] - x[centerZIndex]
+                            );
+                        }
+                    }
+                    //Console.WriteLine("aa = " + sumOfInnerVertexOnButtomEdgeAngle.ToString());
+                    error += (Math.PI - sumOfInnerVertexOnButtomEdgeAngle) * (Math.PI - sumOfInnerVertexOnButtomEdgeAngle);
+                    sumOfInnerVertexOnButtomEdgeAngle = 0;
+                }
+                //return (2 * Math.PI - arcCosSum) * (2 * Math.PI - arcCosSum);
+               // Console.WriteLine(error.ToString());
+                return error;
             };
 
             //とりあえず100頂点分用意する
@@ -577,37 +715,9 @@ namespace Destiny
             {
                 verteices[i].VertexPosition = new Vector3d(verteices[i].VertexX, verteices[i].VertexY, verteices[i].VertexZ);
             }
-            v1 = verteices[4].VertexPosition - verteices[5].VertexPosition;//0~2
-            v2 = verteices[1].VertexPosition - verteices[5].VertexPosition;//3~5
-            v3 = verteices[2].VertexPosition - verteices[5].VertexPosition;//6~8
-            v4 = verteices[6].VertexPosition - verteices[5].VertexPosition;//9~11
-            v5 = verteices[7].VertexPosition - verteices[5].VertexPosition;//12~14
-            v6 = verteices[8].VertexPosition - verteices[5].VertexPosition;//15~17
-            ans =
-    Math.Acos((v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z)
-    / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
-    * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
-
-    + Math.Acos((v3.X * v2.X + v3.Y * v2.Y + v3.Z * v2.Z)
-    / (Math.Sqrt(v3.X * v3.X + v3.Y * v3.Y + v3.Z * v3.Z)
-    * Math.Sqrt(v2.X * v2.X + v2.Y * v2.Y + v2.Z * v2.Z)))
-
-    + Math.Acos((v3.X * v4.X + v3.Y * v4.Y + v3.Z * v4.Z)
-    / (Math.Sqrt(v3.X * v3.X + v3.Y * v3.Y + v3.Z * v3.Z)
-    * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)))
-
-    + Math.Acos((v1.X * v5.X + v1.Y * v5.Y + v1.Z * v5.Z)
-    / (Math.Sqrt(v1.X * v1.X + v1.Y * v1.Y + v1.Z * v1.Z)
-    * Math.Sqrt(v5.X * v5.X + v5.Y * v5.Y + v5.Z * v5.Z)))
-
-    + Math.Acos((v6.X * v5.X + v6.Y * v5.Y + v6.Z * v5.Z)
-    / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
-    * Math.Sqrt(v5.X * v5.X + v5.Y * v5.Y + v5.Z * v5.Z)))
-
-    + Math.Acos((v6.X * v4.X + v6.Y * v4.Y + v6.Z * v4.Z)
-    / (Math.Sqrt(v6.X * v6.X + v6.Y * v6.Y + v6.Z * v6.Z)
-    * Math.Sqrt(v4.X * v4.X + v4.Y * v4.Y + v4.Z * v4.Z)));
-            Console.WriteLine((ans * (180 / Math.PI)).ToString() + ":");
+            GetInnerAngleSum(5, verteices);
+            GetInnerAngleSum(1, verteices);
+            GetInnerAngleSum(2, verteices);
         }
     }
 }
