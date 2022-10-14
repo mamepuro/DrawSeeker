@@ -37,6 +37,7 @@ namespace Destiny
         private float _mouseX = 0;
         private float _mouseY = 0;
         private Vector3d _rotato;
+        private float rot = 0.0f;
         /// <summary>
         /// y軸周りに回転させる角度
         /// </summary>
@@ -64,6 +65,7 @@ namespace Destiny
         float rotatez;
         private bool isDisplayUnit = false;
         int manipulateVertexIndex = 5;
+        bool isDrawReferLine = false;
         /// <summary>
         /// 多面体の面の中心部分の回転軸
         /// </summary>
@@ -298,8 +300,9 @@ namespace Destiny
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    GL.Rotate(rot, -1, 0, 0);
                 }
+                GL.Translate(0,0,-Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Begin(BeginMode.Lines);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
@@ -318,8 +321,9 @@ namespace Destiny
                     GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
                     if (isDisplayUnit)
                     {
-                        //GL.Rotate(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                        GL.Rotate(rot, -1, 0, 0);
                     }
+                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                     GL.Begin(BeginMode.Lines);
                     for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                     {
@@ -412,7 +416,10 @@ namespace Destiny
             glControl.MakeCurrent();
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,System.Drawing.Color.Green);// 赤の直方体を描画
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
-            //DrawReferLine();
+            if (isDrawReferLine)
+            {
+                DrawReferLine();
+            }
             //DrawVertexPoint();
             DrawUnit(vertexes, edges, false);
             //drawBox(); //------------------------------------------------------(7)
@@ -423,6 +430,10 @@ namespace Destiny
             glControl.SwapBuffers(); //---------------------------------------(8)
         }
 
+        
+        /// <summary>
+        /// 軸線を表示する(赤はx軸, 緑はy軸)
+        /// </summary>
         private void DrawReferLine()
         {
             GL.PushMatrix();
@@ -688,7 +699,7 @@ namespace Destiny
                     streamWriter.WriteLine(s);
                 }
             }*/
-            using (StreamWriter streamWriter = new StreamWriter(@"C:\Users\endo\test.obj", false, Encoding.UTF8))
+            using (StreamWriter streamWriter = new StreamWriter(@"C:\Users\cgg_endo\test.obj", false, Encoding.UTF8))
             {
                 if (!isDisplayUnit)
                 {
@@ -790,6 +801,17 @@ namespace Destiny
             }
         }
 
+        private void buttonDrawReferLine(object sender, RoutedEventArgs e)
+        {
+            if(!isDrawReferLine)
+            {
+                isDrawReferLine = true;
+            }
+            else
+            {
+                isDrawReferLine = false;
+            }
+        }
         private void glControl_OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if (e.KeyCode == Keys.A)
@@ -838,6 +860,10 @@ namespace Destiny
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
+            if (e.KeyCode == Keys.M)
+            {
+                rot += 0.5f;
+            }
             if(e.KeyCode == Keys.Down || e.KeyCode == Keys.Z)
             {
                 manipulateVertexIndex++;
@@ -866,11 +892,6 @@ namespace Destiny
                 _rotateAngleZ = MathF.Sqrt((currentMouseY - _mouseY) * (currentMouseY - _mouseY));
             }
             glControl.Refresh();
-
-        }
-
-        private void checkMouseButtonPushing(System.Windows.Forms.MouseEventArgs e)
-        {
 
         }
 

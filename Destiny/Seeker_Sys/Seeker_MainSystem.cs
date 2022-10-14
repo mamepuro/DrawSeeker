@@ -54,6 +54,8 @@ namespace Destiny
         /// ユニットの底辺上でかつ左右端点でない頂点のインデックス
         /// </summary>
         public static HashSet<int> InnerVertexIndexOnButtomEdge = new HashSet<int>();
+
+        public static double InnerBottomErrorZ = 0.0;
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
             byte iD = 0;
@@ -718,6 +720,8 @@ namespace Destiny
             GetInnerAngleSum(5, verteices);
             GetInnerAngleSum(1, verteices);
             GetInnerAngleSum(2, verteices);
+            InnerBottomErrorZ = verteices[1].VertexZ;
+            Console.WriteLine("底辺の内部頂点のz誤差は " + InnerBottomErrorZ.ToString()+"です。");
         }
     }
 }
