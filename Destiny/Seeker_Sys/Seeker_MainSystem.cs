@@ -55,6 +55,11 @@ namespace Destiny
         /// </summary>
         public static HashSet<int> InnerVertexIndexOnButtomEdge = new HashSet<int>();
 
+        /// <summary>
+        /// ユニットの左辺上に存在する頂点のインデックス
+        /// </summary>
+        public static HashSet<int> VertexIndexOnUnitRightEdge = new HashSet<int>();
+
         public static double InnerBottomErrorZ = 0.0;
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
@@ -269,9 +274,10 @@ namespace Destiny
         public static void SetEndVertexInformation(List<Vertex> vertices)
         {
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの端点の情報を探索を開始します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            double maxX = 0;
-            double minX = 0;
-            double maxY = 0;
+            double maxX = -100;
+            double minX = 100;
+            double maxY = -100;
+            double minY = 100;
             foreach (var v in vertices)
             {
                 if (maxX < v.VertexX)
@@ -284,6 +290,7 @@ namespace Destiny
                 {
                     leftEndVertexIndex = v.ID;
                     minX = v.VertexX;
+                    minY = v.VertexY;
                     //continue;
                 }
                 if (maxY < v.VertexY)
