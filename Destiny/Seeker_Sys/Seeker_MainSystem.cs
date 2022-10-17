@@ -219,6 +219,102 @@ namespace Destiny
             }
         }
 
+        public static void GetHalfTriangleUnitObjFile(int split, string fileName)
+        {
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ユニットの三角形メッシュを作成します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            int index = 0;
+            int ENDOfLowerVertexPoint = 0;
+            int startIndex;
+            int endIndex;
+            int VertexCount = 0;
+            float[] vertexPosX = new float[10000];
+            float[] vertexPosY = new float[10000];
+            //始まりのx座標
+            float startXPos = 0.0f;
+            //終わりのx座標
+            float endXPos = 0.5f;
+            float startYPos = 0;
+            //将来的にこれは変更する(OCTO以外も選択可能に)
+            float endYPos = Seeker_Sys.Seeker_ShapeData.OCTO_radius;
+            //行あたりの増加分y座標
+            float _updateHeight = endYPos / (split + 1);
+            //ここから頂点計算
+            for (int column = 0; column <= (split + 1); column++)
+            {
+                //行を何等分するか
+                int _columnsplit = (split + 1) - column;
+                //行内に点が一点のみの場合(最後の行の場合)
+                if (_columnsplit == 0)
+                {
+                    vertexPosX[index] = startXPos;
+                    vertexPosY[index] = startYPos + (column * _updateHeight);
+                    index++;
+                }
+                else
+                {
+                    //startIndex = index;
+                    float _updateWidth = (endXPos - startXPos) / _columnsplit;
+                    for (int row = 0; row <= _columnsplit; row++)
+                    {
+                        vertexPosX[index] = startXPos + (row * _updateWidth);
+                        vertexPosY[index] = startYPos + (column * _updateHeight);
+                        index++;
+                    }
+                    //最後に+1されてしまうので終点のindexは-1したものになる
+                    endIndex = index - 1;
+                    startXPos = 0;//(vertexPosX[startIndex] + vertexPosX[startIndex + 1]) / 2;
+                    endXPos = vertexPosX[endIndex - 1];//(vertexPosX[endIndex - 1] + vertexPosX[endIndex]) / 2;
+                }
+            }
+            VertexCount = index - 1;
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ユニットの三角形メッシュを作成が完了しました。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            //ここまで
+            //ここからObjファイル生成
+            using (StreamWriter streamWriter = new StreamWriter(fileName+".obj", false, Encoding.UTF8))
+            {
+                for (int vertexPoint = 0; vertexPoint < index; vertexPoint++)
+                {
+                    streamWriter.WriteLine("v" +
+                        " " + vertexPosX[vertexPoint] + " "
+                        + vertexPosY[vertexPoint] + " "
+                        + "0.0");
+                }
+                streamWriter.WriteLine("vn 0 0 1");
+                for (int column = 0; column < split + 1; column++)
+                {
+                    //下の行がいくつ頂点を持っているか
+                    int _LowercolumnVertexPoints = (split + 1) - column + 1;
+                    int _UppercolumnVertexPoints = (split + 1) - column;
+                    int _LowercolumnPointsIndex = ENDOfLowerVertexPoint;
+                    int _UppercolumnPointsIndex = _LowercolumnVertexPoints + ENDOfLowerVertexPoint;
+                    ENDOfLowerVertexPoint = _LowercolumnVertexPoints + ENDOfLowerVertexPoint;
+                    int _columnsplit = (split + 1) - column;
+                    //行内の三角形の個数
+                    int TrianglesInColumn = _columnsplit * 2 - 1;
+                    for (int triangleIndex = 0; triangleIndex < TrianglesInColumn; triangleIndex++)
+                    {
+                        if (triangleIndex % 2 == 0)
+                        {
+                            streamWriter.WriteLine("f" +
+                                " " + (_LowercolumnPointsIndex + 1) + "//1" + " "
+                                + (_LowercolumnPointsIndex + 2) + "//1" + " "
+                                + (_UppercolumnPointsIndex + 1) + "//1");
+                            _LowercolumnPointsIndex++;
+                        }
+                        else
+                        {
+                            streamWriter.WriteLine("f" +
+    " " + (_UppercolumnPointsIndex + 1) + "//1" + " "
+    + (_LowercolumnPointsIndex + 1) + "//1" + " "
+    + (_UppercolumnPointsIndex + 2) + "//1");
+                            _UppercolumnPointsIndex++;
+                        }
+                    }
+                }
+            }
+
+        }
+
         /// <summary>
         /// 頂点に接続している他の頂点の情報を追加する
         /// </summary>

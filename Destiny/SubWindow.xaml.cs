@@ -437,6 +437,7 @@ namespace Destiny
                         GL.Rotate(faceAngle, -nor_axis);
                         GL.Translate(0, -rotatey, -rotatez);
                         GL.Rotate(90 - dihedralAngle_OCTO / 2, 1, 0, 0);
+                        GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                         GL.Normal3(-Vector3.UnitZ);
                     }
                     else
@@ -451,6 +452,7 @@ namespace Destiny
                         GL.Rotate(faceAngle, -nor_axis);
                         GL.Translate(0, -rotatey, -rotatez);
                         GL.Rotate(90 - dihedralAngle_OCTO / 2, 1, 0, 0);
+                        GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                         GL.Normal3(Vector3.UnitZ);
                     }
 
