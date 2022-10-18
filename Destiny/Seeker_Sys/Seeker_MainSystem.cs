@@ -21,6 +21,8 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using System.IO;
+using Destiny.Seeker_Sys;
+using System.Collections;
 
 namespace Destiny
 {
@@ -58,7 +60,12 @@ namespace Destiny
         /// <summary>
         /// ユニットの左辺上に存在する頂点のインデックス
         /// </summary>
-        public static HashSet<int> VertexIndexOnUnitRightEdge = new HashSet<int>();
+        public static HashSet<int> VertexIndexOnUnitLeftEdge = new HashSet<int>();
+
+        /// <summary>
+        /// ユニットの左辺上でかつ端点でない頂点のインデックス
+        /// </summary>
+        public static HashSet<int> InnerVertexIndexOnUnitLeftEdge = new HashSet<int>();
 
         public static double InnerBottomErrorZ = 0.0;
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
@@ -125,6 +132,7 @@ namespace Destiny
             SetVertexIndexOnUnitButtomEdges(vertices);
             SetInnerVertex(vertices);
             SetInnerVertexOnButtomEdge(vertices);
+            SetInnerVertexOnRightEdge();
             
         }
         public static void GetTriangleUnitObjFile(int split, string fileName)
@@ -453,6 +461,15 @@ namespace Destiny
                      || Diff_RV_LR < errorTolerance ||  Diff_RV_LT < errorTolerance || Diff_RV_RT < errorTolerance
                        ||  Diff_TV_LR < errorTolerance || Diff_TV_LT < errorTolerance || Diff_TV_RT < errorTolerance)
                 {
+                    //左辺上の点の場合
+                    if(Diff_LV_LT < errorTolerance || Diff_TV_LT < errorTolerance)
+                    {
+                        if(!VertexIndexOnUnitLeftEdge.Contains(v.ID))
+                        {
+                            VertexIndexOnUnitLeftEdge.Add(v.ID);
+                            Console.WriteLine("ユニットの左辺上の点として、頂点 " + v.ID.ToString() + "を登録しました。");
+                        }
+                    }
                     if(!VertexIndexOnUnitEdges.Contains(v.ID))
                     {
                         VertexIndexOnUnitEdges.Add(v.ID);
@@ -521,6 +538,44 @@ namespace Destiny
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~底辺上に存在する内部頂点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
 
+        /// <summary>
+        /// ユニットの左辺上存在する頂点インデックスを格納する
+        /// </summary>
+        /// <param name="vertices"></param>
+        private static void SetVertexOnLeftEdge(List<Vertex> vertices)
+        {
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を開始します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            foreach (Vertex v in vertices)
+            {
+                if (v.VertexY == vertices[leftEndVertexIndex].VertexY)
+                {
+                    if (!VertexIndexOnUnitButtomEdge.Contains(v.ID))
+                    {
+                        Console.WriteLine("頂点 " + v.ID.ToString() + "を底辺上の頂点として登録しました。");
+                        VertexIndexOnUnitButtomEdge.Add(v.ID);
+                    }
+                }
+            }
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+
+        /// <summary>
+        /// ユニットの左辺上に存在しかつ端点でない頂点のインデックスを格納する
+        /// </summary>
+        private static void SetInnerVertexOnRightEdge()
+        {
+            Console.WriteLine("~~~~~~~~~~~~~~~~~左辺上に存在する内部頂点を探索します~~~~~~~~~~~~~~~~~~~~~");
+            foreach (var v in VertexIndexOnUnitLeftEdge)
+            {
+                if (v != leftEndVertexIndex
+                    && v != topVertexIndex)
+                {
+                    InnerVertexIndexOnButtomEdge.Add(v);
+                    Console.WriteLine("左辺上の内部頂点として頂点 " + v + " を登録しました。");
+                }
+            }
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~左辺上に存在する内部頂点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
         private void ShowPositions(double[] list)
         {
             for (int i = 0; i < list.Length; i++)
@@ -649,9 +704,10 @@ namespace Destiny
                         int pos2XIndex = pair[1] * 3;
                         int pos2YIndex = pair[1] * 3 + 1;
                         int pos2ZIndex = pair[1] * 3 + 2;
-                        int centerXIndex = manipulatedVertexPointIndex * 3;
-                        int centerYIndex = manipulatedVertexPointIndex * 3 + 1;
-                        int centerZIndex = manipulatedVertexPointIndex * 3 + 2;
+                        //TODO 以下の部分がおかしいので修正する)(
+                        int centerXIndex = innervertex * 3;
+                        int centerYIndex = innervertex * 3 + 1;
+                        int centerZIndex = innervertex * 3 + 2;
                         if (VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
                         {
                             //Console.WriteLine("一番目が呼ばれています");
@@ -795,10 +851,26 @@ namespace Destiny
                     initialX[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexZ;
                 }
             }
+            foreach (var verte in initialX)
+            {
+                Console.WriteLine(verte);
+            }
             int iteration = 100;
             double learningRate = 0.01;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
+            /*var optimizer = new SteepestDescentMethodMV(f, initialX, learningRate);
+            var xHistory = new List<double[]>();
+            for (int i = 0; i < iteration; ++i)
+            {
+                optimizer.Update();
+                xHistory.Add(optimizer.Xn);
+            }
+            foreach (var x in xHistory)
+            {
+                Console.WriteLine(string.Join(", ", x));
+            }*/
             //最適化処理の結果を格納する
+            
             for (int i = 0; i < verteices.Count * 3; i++)
             {
                 {
@@ -823,6 +895,8 @@ namespace Destiny
             GetInnerAngleSum(5, verteices);
             GetInnerAngleSum(1, verteices);
             GetInnerAngleSum(2, verteices);
+            GetInnerAngleSum(4, verteices);
+            GetInnerAngleSum(7, verteices);
             InnerBottomErrorZ = verteices[1].VertexZ;
             Console.WriteLine("底辺の内部頂点のz誤差は " + InnerBottomErrorZ.ToString()+"です。");
         }

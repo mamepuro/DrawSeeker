@@ -313,6 +313,26 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
+                GL.PushMatrix();
+                GL.Scale(scale, scale, scale);
+
+                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(rot, -1, 0, 0);
+                }
+                GL.Scale(-1, 1, 1);
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Begin(BeginMode.Lines);
+                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
+                {
+                    Vertex vertex = vertices[indexes[vertexpoint]];
+                    Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
+                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
+                }
+                GL.End();
+                GL.PopMatrix();
                 if (isDisplayUnit)
                 {
                     GL.PushMatrix();
@@ -367,9 +387,10 @@ namespace Destiny
                 OCTO_UNIT_vertexes.Add(vertex);
             }
             System.Console.WriteLine("===============DEBUG LOG===============");
-            //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(2, "halftriangle");
+            Seeker_MainSystem.GetTriangleUnitObjFile(3, "aaa");
+            Seeker_MainSystem.GetHalfTriangleUnitObjFile(3, "halftriangle");
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
+           // Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
             var initialX = new double[] { 5.0, 1.0 };
             int iteration = 100;
@@ -821,7 +842,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.W)
             {
-                vertexes[manipulateVertexIndex].VertexZ -= 0.1;
+                vertexes[manipulateVertexIndex].VertexZ -= 0.002;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[manipulateVertexIndex].VertexPosition.Z);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
