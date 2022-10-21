@@ -504,7 +504,7 @@ namespace Destiny
                     GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
                 }
                 GL.End();
-                /*
+                
                 GL.Begin(BeginMode.Triangles);
                 //GL.Color4(0x0, 0xff, 0xff, 0x20);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
@@ -514,7 +514,7 @@ namespace Destiny
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
                 }
                 GL.End();
-                */
+                
 
 
             }
