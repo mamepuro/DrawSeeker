@@ -133,6 +133,7 @@ namespace Destiny
             SetInnerVertex(vertices);
             SetInnerVertexOnButtomEdge(vertices);
             SetInnerVertexOnRightEdge();
+            test(vertices);
             
         }
         public static void GetTriangleUnitObjFile(int split, string fileName)
@@ -430,10 +431,14 @@ namespace Destiny
             Console.WriteLine("上端は頂点 " + topVertexIndex + "です。(座標 " + topVertex.ToString() + ")");
             foreach (var v in vertices)
             {
-                
+                //ここはテスト用のコード
+                Vector3d vv = new Vector3d(v.VertexX, v.VertexY, 0);
                 Vector3d lv = v.VertexPosition - leftVertex;
                 Vector3d rv = v.VertexPosition - rightVertex;
                 Vector3d tv = v.VertexPosition - topVertex;
+                 lv = vv - leftVertex;
+                 rv = vv - rightVertex;
+                 tv = vv - topVertex;
                 /*
                 Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = "+ Vector3d.Dot(lv, leftoToTop).ToString() + " Prod = " + (lv.Length * leftoToTop.Length).ToString()) ;
                 Console.WriteLine("c = " + c.ToString() + "  lv = " + lv.ToString() + "  Dot = " + Vector3d.Dot(lv, leftToRight).ToString() + " Prod = " + (lv.Length * leftToRight.Length).ToString());
@@ -851,10 +856,10 @@ namespace Destiny
                     initialX[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexZ;
                 }
             }
-            foreach (var verte in initialX)
+            /*foreach (var verte in initialX)
             {
                 Console.WriteLine(verte);
-            }
+            }*/
             int iteration = 100;
             double learningRate = 0.01;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
@@ -899,6 +904,15 @@ namespace Destiny
             GetInnerAngleSum(7, verteices);
             InnerBottomErrorZ = verteices[1].VertexZ;
             Console.WriteLine("底辺の内部頂点のz誤差は " + InnerBottomErrorZ.ToString()+"です。");
+        }
+
+        public static void test(List<Vertex> verteices)
+        {
+            GetInnerAngleSum(0, verteices);
+            GetInnerAngleSum(1, verteices);
+            GetInnerAngleSum(2, verteices);
+            GetInnerAngleSum(3, verteices);
+            GetInnerAngleSum(4, verteices);
         }
     }
 }

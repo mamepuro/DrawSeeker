@@ -4,17 +4,17 @@
 exe
 C#
 .cs
-C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Debug\net6.0-windows\
+C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Debug\net6.0-windows\
 Destiny
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\cgg_endo\dev\DrawSeeker\Destiny\App.xaml
+C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\App.xaml
 2-269869989
 
 161613933543
-206-451841848
+206-999200313
 MainWindow.xaml;SubWindow.xaml;
 
-False
+True
 

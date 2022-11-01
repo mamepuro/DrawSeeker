@@ -28,11 +28,11 @@ namespace Destiny.Seeker_Sys
             return MathF.Sqrt((this.Radius) * (this.Radius) - screenX * screenX - screenY * screenY);
         }
 
-        public float GetRotateAngle(float screenX, float screenY, float screenCenterX, float screenCenterY)
+        /*public float GetRotateAngle(float screenX, float screenY, float screenCenterX, float screenCenterY)
         {
             float x = (screenX - screenCenterX) / this.Radius;
             float y = (screenY - screenCenterY) / this.Radius;
             
-        }
+        }*/
     }
 }

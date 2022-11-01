@@ -284,7 +284,6 @@ namespace Destiny
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(angle, 0, 1, 0);
-                
                 GL.Begin(BeginMode.Triangles);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
@@ -294,10 +293,13 @@ namespace Destiny
                 GL.End();
                 GL.PopMatrix();
                 */
+
+                
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
 
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                
                 if (isDisplayUnit)
                 {
                     GL.Rotate(rot, -1, 0, 0);
@@ -313,10 +315,9 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
-                /*
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
-
+               
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                 if (isDisplayUnit)
                 {
@@ -333,7 +334,7 @@ namespace Destiny
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
                     GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
                 }
-                GL.End();*/
+                GL.End();
                 GL.PopMatrix();
                 if (isDisplayUnit)
                 {
@@ -390,9 +391,9 @@ namespace Destiny
             }
             System.Console.WriteLine("===============DEBUG LOG===============");
             Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(3, "halftriangle");
-            //Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
-           Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
+            Seeker_MainSystem.GetHalfTriangleUnitObjFile(5, "halftriangle");
+            Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
+           //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
             var initialX = new double[] { 5.0, 1.0 };
             int iteration = 100;
@@ -723,7 +724,7 @@ namespace Destiny
                     streamWriter.WriteLine(s);
                 }
             }*/
-            using (StreamWriter streamWriter = new StreamWriter(@"C:\Users\cgg_endo\test.obj", false, Encoding.UTF8))
+            using (StreamWriter streamWriter = new StreamWriter(@"testing.obj", false, Encoding.UTF8))
             {
                 if (!isDisplayUnit)
                 {
@@ -856,31 +857,31 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.S)
             {
-                vertexes[manipulateVertexIndex].VertexZ += 0.1;
+                vertexes[manipulateVertexIndex].VertexZ += 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.F)
             {
-                vertexes[manipulateVertexIndex].VertexX -= 0.1;
+                vertexes[manipulateVertexIndex].VertexX -= 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.H)
             {
-                vertexes[manipulateVertexIndex].VertexX += 0.1;
+                vertexes[manipulateVertexIndex].VertexX += 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.G)
             {
-                vertexes[manipulateVertexIndex].VertexY -= 0.1;
+                vertexes[manipulateVertexIndex].VertexY -= 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.T)
             {
-                vertexes[manipulateVertexIndex].VertexY += 0.1;
+                vertexes[manipulateVertexIndex].VertexY += 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
