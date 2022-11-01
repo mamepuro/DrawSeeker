@@ -337,14 +337,14 @@ namespace Destiny
             }
             System.Console.WriteLine("===============DEBUG LOG===============");
             Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.LoadObjFlie(@"test.obj", vertexes, edges, angle, scale);
+            Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
             var initialX = new double[] { 5.0, 1.0 };
             int iteration = 100;
             double learningRate = 0.1;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine(answer[0].ToString()+ " "+answer[1].ToString());
-            Seeker_MainSystem.SetAdjustedUnitVertexes1(vertexes);
+            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -857,7 +857,7 @@ namespace Destiny
                 vertexes[5].VertexZ -= 0.1;
                 vertexes[5].VertexPosition = new Vector3d(vertexes[5].VertexX, vertexes[5].VertexY, vertexes[5].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[5].VertexPosition.Z);
-                Seeker_MainSystem.SetAdjustedUnitVertexes1(vertexes);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes);
             }
             if(e.KeyCode == Keys.R)
             {
