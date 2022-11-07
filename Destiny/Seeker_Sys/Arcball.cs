@@ -75,5 +75,11 @@ namespace Destiny.Seeker_Sys
             float theta = MathF.Acos((float)Vector3d.Dot(p1, p2) / (float)(p1.Length * p2.Length));
             return theta;
         }
+        /*public float GetRotateAngle(float screenX, float screenY, float screenCenterX, float screenCenterY)
+        {
+            float x = (screenX - screenCenterX) / this.Radius;
+            float y = (screenY - screenCenterY) / this.Radius;
+            
+        }*/
     }
 }
