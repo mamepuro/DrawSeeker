@@ -67,9 +67,18 @@ namespace Destiny
         /// </summary>
         public static HashSet<int> InnerVertexIndexOnUnitLeftEdge = new HashSet<int>();
 
+        /// <summary>
+        /// デバッグモードが有効かどうか．　デバッグモードでは安定していないテスト機能を実行できる
+        /// </summary>
+        public readonly static bool isDebugging =false;
+
         public static double InnerBottomErrorZ = 0.0;
         public static void LoadObjFlie(string filename, List<Vertex> vertices, List<int[]> faces, float angle, float scale)
         {
+            if(isDebugging)
+            {
+                Console.WriteLine("Debug mode ON");
+            }
             byte iD = 0;
             //頂点配列を使用可能にする
             //GL.EnableClientState(ArrayCap.VertexArray);
@@ -104,7 +113,19 @@ namespace Destiny
                         if (param.Length != 4)
                         {
                             //Console.WriteLine(line);
-                            Console.WriteLine("ERROR! OBJファイルの面のフォーマットが三角形ではありません");
+                            Console.WriteLine("OBJファイルの面のフォーマットが三角形ではありません");
+                            if(isDebugging)
+                            {
+                                int[] indexes = new int[param.Length-1];
+                                int[] edgeInfo = new int[param.Length-1];
+                                //インデックスが1ずれるので-1をする。(0スタートと1スタートの違い)
+                                for (int index = 1;index<param.Length;index++)
+                                {
+                                    indexes[index-1] = int.Parse((param[index].Split('/'))[0]) - 1;
+                                    edgeInfo[index-1] = indexes[index - 1];
+                                }
+                                faces.Add(edgeInfo);
+                            }
                         }
                         else
                         {
@@ -126,13 +147,21 @@ namespace Destiny
                     }
                 }
             }
+                            Console.WriteLine("頂点情報を開示します");
+            foreach (var f in faces)
+            {
+                Console.WriteLine(string.Join(", ", f)); // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+            }
             AddVertexConnectionInfomation(faces, vertices);
             SetEndVertexInformation(vertices);
             SetVertexIndexOnUnitEdges(vertices);
             SetVertexIndexOnUnitButtomEdges(vertices);
             SetInnerVertex(vertices);
             SetInnerVertexOnButtomEdge(vertices);
-            SetInnerVertexOnRightEdge();
+            if(isDebugging)
+            {
+                SetInnerVertexOnRightEdge();
+            }
             
         }
         public static void GetTriangleUnitObjFile(int split, string fileName)
@@ -330,17 +359,17 @@ namespace Destiny
         {
             for (int i = 0; i < faces.Count; i++)
             {
-                int[] vertexIndex = new int[3];
-                for (int vindex = 0; vindex < 3; vindex++)
+                int[] vertexIndex = new int[faces[i].Length];
+                for (int vindex = 0; vindex < faces[i].Length; vindex++)
                 {
                     vertexIndex[vindex] = faces[i][vindex];
                 }
-                for (int vindex = 0; vindex < 3; vindex++)
+                for (int vindex = 0; vindex < faces[i].Length; vindex++)
                 {
                     int[] connectVertexPair = new int[]
                     {
-                        vertexIndex[(vindex + 1) % 3],
-                        vertexIndex[(vindex + 2) % 3]
+                        vertexIndex[(vindex + 1) % faces[i].Length],
+                        vertexIndex[(vindex + faces[i].Length - 1) % faces[i].Length]
                     };
                     //接続情報のペアが存在しない場合新規登録
                     if (!vertices[vertexIndex[vindex]].connectVertexId.Contains(connectVertexPair))
@@ -462,12 +491,15 @@ namespace Destiny
                        ||  Diff_TV_LR < errorTolerance || Diff_TV_LT < errorTolerance || Diff_TV_RT < errorTolerance)
                 {
                     //左辺上の点の場合
-                    if(Diff_LV_LT < errorTolerance || Diff_TV_LT < errorTolerance)
+                    if(isDebugging)
                     {
-                        if(!VertexIndexOnUnitLeftEdge.Contains(v.ID))
+                        if (Diff_LV_LT < errorTolerance || Diff_TV_LT < errorTolerance)
                         {
-                            VertexIndexOnUnitLeftEdge.Add(v.ID);
-                            Console.WriteLine("ユニットの左辺上の点として、頂点 " + v.ID.ToString() + "を登録しました。");
+                            if (!VertexIndexOnUnitLeftEdge.Contains(v.ID))
+                            {
+                                VertexIndexOnUnitLeftEdge.Add(v.ID);
+                                Console.WriteLine("ユニットの左辺上の点として、頂点 " + v.ID.ToString() + "を登録しました。");
+                            }
                         }
                     }
                     if(!VertexIndexOnUnitEdges.Contains(v.ID))

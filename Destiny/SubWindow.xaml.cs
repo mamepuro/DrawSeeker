@@ -75,6 +75,7 @@ namespace Destiny
         float rad = (90 - dihedralAngle_OCTO / 2) * (float)Math.PI / 180;
         float rotatey;
         float rotatez;
+        Seeker_Sys.Arcball arcball;
         private bool isDisplayUnit = false;
         /// <summary>
         /// 多面体の面の中心部分の回転軸
@@ -338,6 +339,7 @@ namespace Destiny
                 OCTO_UNIT_vertexes.Add(vertex);
             }
             System.Console.WriteLine("---------------------Sub Window Successfuly built.-----------------------");
+            arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -416,7 +418,7 @@ namespace Destiny
             }
             GL.PopMatrix();
         }
-        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag)
+        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag,int i,int j)
         {
             //faceAngle =　面内のユニットの回転角
             {
@@ -474,8 +476,10 @@ namespace Destiny
                     }
                     GL.End();
                     GL.PopMatrix();*/
-                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges);
+                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges, i+j+flag);
+
                     GL.PopMatrix();
+                   
                 }
 
 
@@ -483,7 +487,7 @@ namespace Destiny
             GL.PopMatrix();
         }
 
-        private void DrawUnitPart(List<Vertex> vertices, List<int[]> faces)
+        private void DrawUnitPart(List<Vertex> vertices, List<int[]> faces, int ind)
         {
             int[] indexes = new int[3];
 
@@ -500,17 +504,25 @@ namespace Destiny
                     Vertex vertex = vertices[indexes[vertexpoint]];
                     Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
                     GL.Color4(0x0, 0x0, 0x255, 0x255);
-                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
+                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.001);
+                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ- 0.001);
                 }
                 GL.End();
                 
+                                    if(ind==0)
+                    {
+                        GL.Color4((byte)0, (byte)255, (byte)255, (byte)255);
+                    }
+                    else
+                    {
+                        GL.Color4((byte)200, (byte)200, (byte)200, (byte)255);
+                    }
                 GL.Begin(BeginMode.Triangles);
                 //GL.Color4(0x0, 0xff, 0xff, 0x20);
+
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
                     Vertex vertex = vertices[indexes[vertexpoint]];
-                    GL.Color4((byte)0, (byte)255, (byte)255, (byte)255);
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
                 }
                 GL.End();
@@ -530,7 +542,7 @@ namespace Destiny
                     {
                         for (int j = 0; j < 3; j++)
                         {
-                            DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag);
+                            DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag,i,j);
                         }
 
                     }
@@ -814,8 +826,11 @@ namespace Destiny
                 Vector3d v1 = new Vector3d(0, _mouseX, _mouseY);
                 Vector3d v2 = new Vector3d(0, currentMouseY, currentMouseY);
                 _rotato = OpenTKExSys.GetNormalVector(mouseMove, mouseMove);
-                _rotateAngleY = MathF.Sqrt((currentMouseX - _mouseX) * (currentMouseX - _mouseX));
-                _rotateAngleZ = MathF.Sqrt((currentMouseY - _mouseY) * (currentMouseY - _mouseY));
+                _rotateAngleY = arcball.GetRotateAngle(_mouseX, _mouseY, currentMouseX, currentMouseY, glControl.Size.Width / 2, glControl.Size.Height / 2) * 2* MathF.PI;
+                _rotateAngleZ = arcball.GetRotateAngle(_mouseX, _mouseY, currentMouseX, currentMouseY, glControl.Size.Width / 2, glControl.Size.Height / 2) * 2 * MathF.PI;
+                _mouseX = e.X;
+                _mouseY = e.Y;
+
             }
             glControl.Refresh();
         }
@@ -843,8 +858,8 @@ namespace Destiny
                 if (!_isDraggingRightButton)
                 {
                     _isDraggingRightButton = true;
-                    _mouseX = e.X;
-                    _mouseY = e.Y;
+                    //_mouseX = e.X;
+                    //_mouseY = e.Y;
                     Debug.Print(_mouseX.ToString() + ", " + _mouseY.ToString() + ": ");
                 }
             }
