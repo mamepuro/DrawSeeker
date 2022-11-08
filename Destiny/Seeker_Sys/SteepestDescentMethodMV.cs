@@ -92,7 +92,8 @@ namespace Destiny.Seeker_Sys
 
         /// <summary>
         /// 現在の解を更新するメソッド
-        /// </summary>
+        /// </summary>]
+        
         public void Update()
         {
             double[] gradient = Gradient.Compute(_f, _xn);
