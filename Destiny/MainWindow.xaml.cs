@@ -171,20 +171,36 @@ namespace Destiny
             System.Drawing.Color.LightGreen,
         };
 
+        /*ユニットの基本形を描画する*/
         private void DrawUnit(List<Vertex> vertices, List<int[]> faces, bool isRotate)
         {
+
+            //頂点の描画
             GL.Enable(EnableCap.Normalize);
+            
             GL.PushMatrix();
             GL.Scale(scale, scale, scale);
-            GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+            GL.Rotate(angle, 0, 1, 0);
+            GL.PointSize(6);
+            GL.Disable(EnableCap.Lighting);
             GL.Begin(BeginMode.Points);
             for (int vertexpoint = 0; vertexpoint < vertices.Count; vertexpoint++)
             {
+                if (!Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint))
+                {
+                    GL.Color3((byte)0,(byte) 0, (byte)0xFF);
+                }
+                else
+                {
+                    GL.Color3((byte)0xFF, (byte)0, (byte)0);
+                }
                 Vertex vertex = vertices[vertexpoint];
-                GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.003);
+                GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ + 0.003);
             }
             GL.End();
             GL.PopMatrix();
+            GL.Enable(EnableCap.Lighting);
 
             //エッジの描画
 
@@ -515,9 +531,10 @@ namespace Destiny
                 Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(2, "halftriangle");
+            Seeker_MainSystem.GetHalfTriangleUnitObjFile(5, "halftriangle");
+            //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
-           //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
+            //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
             var initialX = new double[] { 5.0, 1.0 };
             int iteration = 100;
@@ -525,7 +542,7 @@ namespace Destiny
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine(answer[0].ToString() + " " + answer[1].ToString());
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
-            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+            //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -860,7 +877,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.W)
             {
-                vertexes[manipulateVertexIndex].VertexZ -= 0.005;
+                vertexes[manipulateVertexIndex].VertexZ -= 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[manipulateVertexIndex].VertexPosition.Z);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
@@ -872,7 +889,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.S)
             {
-                vertexes[manipulateVertexIndex].VertexZ += 0.005;
+                vertexes[manipulateVertexIndex].VertexZ += 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }

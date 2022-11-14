@@ -509,7 +509,7 @@ namespace Destiny
                 }
                 GL.End();
                 
-                                    if(ind==0)
+                    if(ind==0)
                     {
                         GL.Color4((byte)0, (byte)255, (byte)255, (byte)255);
                     }
