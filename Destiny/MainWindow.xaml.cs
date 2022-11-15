@@ -60,7 +60,7 @@ namespace Destiny
         //正十二面体の内接球半径
         private float PENTA_innerball_radius = ((MathF.Sqrt(5) + 1) * (MathF.Sqrt(25 + 10 * MathF.Sqrt(5)))) / (20);
         private float OCTO_radius = 1 / (2 * (float)Math.Sqrt(3));
-        int angle = 0;
+        int angle = 45;
         double w = 0.5, h = 0.2, d = 0.7;
         float rad = (90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2) * (float)Math.PI / 180;
         float rotatey;
@@ -74,6 +74,10 @@ namespace Destiny
         /// </summary>
         Vector3d nor_axis;
         //private float 
+        /// <summary>
+        /// ユニットの下端の(上下ひっくり返した部分)頂点インデックス
+        /// </summary>
+        int bottomVertexIndex = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -531,7 +535,7 @@ namespace Destiny
                 Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(5, "halftriangle");
+            Seeker_MainSystem.GetHalfTriangleUnitObjFile(3, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
@@ -542,7 +546,7 @@ namespace Destiny
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine(answer[0].ToString() + " " + answer[1].ToString());
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
-            //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -723,32 +727,6 @@ namespace Destiny
         /// <param name="e"></param>
         private void button_saveObjFile_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            using (StreamWriter streamWriter = new StreamWriter(@"C:\Test\test.obj", false, Encoding.UTF8))
-            {
-                streamWriter.WriteLine("# Test Code");
-                for (int vertexCount = 0; vertexCount < vertexes.Count; vertexCount++)
-                {
-                    streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
-                }
-                streamWriter.WriteLine("vn 0 0 1");
-                streamWriter.WriteLine("vn -1 0 0");
-                streamWriter.WriteLine("vn 1 0 0");
-                streamWriter.WriteLine("vn 0 -1 0");
-                streamWriter.WriteLine("vn 0 1 0");
-                streamWriter.WriteLine("vn 0 0 1");
-
-                for (int faceCount = 0; faceCount < edges.Count; faceCount++)
-                {
-                    string s = "f ";
-                    for (int faceID = 0; faceID < edges[0].Length; faceID++)
-                    {
-                        int vertexIndex = edges[faceCount][faceID];
-                        s += (vertexIndex + 1).ToString() + "//1 ";
-                    }
-                    streamWriter.WriteLine(s);
-                }
-            }*/
             using (StreamWriter streamWriter = new StreamWriter(@"testing.obj", false, Encoding.UTF8))
             {
                 if (!isDisplayUnit)
@@ -785,7 +763,37 @@ namespace Destiny
                     //ユニット右下部分の頂点オフセット(0番から数えるため1つずれてる)
                     int offsetUnit2 = vertexes.Count;
                     int offsetUnit3 = offsetUnit2 + (vertexes.Count - Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count);
-                    int offsetUnit4 = offsetUnit3 + vertexes.Count - 2;
+                    int offsetUnit4 = offsetUnit3 + (vertexes.Count - Seeker_MainSystem.VertexIndexOnUnitLeftEdge.Count);
+                    //+1はleftEndVertexが二回引かれている分の補正
+                    int VertexAllCountInPerfectUnit = offsetUnit4 + vertexes.Count - Seeker_MainSystem.VertexIndexOnUnitLeftEdge.Count - Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count + 1;
+                    //ユニットの完成形の頂点データを全て格納する
+                    for (int vertexCount = 0; vertexCount < vertexes.Count * 4; vertexCount++)
+                    {
+                        if (vertexCount < vertexes.Count)
+                        {
+                            streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
+                        }
+                        else if (vertexCount < vertexes.Count * 2)
+                        {
+                            streamWriter.WriteLine("v " + vertexes[vertexCount - vertexes.Count].VertexX
+                                + " -" + vertexes[vertexCount - vertexes.Count].VertexY
+                                + " " + vertexes[vertexCount - vertexes.Count].VertexZ);
+                        }
+                        else if (vertexCount < vertexes.Count * 3)
+                        {
+                            streamWriter.WriteLine("v -" + vertexes[vertexCount - vertexes.Count * 2].VertexX
+                                + " " + vertexes[vertexCount - vertexes.Count * 2].VertexY
+                                + " " + vertexes[vertexCount - vertexes.Count * 2].VertexZ);
+                        }
+                        else if (vertexCount < vertexes.Count * 4)
+                        {
+                            streamWriter.WriteLine("v -" + vertexes[vertexCount - vertexes.Count * 3].VertexX
+                                + " -" + vertexes[vertexCount - vertexes.Count * 3].VertexY
+                                + " " + vertexes[vertexCount - vertexes.Count * 3].VertexZ);
+                        }
+
+                    }
+                    /*
                     //ユニットの頂点数 * 2 - 底辺の頂点数分頂点情報を格納する
                     for (int vertexCount = 0; vertexCount < vertexes.Count + (vertexes.Count - Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count); vertexCount++)
                     {
@@ -800,7 +808,7 @@ namespace Destiny
                                 + " " + vertexes[vertexCount - vertexes.Count + Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count].VertexZ);
                         }
 
-                    }
+                    }*/
                     streamWriter.WriteLine("vn 0 0 1");
                     streamWriter.WriteLine("vn -1 0 0");
                     streamWriter.WriteLine("vn 1 0 0");
@@ -808,6 +816,78 @@ namespace Destiny
                     streamWriter.WriteLine("vn 0 1 0");
                     streamWriter.WriteLine("vn 0 0 1");
 
+                    for (int faceCount = 0; faceCount < edges.Count * 4; faceCount++)
+                    {
+                        string s = "f ";
+                        //ひっくり返したユニットを表示する際、objファイルで出力する面の順番がひっくり返ってしまうため修正するために処理を変更する
+                        if (faceCount < edges.Count)
+                        {
+                            for (int faceID = 0; faceID < edges[0].Length; faceID++)
+                            {
+                                int vertexIndex = edges[faceCount][faceID];
+                                s += (vertexIndex + 1).ToString() + "//1 ";
+                            }
+                        }
+                        else if(faceCount < edges.Count * 2)
+                        {
+                            for (int faceID = edges[0].Length - 1; faceID >= 0; faceID--)
+                            {
+
+                                int vertexIndex = edges[faceCount - edges.Count][faceID];
+                                {
+                                    s += (vertexIndex + vertexes.Count + 1).ToString() + "//1 ";
+                                }
+                            }
+                        }
+                        else if (faceCount < edges.Count * 3)
+                        {
+                            for (int faceID = edges[0].Length - 1; faceID >= 0; faceID--)
+                            {
+
+                                int vertexIndex = edges[faceCount - edges.Count * 2][faceID];
+                                {
+                                    s += (vertexIndex + vertexes.Count * 2 + 1).ToString() + "//1 ";
+                                }
+                            }
+                        }
+                        else if (faceCount < edges.Count * 4)
+                        {
+                            for (int faceID = 0; faceID < edges[0].Length; faceID++)
+                            {
+
+                                int vertexIndex = edges[faceCount - edges.Count * 3][faceID];
+                                {
+                                    s += (vertexIndex + vertexes.Count * 3 + 1).ToString() + "//1 ";
+                                }
+                            }
+                        }
+                        /*
+                        else if(faceCount < edges.Count * 3)
+                        {
+                            for (int faceID = edges[0].Length - 1; faceID >= 0; faceID--)
+                            {
+
+                                int vertexIndex = edges[faceCount - edges.Count * 2][faceID];
+                                //底辺上の頂点の場合は何もしない
+                                if (Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Contains(vertexIndex))
+                                {
+                                    s += (vertexIndex + 1).ToString() + "//1 ";
+                                }
+
+                                else
+                                {
+                                    s += (vertexIndex - Seeker_MainSystem.VertexIndexOnUnitButtomEdge.Count + 1 + edges.Count + 1).ToString() + "//1 ";
+                                }
+                            }
+                        }
+                        else if(faceCount < edges.Count * 4)
+                        {
+
+                        }*/
+
+                        streamWriter.WriteLine(s);
+                    }
+                    /*
                     for (int faceCount = 0; faceCount < edges.Count * 2; faceCount++)
                     {
                         string s = "f ";
@@ -841,6 +921,7 @@ namespace Destiny
 
                         streamWriter.WriteLine(s);
                     }
+                    */
                 }
 
             }
@@ -877,7 +958,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.W)
             {
-                vertexes[manipulateVertexIndex].VertexZ -= 0.001;
+                vertexes[manipulateVertexIndex].VertexZ -= 0.01;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[manipulateVertexIndex].VertexPosition.Z);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
@@ -889,7 +970,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.S)
             {
-                vertexes[manipulateVertexIndex].VertexZ += 0.001;
+                vertexes[manipulateVertexIndex].VertexZ += 0.01;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }

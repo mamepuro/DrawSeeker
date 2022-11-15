@@ -164,6 +164,8 @@ namespace Destiny
             SetInnerVertex(vertices);
             SetInnerVertexOnButtomEdge(vertices);
             SetInnerVertexOnRightEdge();
+            SetVertexOnLeftEdge(vertices);
+            SetInnerVertexOnRightEdge();
             test(vertices);
             GetAllAngle(vertices);
             if(isDebugging)
@@ -319,21 +321,21 @@ namespace Destiny
             {
                 for (int vertexPoint = 0; vertexPoint < index; vertexPoint++)
                 {
-                    if(vertexPoint > 6)
+                    if(vertexPoint != 0)
                     {
                         if(vertexPoint % 2 == 0)
                         {
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "-0.01");
+                            + "0.0");
                         }
                         else
                         {
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.01");
+                            + "0.0");
                         }
                     }
                     else
@@ -488,6 +490,14 @@ namespace Destiny
             Console.WriteLine("左端は頂点 " + leftEndVertexIndex + "です。(座標 " + leftVertex.ToString() + ")");
             Console.WriteLine("右端は頂点 " + rightEndVertexIndex + "です。(座標 " + rightVertex.ToString() + ")");
             Console.WriteLine("上端は頂点 " + topVertexIndex + "です。(座標 " + topVertex.ToString() + ")");
+            //z座標が異なることによる外周上の頂点探索のミスをなくすため，全てz=0で計算する
+            Console.WriteLine("全てのベクトル計算についてz=0に変更します．");
+            leftoToTop.Z = 0;
+            rightToTop.Z = 0;
+            leftToRight.Z = 0;
+            leftVertex.Z = 0;
+            rightVertex.Z = 0;
+            topVertex.Z = 0;
             foreach (var v in vertices)
             {
                 //ここはテスト用のコード
@@ -596,10 +606,11 @@ namespace Destiny
         private static void SetInnerVertexOnButtomEdge(List<Vertex> vertices)
         {
             Console.WriteLine("~~~~~~~~~~~~~~~~~底辺上に存在する内部頂点を探索します~~~~~~~~~~~~~~~~~~~~~");
-            foreach(var v in VertexIndexOnUnitButtomEdge)
+            foreach(var v in VertexIndexOnUnitEdges)
             {
                 if(v != leftEndVertexIndex 
-                    && v != rightEndVertexIndex)
+                    && v != rightEndVertexIndex 
+                    && v != topVertexIndex)
                 {
                     InnerVertexIndexOnButtomEdge.Add(v);
                     Console.WriteLine("底辺上の内部頂点として頂点 " + v + " を登録しました。");
@@ -614,19 +625,19 @@ namespace Destiny
         /// <param name="vertices"></param>
         private static void SetVertexOnLeftEdge(List<Vertex> vertices)
         {
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を開始します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの左辺上に存在する点の探索を開始します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             foreach (Vertex v in vertices)
             {
-                if (v.VertexY == vertices[leftEndVertexIndex].VertexY)
+                if (v.VertexX == vertices[leftEndVertexIndex].VertexX)
                 {
-                    if (!VertexIndexOnUnitButtomEdge.Contains(v.ID))
+                    if (!VertexIndexOnUnitLeftEdge.Contains(v.ID))
                     {
-                        Console.WriteLine("頂点 " + v.ID.ToString() + "を底辺上の頂点として登録しました。");
-                        VertexIndexOnUnitButtomEdge.Add(v.ID);
+                        Console.WriteLine("頂点 " + v.ID.ToString() + "を左辺上の頂点として登録しました。");
+                        VertexIndexOnUnitLeftEdge.Add(v.ID);
                     }
                 }
             }
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの底辺上に存在する点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの左辺上に存在する点の探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
 
         /// <summary>
@@ -640,7 +651,7 @@ namespace Destiny
                 if (v != leftEndVertexIndex
                     && v != topVertexIndex)
                 {
-                    InnerVertexIndexOnButtomEdge.Add(v);
+                    InnerVertexIndexOnUnitLeftEdge.Add(v);
                     Console.WriteLine("左辺上の内部頂点として頂点 " + v + " を登録しました。");
                 }
             }
@@ -1474,8 +1485,8 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 1000;
-            double learningRate = 0.01;
+            int iteration = 200;
+            double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
             /*var optimizer = new SteepestDescentMethodMV(f, initialX, learningRate);
@@ -1513,12 +1524,7 @@ namespace Destiny
                 verteices[i].VertexPosition = new Vector3d(verteices[i].VertexX, verteices[i].VertexY, verteices[i].VertexZ);
             }
             Console.WriteLine("計算後の数値");
-            GetInnerAngleSum(0, verteices);
-            GetInnerAngleSum(1, verteices);
-            GetInnerAngleSum(2, verteices);
-            GetInnerAngleSum(4, verteices);
-            GetInnerAngleSum(7, verteices);
-            InnerBottomErrorZ = verteices[1].VertexZ;
+            GetAllAngle(verteices);
             Console.WriteLine("底辺の内部頂点のz誤差は " + InnerBottomErrorZ.ToString()+"です。");
         }
 
