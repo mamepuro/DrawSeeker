@@ -43,7 +43,7 @@ namespace Destiny
         /// <summary>
         /// ユニットの外周上(エッジ上)に存在する頂点のインデックス
         /// </summary>
-        private static HashSet<int> VertexIndexOnUnitEdges = new HashSet<int>();
+        public static HashSet<int> VertexIndexOnUnitEdges = new HashSet<int>();
         /// <summary>
         /// ユニットの底辺部分に存在する頂点のインデックス
         /// </summary>
@@ -328,14 +328,14 @@ namespace Destiny
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.0");
+                            + "-0.01");
                         }
                         else
                         {
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.0");
+                            + "0.01");
                         }
                     }
                     else
@@ -1485,7 +1485,7 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 200;
+            int iteration = 100;
             double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);

@@ -190,13 +190,17 @@ namespace Destiny
             GL.Begin(BeginMode.Points);
             for (int vertexpoint = 0; vertexpoint < vertices.Count; vertexpoint++)
             {
-                if (!Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint))
+                if (!Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint) && !Seeker_MainSystem.VertexIndexOnUnitEdges.Contains(vertexpoint))
                 {
                     GL.Color3((byte)0,(byte) 0, (byte)0xFF);
                 }
-                else
+                else if(Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint))
                 {
                     GL.Color3((byte)0xFF, (byte)0, (byte)0);
+                }
+                else
+                {
+                    GL.Color3((byte)0, (byte)0xFF, (byte)0);
                 }
                 Vertex vertex = vertices[vertexpoint];
                 GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.003);
@@ -535,7 +539,7 @@ namespace Destiny
                 Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(3, "halftriangle");
+            Seeker_MainSystem.GetHalfTriangleUnitObjFile(2,"halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
