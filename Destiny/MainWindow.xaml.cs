@@ -184,6 +184,7 @@ namespace Destiny
             
             GL.PushMatrix();
             GL.Scale(scale, scale, scale);
+            GL.Rotate(_rotateAngleY, 0, 0, 1);
             GL.Rotate(angle, 0, 1, 0);
             GL.PointSize(6);
             GL.Disable(EnableCap.Lighting);
@@ -237,7 +238,7 @@ namespace Destiny
                 
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
-
+                GL.Rotate(_rotateAngleY, 0, 0, 1);
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                 
                 if (isDisplayUnit)
@@ -264,6 +265,7 @@ namespace Destiny
                 GL.PushMatrix();
                 GL.Scale(-1, 1, 1);
                 GL.Scale(scale, scale, scale);
+                GL.Rotate(_rotateAngleY, 0, 0, -1);
                 GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
@@ -284,6 +286,7 @@ namespace Destiny
                 GL.PushMatrix();
                 GL.Scale(-1, 1, 1);
                 GL.Scale(scale, scale, scale);
+                GL.Rotate(_rotateAngleY, 0, 0, 1);
                 GL.Rotate(angle, 0, -1, 0);
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 Vector3d p0 = vertices[indexes[0]].VertexPosition;
@@ -303,7 +306,7 @@ namespace Destiny
 
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
-
+                GL.Rotate(_rotateAngleY, 0, 0, -1);
                 GL.Rotate(angle, 0, 1, 0);
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Begin(BeginMode.Polygon);
@@ -365,6 +368,7 @@ namespace Destiny
                     GL.PushMatrix();
                     GL.Scale(1, -1, 1);
                     GL.Scale(scale, scale, scale);
+                    GL.Rotate(_rotateAngleY, 0, 0, 1);
                     GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                     GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                     GL.Disable(EnableCap.Light0);
@@ -385,6 +389,7 @@ namespace Destiny
                     GL.PushMatrix();
                     GL.Scale(1, -1, 1);
                     GL.Scale(scale, scale, scale);
+                    GL.Rotate(_rotateAngleY, 0, 0, 1);
                     GL.Rotate(angle, 0, 1, 0);
                     GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                     GL.Begin(BeginMode.Polygon);
@@ -401,7 +406,7 @@ namespace Destiny
 
                     GL.PushMatrix();
                     GL.Scale(scale, scale, scale);
-
+                    GL.Rotate(_rotateAngleY, 0, 0, 1);
                     GL.Rotate(angle, 0, 1, 0);
                     GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                     GL.Begin(BeginMode.Polygon);
@@ -419,6 +424,7 @@ namespace Destiny
                     GL.PushMatrix();
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
                     GL.Rotate(angle, 0, -1, 0);
                     GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                     GL.Begin(BeginMode.Polygon);
@@ -435,6 +441,7 @@ namespace Destiny
                     GL.PushMatrix();
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
                     GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
                     if (isDisplayUnit)
                     {
@@ -458,6 +465,7 @@ namespace Destiny
                     GL.PushMatrix();
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
                     GL.Rotate(angle, 0, -1, 0);
                     GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                     GL.Begin(BeginMode.Polygon);
@@ -474,6 +482,7 @@ namespace Destiny
                     GL.PushMatrix();
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
                     GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
                     if (isDisplayUnit)
                     {
@@ -539,14 +548,15 @@ namespace Destiny
                 Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(2,"halftriangle");
+            //Seeker_MainSystem.GetHalfTriangleUnitObjFile(5,"halftriangle");
+            Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile(3, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
             var initialX = new double[] { 5.0, 1.0 };
-            int iteration = 100;
-            double learningRate = 0.1;
+            int iteration = 1000;
+            double learningRate = 0.01;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine(answer[0].ToString() + " " + answer[1].ToString());
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
@@ -959,6 +969,10 @@ namespace Destiny
             if (e.KeyCode == Keys.A)
             {
                 angle += 1;
+            }
+            if(e.KeyCode == Keys.Q)
+            {
+                _rotateAngleY += 1;
             }
             if (e.KeyCode == Keys.W)
             {
