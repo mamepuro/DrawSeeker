@@ -448,25 +448,27 @@ namespace Destiny
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ユニットの三角形メッシュを作成が完了しました。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             //ここまで
             //ここからObjファイル生成
+            int u_row = 1;
+            int count = 0;
             using (StreamWriter streamWriter = new StreamWriter(fileName + ".obj", false, Encoding.UTF8))
             {
                 for (int vertexPoint = 0; vertexPoint < index; vertexPoint++)
                 {
-                    if (vertexPoint != 0 || vertexPoint != 1 || vertexPoint != split + 1+1)
+                    if (vertexPoint != 0 || vertexPoint != 1 || vertexPoint < split + 1+1 || vertexPoint == index-1)
                     {
-                        if ((vertexPoint+1) % 2 == 0)
+                        if ((u_row) % 2 == 0)
                         {
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "-0.008");
+                            + "0.1");
                         }
                         else
                         {
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.008");
+                            + "0.00");
                         }
                     }
                     else
@@ -475,6 +477,12 @@ namespace Destiny
                         " " + vertexPosX[vertexPoint] + " "
                         + vertexPosY[vertexPoint] + " "
                         + "0.0");
+                    }
+                    count++;
+                    if(count >= split + 2)
+                    {
+                        count = 0;
+                        u_row++;
                     }
 
                 }
@@ -1692,6 +1700,7 @@ namespace Destiny
             }
             Console.WriteLine("計算後の数値");
             GetAllAngle(verteices);
+            InnerBottomErrorZ = verteices[rightEndVertexIndex].VertexZ;
             Console.WriteLine("底辺の内部頂点のz誤差は " + InnerBottomErrorZ.ToString()+"です。");
         }
 

@@ -186,6 +186,11 @@ namespace Destiny
             GL.Scale(scale, scale, scale);
             GL.Rotate(_rotateAngleY, 0, 0, 1);
             GL.Rotate(angle, 0, 1, 0);
+            if (isDisplayUnit)
+            {
+                GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+            }
+            GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
             GL.PointSize(6);
             GL.Disable(EnableCap.Lighting);
             GL.Begin(BeginMode.Points);
@@ -235,7 +240,7 @@ namespace Destiny
                 GL.PopMatrix();
                 */
 
-                
+                //右上
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(_rotateAngleY, 0, 0, 1);
@@ -244,6 +249,10 @@ namespace Destiny
                 if (isDisplayUnit)
                 {
                     GL.Rotate(rot, -1, 0, 0);
+                }
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
                 }
                 GL.Translate(0,0,-Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
@@ -267,6 +276,10 @@ namespace Destiny
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(_rotateAngleY, 0, 0, -1);
                 GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
                 GL.Begin(BeginMode.Lines);
@@ -281,6 +294,7 @@ namespace Destiny
                 }
                 GL.End();
                 GL.Enable(EnableCap.Light0);
+                //右上
                 GL.PopMatrix();
 
                 GL.PushMatrix();
@@ -288,6 +302,10 @@ namespace Destiny
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(_rotateAngleY, 0, 0, 1);
                 GL.Rotate(angle, 0, -1, 0);
+                if(isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 Vector3d p0 = vertices[indexes[0]].VertexPosition;
                 Vector3d p1 = vertices[indexes[1]].VertexPosition;
@@ -308,6 +326,10 @@ namespace Destiny
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(_rotateAngleY, 0, 0, -1);
                 GL.Rotate(angle, 0, 1, 0);
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Begin(BeginMode.Polygon);
                 //GL.Color4(0x0, 0xff, 0xff, 0x20);
@@ -320,58 +342,20 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
-                /*
-                if (!Seeker_MainSystem.isDebugging)
-                {
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-
-                    GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
-                    if (isDisplayUnit)
-                    {
-                        GL.Rotate(rot, -1, 0, 0);
-                    }
-
-                    GL.Scale(-1, 1, 1);
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Disable(EnableCap.Light0);
-                    GL.Begin(BeginMode.Lines);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
-                    }
-                    GL.End(); 
-                    GL.PopMatrix();
-                    GL.Enable(EnableCap.Light0);
-                }
-                *//*
-                GL.PushMatrix();
-                GL.Scale(-1, 1, 1);
-                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                GL.Begin(BeginMode.Lines);
-                for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
-                {
-                    Vertex vertex = vertices[indexes[vertexpoint]];
-                    Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
-                    GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ);
-                }
-                GL.End();
-                GL.PopMatrix();*/
+                
                 //上下反転
-                if (isDisplayUnit)
-                {
                     //左右対称
                     GL.PushMatrix();
                     GL.Scale(1, -1, 1);
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(_rotateAngleY, 0, 0, 1);
                     GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Disable(EnableCap.Light0);
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Disable(EnableCap.Light0);
                     GL.Begin(BeginMode.Lines);
                     for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
                     {
@@ -391,119 +375,117 @@ namespace Destiny
                     GL.Scale(scale, scale, scale);
                     GL.Rotate(_rotateAngleY, 0, 0, 1);
                     GL.Rotate(angle, 0, 1, 0);
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Begin(BeginMode.Polygon);
-                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        GL.Normal3(Vector3d.Cross(p2 - p1, p0 - p1));
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-
-                    }
-                    GL.End();
-                    GL.PopMatrix();
-
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-                    GL.Rotate(_rotateAngleY, 0, 0, 1);
-                    GL.Rotate(angle, 0, 1, 0);
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Begin(BeginMode.Polygon);
-                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        GL.Normal3(Vector3d.Cross(p2 - p1, p0 - p1));
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-
-                    }
-                    GL.End();
-                    GL.PopMatrix();
-
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-                    GL.Rotate(180, 0, 0, 1);
-                    GL.Rotate(_rotateAngleY, 0, 0, -1);
-                    GL.Rotate(angle, 0, -1, 0);
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Begin(BeginMode.Polygon);
-                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        GL.Normal3(Vector3d.Cross(p1 - p2, p1 - p0));
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                    }
-                    GL.End();
-                    GL.PopMatrix();
-
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-                    GL.Rotate(180, 0, 0, 1);
-                    GL.Rotate(_rotateAngleY, 0, 0, -1);
-                    GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
-                    if (isDisplayUnit)
-                    {
-                        GL.Rotate(rot, -1, 0, 0);
-                    }
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Disable(EnableCap.Light0);
-                    GL.Begin(BeginMode.Lines);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.001);
-                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ - 0.001);
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ + 0.001);
-                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ + 0.001);
-                    }
-                    GL.End();
-                    GL.PopMatrix();
-                    GL.Enable(EnableCap.Light0);
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-                    GL.Rotate(180, 0, 0, 1);
-                    GL.Rotate(_rotateAngleY, 0, 0, -1);
-                    GL.Rotate(angle, 0, -1, 0);
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Begin(BeginMode.Polygon);
-                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        GL.Normal3(Vector3d.Cross(p1 - p2, p1 - p0));
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
-                    }
-                    GL.End();
-                    GL.PopMatrix();
-
-                    GL.PushMatrix();
-                    GL.Scale(scale, scale, scale);
-                    GL.Rotate(180, 0, 0, 1);
-                    GL.Rotate(_rotateAngleY, 0, 0, -1);
-                    GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
-                    if (isDisplayUnit)
-                    {
-                        GL.Rotate(rot, -1, 0, 0);
-                    }
-                    GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                    GL.Disable(EnableCap.Light0);
-                    GL.Begin(BeginMode.Lines);
-                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
-                    {
-                        Vertex vertex = vertices[indexes[vertexpoint]];
-                        Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.001);
-                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ - 0.001);
-                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ + 0.001);
-                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ + 0.001);
-                    }
-                    GL.End();
-                    GL.PopMatrix();
-                    GL.Enable(EnableCap.Light0);
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
                 }
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Begin(BeginMode.Polygon);
+                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
+                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
+                    {
+                        GL.Normal3(Vector3d.Cross(p2 - p1, p0 - p1));
+                        Vertex vertex = vertices[indexes[vertexpoint]];
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+
+                    }
+                    GL.End();
+                GL.PopMatrix();
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
+                    GL.Rotate(angle, 0, -1, 0);
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                
+                    GL.Begin(BeginMode.Polygon);
+                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
+                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
+                    {
+                        GL.Normal3(Vector3d.Cross(p1 - p2, p1 - p0));
+                        Vertex vertex = vertices[indexes[vertexpoint]];
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                    }
+                    GL.End();
+                    GL.PopMatrix();
+
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
+                    GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Disable(EnableCap.Light0);
+                    GL.Begin(BeginMode.Lines);
+                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
+                    {
+                        Vertex vertex = vertices[indexes[vertexpoint]];
+                        Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.001);
+                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ - 0.001);
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ + 0.001);
+                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ + 0.001);
+                    }
+
+
+                    GL.End();
+                    GL.PopMatrix();
+                    GL.Enable(EnableCap.Light0);
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
+                    GL.Rotate(angle, 0, -1, 0);
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+
+                GL.Begin(BeginMode.Polygon);
+                    //GL.Color4(0x0, 0xff, 0xff, 0x20);
+                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
+                    {
+                        GL.Normal3(Vector3d.Cross(p1 - p2, p1 - p0));
+                        Vertex vertex = vertices[indexes[vertexpoint]];
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
+                    }
+                    GL.End();
+                    GL.PopMatrix();
+
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    GL.Rotate(180, 0, 0, 1);
+                    GL.Rotate(_rotateAngleY, 0, 0, -1);
+                    GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
+                if (isDisplayUnit)
+                {
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                }
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Disable(EnableCap.Light0);
+                    GL.Begin(BeginMode.Lines);
+                    for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
+                    {
+                        Vertex vertex = vertices[indexes[vertexpoint]];
+                        Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.001);
+                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ - 0.001);
+                        GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ + 0.001);
+                        GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ + 0.001);
+                    }
+                    GL.End();
+                    GL.PopMatrix();
+                    GL.Enable(EnableCap.Light0);
+                
 
             }
 
@@ -549,7 +531,7 @@ namespace Destiny
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
             //Seeker_MainSystem.GetHalfTriangleUnitObjFile(5,"halftriangle");
-            Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile(3, "halftriangle");
+            Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile(4, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
@@ -560,7 +542,7 @@ namespace Destiny
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine(answer[0].ToString() + " " + answer[1].ToString());
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
-            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+            //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -743,33 +725,6 @@ namespace Destiny
         {
             using (StreamWriter streamWriter = new StreamWriter(@"testing.obj", false, Encoding.UTF8))
             {
-                if (!isDisplayUnit)
-                {
-                    streamWriter.WriteLine("# Test Code");
-                    for (int vertexCount = 0; vertexCount < vertexes.Count; vertexCount++)
-                    {
-                        streamWriter.WriteLine("v " + vertexes[vertexCount].VertexX + " " + vertexes[vertexCount].VertexY + " " + vertexes[vertexCount].VertexZ);
-                    }
-                    streamWriter.WriteLine("vn 0 0 1");
-                    streamWriter.WriteLine("vn -1 0 0");
-                    streamWriter.WriteLine("vn 1 0 0");
-                    streamWriter.WriteLine("vn 0 -1 0");
-                    streamWriter.WriteLine("vn 0 1 0");
-                    streamWriter.WriteLine("vn 0 0 1");
-
-                    for (int faceCount = 0; faceCount < edges.Count; faceCount++)
-                    {
-                        string s = "f ";
-                        for (int faceID = 0; faceID < edges[0].Length; faceID++)
-                        {
-                            int vertexIndex = edges[faceCount][faceID];
-                            s += (vertexIndex + 1).ToString() + "//1 ";
-                        }
-                        streamWriter.WriteLine(s);
-                    }
-                }
-                else
-                {
                     streamWriter.WriteLine("# Test Code");
                     /*
                      ユニットの右上,右下,左上,左下から順に1,2,3,4番とする
@@ -936,7 +891,7 @@ namespace Destiny
                         streamWriter.WriteLine(s);
                     }
                     */
-                }
+                
 
             }
         }

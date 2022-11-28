@@ -359,14 +359,11 @@ namespace Destiny
             _modelView = look;
             GL.LoadMatrix(ref look);
             GL.Enable(EnableCap.Lighting); // 光源の利用を宣言
-            float[] position = new float[] { 3.0f, 2.0f, 3.0f, 0.0f };
+            float[] position = new float[] { 1.50f, 1.0f, 1.50f, 0.0f };
             // ライト 0 の設定と使用
             GL.Light(LightName.Light0, LightParameter.Position, position);
-            //GL.Enable(EnableCap.Light0); // 光源をオンにする
-            GL.Enable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Light0); // 光源をオンにする
             float[] position1 = new float[] { 3.0f, 2.0f, 3.0f, 0.0f };
-            GL.Light(LightName.Light0, LightParameter.Position, position);
-            //GL.Enable(EnableCap.Light0); // 光源をオンにする
             float[] position2 = new float[] { 3.0f, 2.0f, 3.0f, 0.0f };
             // ライト 0 の設定と使用
             GL.Light(LightName.Light2, LightParameter.Position, position2);
@@ -382,7 +379,7 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-                DrawOCTO();
+            DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawOCTO_UNIT(0);
@@ -397,7 +394,7 @@ namespace Destiny
             {
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                 GL.Scale(scale, scale, scale);
-                GL.Disable(EnableCap.Lighting);
+                //GL.Disable(EnableCap.Lighting);
                 //angle =10; //-------------------------------------------(10)
                 GL.Begin(PrimitiveType.Lines);
                 GL.Color3((byte)255, (byte)0, (byte)0);
@@ -418,7 +415,44 @@ namespace Destiny
             }
             GL.PopMatrix();
         }
-        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag,int i,int j)
+
+        /// <summary>
+        /// 正八面体ベースのユニット折り紙を表示する
+        /// </summary>
+        private void DrawOCTO()
+        {
+            GL.PushMatrix();
+            {
+                //正八面体の上半分と下半分をflagで場合分け
+                for (int flag = 0; flag < 2; flag++)
+                {
+                    //正八面体の上/下半分の4面をiで場合分け
+                    for (int i = 0; i < 4; i++)
+                    {
+                        //正八面体の１つの面を3つの
+                        for (int j = 0; j < 3; j++)
+                        {
+                            for(int mirror = 0;mirror < 2;mirror++)
+                            {
+                                DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag, i, j, mirror);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            GL.PopMatrix();
+        }
+        /// <summary>
+        /// 正八面体ベースのユニット折り紙を表示する
+        /// </summary>
+        /// <param name="faceAngle"></param>
+        /// <param name="UnitAngle"></param>
+        /// <param name="flag"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag,int i,int j, int mirror)
         {
             //faceAngle =　面内のユニットの回転角
             {
@@ -426,13 +460,13 @@ namespace Destiny
                 {
                     GL.PushMatrix();
                     GL.Scale(scale, scale, scale);
+                    //
                     if (flag == 0)
                     {
 
                         GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                         GL.Rotate(_rotateAngleY, 0, 1, 0);
                         GL.Rotate(_rotateAngleZ, 0, 0, -1);
-
                         GL.Rotate(UnitAngle, 0, 1, 0);
                         GL.Translate(0, 0, -0.5);
                         GL.Translate(0, rotatey, rotatez);
@@ -440,9 +474,14 @@ namespace Destiny
                         GL.Translate(0, -rotatey, -rotatez);
                         GL.Rotate(90 - dihedralAngle_OCTO / 2, 1, 0, 0);
                         GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                        GL.Normal3(-Vector3.UnitZ);
+                        if(mirror != 0)
+                        {
+                            GL.Scale(-1, 1, 1);
+                        }
+                        //GL.Normal3(-Vector3.UnitZ);
                     }
                     else
+                    //下半分
                     {
                         GL.Rotate(180, 1, 0, 0);
                         GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
@@ -455,7 +494,11 @@ namespace Destiny
                         GL.Translate(0, -rotatey, -rotatez);
                         GL.Rotate(90 - dihedralAngle_OCTO / 2, 1, 0, 0);
                         GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                        GL.Normal3(Vector3.UnitZ);
+                        if (mirror != 0)
+                        {
+                            GL.Scale(-1, 1, 1);
+                        }
+                        //GL.Normal3(Vector3.UnitZ);
                     }
 
                     /*
@@ -491,13 +534,13 @@ namespace Destiny
         {
             int[] indexes = new int[3];
 
-            GL.Disable(EnableCap.Lighting);
+            
             for (int faceIndex = 0; faceIndex < faces.Count; faceIndex++)
             {
                 indexes[0] = faces[faceIndex][0];
                 indexes[1] = faces[faceIndex][1];
                 indexes[2] = faces[faceIndex][2];
-
+                GL.Disable(EnableCap.Light0);
                 GL.Begin(BeginMode.Lines);
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
@@ -508,7 +551,9 @@ namespace Destiny
                     GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ- 0.001);
                 }
                 GL.End();
-                
+                GL.Enable(EnableCap.Light0);
+
+                /*
                     if(ind==0)
                     {
                         GL.Color4((byte)0, (byte)255, (byte)255, (byte)255);
@@ -517,11 +562,16 @@ namespace Destiny
                     {
                         GL.Color4((byte)200, (byte)200, (byte)200, (byte)255);
                     }
+                */
                 GL.Begin(BeginMode.Triangles);
                 //GL.Color4(0x0, 0xff, 0xff, 0x20);
-
+                Vector3d p0 = vertices[indexes[0]].VertexPosition;
+                Vector3d p1 = vertices[indexes[1]].VertexPosition;
+                Vector3d p2 = vertices[indexes[2]].VertexPosition;
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
+                    Vector3d nom = Vector3d.Cross(p2 - p1, p0 -p1);
+                    GL.Normal3(-nom.Normalized());
                     Vertex vertex = vertices[indexes[vertexpoint]];
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
                 }
@@ -530,27 +580,9 @@ namespace Destiny
 
 
             }
-            GL.Enable(EnableCap.Lighting);
+            //GL.Enable(EnableCap.Lighting);
         }
-        private void DrawOCTO()
-        {
-            GL.PushMatrix();
-            {
-                for (int flag = 0; flag < 2; flag++)
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag,i,j);
-                        }
 
-                    }
-                }
-
-            }
-            GL.PopMatrix();
-        }
         private void DrawPENTA_UNIT(float faceAngle, int count, int is_halfUp)
         {
             //faceAngle =　面内のユニットの回転角
@@ -641,44 +673,54 @@ namespace Destiny
         {
             GL.PushMatrix();
             {
-                GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
-                GL.Scale(scale, scale, scale);
-                //angle =10; //-------------------------------------------(10)
-                for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
-                {
-                    if (false)
-                    {
-
-                        GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
-                        System.Drawing.Color.Yellow);// 赤の直方体を描画*/
-                    }
-                    else
-                    {
-
-                        GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
-                        colors[faceCount]);// 赤の直方体を描画*/
-                    }
-                    GL.Begin(PrimitiveType.TriangleFan);
-                    {
-                        int vertexIndex1 = faceIndex[faceCount, 0];
-                        int vertexIndex2 = faceIndex[faceCount, 1];
-                        int vertexIndex3 = faceIndex[faceCount, 2];
-                        GL.Normal3(OpenTKExSys.GetNormalVector(vertexes[vertexIndex1].VertexPosition, vertexes[vertexIndex2].VertexPosition, vertexes[vertexIndex3].VertexPosition));
-                        for (int faceID = 0; faceID < faceIndex.GetLength(1); faceID++)
-                        {
-                            int vertexIndex = faceIndex[faceCount, faceID];
-                            double x = vertexes[vertexIndex].VertexX;
-                            double y = vertexes[vertexIndex].VertexY;
-                            double z = vertexes[vertexIndex].VertexZ;
-                            GL.Vertex3(x, y, z);
-                        }
-                    }
-                    GL.End();
+                GL.Rotate(angle, 0, 1, 0); 	//-------------------------(9)
+                angle++; //-------------------------------------------(10)
+                double w = 0.5, h = 0.2, d = 0.7;
+                GL.Begin(PrimitiveType.TriangleStrip);
+                { //------------(11)
+                    GL.Normal3(Vector3.UnitX);
+                    GL.Vertex3(w, h, -d); GL.Vertex3(w, h, d);
+                    GL.Vertex3(w, -h, -d); GL.Vertex3(w, -h, d);
                 }
+                GL.End();
+                GL.Begin(PrimitiveType.TriangleStrip);
+                {
+                    GL.Normal3(-Vector3.UnitX);
+                    GL.Vertex3(-w, -h, -d); GL.Vertex3(-w, -h, d);
+                    GL.Vertex3(-w, h, -d); GL.Vertex3(-w, h, d);
+                }
+                GL.End();
+                GL.Begin(PrimitiveType.TriangleStrip);
+                {
+                    GL.Normal3(Vector3.UnitY);
+                    GL.Vertex3(w, h, d); GL.Vertex3(-w, h, d);
+                    GL.Vertex3(w, h, -d); GL.Vertex3(-w, h, -d);
+                }
+                GL.End();
+                GL.Begin(PrimitiveType.TriangleStrip);
+                {
+                    GL.Normal3(-Vector3.UnitY);
+                    GL.Vertex3(w, -h, d); GL.Vertex3(w, -h, -d);
+                    GL.Vertex3(-w, -h, d); GL.Vertex3(-w, -h, -d);
+                }
+                GL.End();
+                GL.Begin(PrimitiveType.TriangleStrip);
+                {
+                    GL.Normal3(Vector3.UnitZ);
+                    GL.Vertex3(w, h, d); GL.Vertex3(-w, h, d);
+                    GL.Vertex3(w, -h, d); GL.Vertex3(-w, -h, d);
+                }
+                GL.End();
+                GL.Begin(PrimitiveType.TriangleStrip);
+                {
+                    GL.Normal3(-Vector3.UnitZ);
+                    GL.Vertex3(w, h, -d); GL.Vertex3(-w, h, -d);
+                    GL.Vertex3(w, -h, -d); GL.Vertex3(-w, -h, -d);
+                }
+                GL.End();
             }
             GL.PopMatrix();
         }
-
         /// <summary>
         /// テスト用(実行しない)
         /// </summary>
@@ -729,7 +771,7 @@ namespace Destiny
             for (int faceCount = 0; faceCount < faceIndex.GetLength(0); faceCount++)
             {
                 GL.PointSize(15);
-                GL.Disable(EnableCap.Lighting);
+                //GL.Disable(EnableCap.Lighting);
 
                 //GL.ClearColor(0.0f, 1.0f, 0.0f, 0.0f);
                 GL.Begin(PrimitiveType.Points);
