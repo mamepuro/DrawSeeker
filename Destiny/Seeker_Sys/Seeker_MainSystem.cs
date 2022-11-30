@@ -781,11 +781,24 @@ namespace Destiny
         private static void SetInnerVertexOnButtomEdge(List<Vertex> vertices)
         {
             Console.WriteLine("~~~~~~~~~~~~~~~~~底辺上に存在する内部頂点を探索します~~~~~~~~~~~~~~~~~~~~~");
-            foreach(var v in VertexIndexOnUnitEdges)
+            Vector3d rightToTop = vertices[topVertexIndex].VertexPosition - vertices[rightEndVertexIndex].VertexPosition;
+            Vector3d rightVertex = vertices[rightEndVertexIndex].VertexPosition;
+            
+            rightToTop.Z = 0;
+           
+            rightVertex.Z = 0;
+            
+            foreach (var v in VertexIndexOnUnitEdges)
             {
-                if(v != leftEndVertexIndex 
+                Vector3d vv = new Vector3d(vertices[v].VertexX, vertices[v].VertexY, 0);
+                Vector3d rv = vertices[v].VertexPosition - rightVertex;
+                rv = vv - rightVertex;
+                const double errorTolerance = 0.00000001;
+                double Diff_RV_RT = Math.Abs(Math.Abs(Vector3d.Dot(rv, rightToTop)) - rv.Length * rightToTop.Length);
+                if (v != leftEndVertexIndex 
                     && v != rightEndVertexIndex 
-                    && v != topVertexIndex)
+                    && v != topVertexIndex 
+                    && Diff_RV_RT >= errorTolerance)
                 {
                     InnerVertexIndexOnButtomEdge.Add(v);
                     Console.WriteLine("底辺上の内部頂点として頂点 " + v + " を登録しました。");
@@ -1660,8 +1673,8 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 200;
-            double learningRate = 0.001;
+            int iteration = 2000;
+            double learningRate = 0.0001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
             /*var optimizer = new SteepestDescentMethodMV(f, initialX, learningRate);

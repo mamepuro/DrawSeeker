@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Destiny.Seeker_Sys
 {
@@ -70,7 +71,13 @@ namespace Destiny.Seeker_Sys
             for (int i = 0; i < iteration; ++i)
             {
                 double[] gradient = Gradient.Compute(f, xn);
-
+                using (StreamWriter streamWriter = new StreamWriter("gradLog.txt", false, Encoding.UTF8))
+                {
+                    foreach(var x in gradient)
+                    {
+                        streamWriter.WriteLine(x);
+                    }
+                }
                 for (int j = 0; j < xn.Length; ++j)
                 {
                     xn[j] -= learningRate * gradient[j];
