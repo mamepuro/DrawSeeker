@@ -461,7 +461,7 @@ namespace Destiny
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.01");
+                            + "0.1");
                         }
                         else
                         {
@@ -1673,8 +1673,8 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 2000;
-            double learningRate = 0.0001;
+            int iteration = 20000;
+            double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
             /*var optimizer = new SteepestDescentMethodMV(f, initialX, learningRate);
@@ -1734,6 +1734,17 @@ namespace Destiny
             {
                 GetInnerAngleSum(v.ID, verteices);
             }
+        }
+
+        public static double GetGradVecLength(double[] gradVec)
+        {
+            double ans = 0;
+            foreach(var v in gradVec)
+            {
+                ans += v * v;
+            }
+            ans = Math.Sqrt(ans);
+            return ans;
         }
     }
 }

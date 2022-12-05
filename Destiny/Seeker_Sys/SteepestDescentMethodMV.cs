@@ -68,19 +68,20 @@ namespace Destiny.Seeker_Sys
             var xn = new double[initialX.Length];
             Array.Copy(initialX, xn, xn.Length);
 
-            for (int i = 0; i < iteration; ++i)
+            using (StreamWriter streamWriter = new StreamWriter("gradLog.txt", false, Encoding.UTF8))
             {
-                double[] gradient = Gradient.Compute(f, xn);
-                using (StreamWriter streamWriter = new StreamWriter("gradLog.txt", false, Encoding.UTF8))
+                for (int i = 0; i < iteration; ++i)
                 {
-                    foreach(var x in gradient)
+                    double[] gradient = Gradient.Compute(f, xn);
+                    streamWriter.WriteLine(Seeker_MainSystem.GetGradVecLength(gradient).ToString());
+                    if(Seeker_MainSystem.GetGradVecLength(gradient) < 1e-4)
                     {
-                        streamWriter.WriteLine(x);
+                        break;
                     }
-                }
-                for (int j = 0; j < xn.Length; ++j)
-                {
-                    xn[j] -= learningRate * gradient[j];
+                    for (int j = 0; j < xn.Length; ++j)
+                    {
+                        xn[j] -= learningRate * gradient[j];
+                    }
                 }
             }
 
