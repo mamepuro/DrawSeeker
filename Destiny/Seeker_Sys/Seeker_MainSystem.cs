@@ -461,7 +461,7 @@ namespace Destiny
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.1");
+                            + "0.01");
                         }
                         else
                         {

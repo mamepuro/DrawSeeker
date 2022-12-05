@@ -535,12 +535,12 @@ namespace Destiny
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
-            Func<double[], double> f = x => x[0] * x[0] + x[1] * x[1] + 1.0;
-            var initialX = new double[] { 5.0, 1.0 };
+            Func<double[], double> f = x => Math.Cos(x[0]) * Math.Cos(x[0]) * Math.Cos(x[1]) * Math.Cos(x[1]);// * Math.Cos(x[2]) * Math.Cos(x[2]);//x[0] * x[0] + x[1] * x[1] + 1.0;
+            var initialX = new double[] { 3.14, 3.14, 1};
             int iteration = 1000;
             double learningRate = 0.01;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
-            Console.WriteLine(answer[0].ToString() + " " + answer[1].ToString());
+            Console.WriteLine("最小値は"+answer[0].ToString() + " " + answer[1].ToString() + " " + answer[2].ToString() + " (" + Math.Cos(answer[0]) * Math.Cos(answer[0]) * Math.Cos(answer[1]) * Math.Cos(answer[1]) + ")");
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
             //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
