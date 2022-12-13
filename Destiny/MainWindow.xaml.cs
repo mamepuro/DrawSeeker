@@ -544,7 +544,7 @@ namespace Destiny
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine("最小値は"+answer[0].ToString() + " " + answer[1].ToString() + " " + answer[2].ToString() + " (" + Math.Cos(answer[0]) * Math.Cos(answer[0]) * Math.Cos(answer[1]) * Math.Cos(answer[1]) + ")");
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
-            //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
 
         private void glControl_Resize(object sender, EventArgs e)
@@ -933,7 +933,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.W)
             {
-                vertexes[manipulateVertexIndex].VertexZ -= 0.001;
+                vertexes[manipulateVertexIndex].VertexZ -= 0.1;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[manipulateVertexIndex].VertexPosition.Z);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
@@ -969,7 +969,7 @@ namespace Destiny
             }
             if (e.KeyCode == Keys.T)
             {
-                vertexes[manipulateVertexIndex].VertexY += 0.001;
+                vertexes[manipulateVertexIndex].VertexY += 0.1;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }

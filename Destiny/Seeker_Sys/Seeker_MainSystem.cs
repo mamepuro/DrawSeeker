@@ -160,6 +160,7 @@ namespace Destiny
             }
             AddVertexConnectionInfomation(faces, vertices);
             SetEndVertexInformation(vertices);
+            /*
             SetVertexIndexOnUnitEdges(vertices);
             SetVertexIndexOnUnitButtomEdges(vertices);
             SetInnerVertex(vertices);
@@ -167,6 +168,8 @@ namespace Destiny
             SetInnerVertexOnRightEdge();
             SetVertexOnLeftEdge(vertices);
             SetInnerVertexOnRightEdge();
+            */
+            SetVertexIndexCheatMode(vertices);
             test(vertices);
             GetAllAngle(vertices);
             if(isDebugging)
@@ -644,6 +647,24 @@ namespace Destiny
             Console.WriteLine("右端は頂点 " + rightEndVertexIndex + "です。(座標 " + vertices[rightEndVertexIndex].VertexPosition.ToString() + ")");
             Console.WriteLine("上端は頂点 " + topVertexIndex + "です。(座標 " + vertices[topVertexIndex].VertexPosition.ToString()+ ")");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの端点の情報を探索を終了します。~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+
+        /// <summary>
+        /// 予め用意したリストに頂点情報を格納する(チートモードにつき実行非推奨)
+        /// </summary>
+        public static void SetVertexIndexCheatMode(List<Vertex> vertices)
+        {
+            List<int> inner = new List<int>()
+            {
+                2,5,6,9,10,17,18,21,25,26
+            };
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの内部頂点の探索を開始します．(チートモード)~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            foreach (var index in inner)
+            {
+                Console.WriteLine("頂点 " + index.ToString() + "を内部頂点として登録いたしました．");
+                InnnerVertexIndex.Add(index);
+            }
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~ユニットの内部頂点の探索を終了します．(チートモード)~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
 
         /// <summary>
@@ -1673,7 +1694,7 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 20000;
+            int iteration = 200;
             double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
