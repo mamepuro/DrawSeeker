@@ -65,7 +65,7 @@ namespace Destiny
         private Matrix4 _modelView;
         private int[] _viewport = new int[4];
         private int SelectedPartId = 0;
-        private float scale = 1.0f;
+        private float scale = 1.5f;
         private float PENTA_radius = 1 / (2 * MathF.Tan(MathF.PI / 5));
         //正十二面体の内接球半径
         private float PENTA_innerball_radius = ((MathF.Sqrt(5) + 1) * (MathF.Sqrt(25 + 10 * MathF.Sqrt(5)))) / (20);
@@ -379,9 +379,9 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-            DrawOCTO();
+            //DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
-            //DrawPENTA();
+            DrawPENTA();
             //DrawOCTO_UNIT(0);
             //DrawOCTO();
 
@@ -432,7 +432,7 @@ namespace Destiny
                         //正八面体の１つの面を3つの
                         for (int j = 0; j < 3; j++)
                         {
-                            for(int mirror = 0;mirror < 2;mirror++)
+                            for (int mirror = 0; mirror < 2; mirror++)
                             {
                                 DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag, i, j, mirror);
                             }
@@ -452,7 +452,7 @@ namespace Destiny
         /// <param name="flag"></param>
         /// <param name="i"></param>
         /// <param name="j"></param>
-        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag,int i,int j, int mirror)
+        private void DrawOCTO_UNIT(float faceAngle, float UnitAngle, int flag, int i, int j, int mirror)
         {
             //faceAngle =　面内のユニットの回転角
             {
@@ -469,12 +469,14 @@ namespace Destiny
                         GL.Rotate(_rotateAngleZ, 0, 0, -1);
                         GL.Rotate(UnitAngle, 0, 1, 0);
                         GL.Translate(0, 0, -0.5);
+                        //ここから面をつくる
                         GL.Translate(0, rotatey, rotatez);
                         GL.Rotate(faceAngle, -nor_axis);
                         GL.Translate(0, -rotatey, -rotatez);
+                        //ここまで
                         GL.Rotate(90 - dihedralAngle_OCTO / 2, 1, 0, 0);
                         GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-                        if(mirror != 0)
+                        if (mirror != 0)
                         {
                             GL.Scale(-1, 1, 1);
                         }
@@ -519,10 +521,10 @@ namespace Destiny
                     }
                     GL.End();
                     GL.PopMatrix();*/
-                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges, i+j+flag);
+                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges, i + j + flag);
 
                     GL.PopMatrix();
-                   
+
                 }
 
 
@@ -534,7 +536,7 @@ namespace Destiny
         {
             int[] indexes = new int[3];
 
-            
+
             for (int faceIndex = 0; faceIndex < faces.Count; faceIndex++)
             {
                 indexes[0] = faces[faceIndex][0];
@@ -548,7 +550,7 @@ namespace Destiny
                     Vertex vertex1 = vertices[indexes[(vertexpoint + 1) % 3]];
                     GL.Color4(0x0, 0x0, 0x255, 0x255);
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.001);
-                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ- 0.001);
+                    GL.Vertex3(vertex1.VertexX, vertex1.VertexY, vertex1.VertexZ - 0.001);
                 }
                 GL.End();
                 GL.Enable(EnableCap.Light0);
@@ -570,13 +572,13 @@ namespace Destiny
                 Vector3d p2 = vertices[indexes[2]].VertexPosition;
                 for (int vertexpoint = 0; vertexpoint < 3; vertexpoint++)
                 {
-                    Vector3d nom = Vector3d.Cross(p2 - p1, p0 -p1);
+                    Vector3d nom = Vector3d.Cross(p2 - p1, p0 - p1);
                     GL.Normal3(-nom.Normalized());
                     Vertex vertex = vertices[indexes[vertexpoint]];
                     GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ);
                 }
                 GL.End();
-                
+
 
 
             }
@@ -606,8 +608,14 @@ namespace Destiny
                     GL.Rotate(dihedralAngle_PENTA, -1, 0, 0);
                     GL.Translate(0, 0, PENTA_radius);
                 }
-
-                DrawPENTA_FACE(faceAngle);
+                if (count != 0)
+                {
+                    DrawPENTA_FACE(faceAngle);
+                }
+                else
+                {
+                    DrawPENTA_FACE_xPararel(faceAngle);
+                }
             }
             GL.PopMatrix();
         }
@@ -617,6 +625,7 @@ namespace Destiny
         private void DrawPENTA_FACE(float faceAngle)
         {
             //ここまでxz表面に平行なの正五角形の描画
+
             GL.Rotate(90, 1, 0, 0);
             GL.Translate(0, -PENTA_radius, 0);
             //ここまでユニットの描画
@@ -645,6 +654,42 @@ namespace Destiny
 
             GL.End();
         }
+        private void DrawPENTA_FACE_xPararel(float faceAngle)
+        {
+            //ここまでxz表面に平行なの正五角形の描画
+
+
+
+            GL.Translate(0, 2 * PENTA_innerball_radius, 0);
+            GL.Rotate(36, 0, 1, 0);
+            GL.Rotate(90, 1, 0, 0);
+            GL.Translate(0, -PENTA_radius, 0); 
+            //ここまでユニットの描画
+            GL.Translate(0, PENTA_radius, 0);
+            GL.Rotate(faceAngle, 0, 0, 1);
+            GL.Translate(0, -PENTA_radius, 0);
+            //angle =10; //-------------------------------------------(10)
+            GL.Material(MaterialFace.FrontAndBack, MaterialParameter.Diffuse,
+            System.Drawing.Color.Yellow);
+            //GL.Normal3(Vector3.UnitX);
+            GL.Normal3(Vector3d.Cross((PENTA_UNIT_vertexes[1].VertexPosition - PENTA_UNIT_vertexes[0].VertexPosition), PENTA_UNIT_vertexes[2].VertexPosition - PENTA_UNIT_vertexes[0].VertexPosition));
+            GL.Begin(PrimitiveType.TriangleFan);
+            for (int faceCount = 0; faceCount < faceIndex_PENTA_UNIT.GetLength(0); faceCount++)
+            {
+
+                for (int faceID = 0; faceID < faceIndex_PENTA_UNIT.GetLength(1); faceID++)
+                {
+
+                    int vertexIndex = faceIndex_PENTA_UNIT[faceCount, faceID];
+                    double x = PENTA_UNIT_vertexes[vertexIndex].VertexX;
+                    double y = PENTA_UNIT_vertexes[vertexIndex].VertexY;
+                    double z = PENTA_UNIT_vertexes[vertexIndex].VertexZ;
+                    GL.Vertex3(x, y, z);
+                }
+            }
+
+            GL.End();
+        }
         private void DrawPENTA()
         {
             GL.PushMatrix();
@@ -653,7 +698,7 @@ namespace Destiny
                 for (int is_hafUP = 0; is_hafUP < 2; is_hafUP++)
                 {
                     //正十二面体の半分
-                    for (int PENTAhalf = 0; PENTAhalf < 6; PENTAhalf++)
+                    for (int PENTAhalf = 0; PENTAhalf < 7; PENTAhalf++)
                     {
                         for (int i = 0; i < 5; i++)
                         {
@@ -868,7 +913,7 @@ namespace Destiny
                 Vector3d v1 = new Vector3d(0, _mouseX, _mouseY);
                 Vector3d v2 = new Vector3d(0, currentMouseY, currentMouseY);
                 _rotato = OpenTKExSys.GetNormalVector(mouseMove, mouseMove);
-                _rotateAngleY = arcball.GetRotateAngle(_mouseX, _mouseY, currentMouseX, currentMouseY, glControl.Size.Width / 2, glControl.Size.Height / 2) * 2* MathF.PI;
+                _rotateAngleY = arcball.GetRotateAngle(_mouseX, _mouseY, currentMouseX, currentMouseY, glControl.Size.Width / 2, glControl.Size.Height / 2) * 2 * MathF.PI;
                 _rotateAngleZ = arcball.GetRotateAngle(_mouseX, _mouseY, currentMouseX, currentMouseY, glControl.Size.Width / 2, glControl.Size.Height / 2) * 2 * MathF.PI;
                 _mouseX = e.X;
                 _mouseY = e.Y;
@@ -906,5 +951,5 @@ namespace Destiny
                 }
             }
         }
-}
+    }
 }
