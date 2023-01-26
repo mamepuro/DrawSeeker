@@ -271,7 +271,7 @@ namespace Destiny
                 GL.PopMatrix();
                 
                 //左右対称
-                /*
+                
                 GL.PushMatrix();
                 GL.Scale(-1, 1, 1);
                 GL.Scale(scale, scale, scale);
@@ -297,7 +297,7 @@ namespace Destiny
                 GL.Enable(EnableCap.Light0);
                 //右上
                 GL.PopMatrix();
-                */
+                
                 GL.PushMatrix();
                 GL.Scale(-1, 1, 1);
                 GL.Scale(scale, scale, scale);
@@ -322,7 +322,7 @@ namespace Destiny
                 }
                 GL.End();
                 GL.PopMatrix();
-                /*
+                
                 GL.PushMatrix();
                 GL.Scale(scale, scale, scale);
                 GL.Rotate(_rotateAngleY, 0, 0, -1);
@@ -487,7 +487,7 @@ namespace Destiny
                     GL.PopMatrix();
                     GL.Enable(EnableCap.Light0);
                 
-                */
+                
             }
 
         }
@@ -531,11 +531,11 @@ namespace Destiny
                 Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            //Seeker_MainSystem.GetHalfTriangleUnitObjFile(5,"halftriangle");
-            Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile(4, "halftriangle");
+            Seeker_MainSystem.GetHalfTriangleUnitObjFile(3,"halftriangle");
+            //Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile(4, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
-            //Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
-            Seeker_MainSystem.LoadObjFlie(@"untitled2.obj", vertexes, edges, angle, scale);
+            Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
+            //Seeker_MainSystem.LoadObjFlie(@"untitled2.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => Math.Cos(x[0]) * Math.Cos(x[0]) * Math.Cos(x[1]) * Math.Cos(x[1]);// * Math.Cos(x[2]) * Math.Cos(x[2]);//x[0] * x[0] + x[1] * x[1] + 1.0;
             var initialX = new double[] { 3.14, 3.14, 1};
@@ -546,7 +546,7 @@ namespace Destiny
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
             Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
-
+        
         private void glControl_Resize(object sender, EventArgs e)
         { //------(5)
             GL.Viewport(0, 0, glControl.Size.Width, glControl.Size.Height);

@@ -379,9 +379,9 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-            //DrawOCTO();
+            DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
-            DrawPENTA();
+            //DrawPENTA();
             //DrawOCTO_UNIT(0);
             //DrawOCTO();
 

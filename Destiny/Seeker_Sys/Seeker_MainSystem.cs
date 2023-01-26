@@ -160,7 +160,7 @@ namespace Destiny
             }
             AddVertexConnectionInfomation(faces, vertices);
             SetEndVertexInformation(vertices);
-            /*
+            
             SetVertexIndexOnUnitEdges(vertices);
             SetVertexIndexOnUnitButtomEdges(vertices);
             SetInnerVertex(vertices);
@@ -168,8 +168,8 @@ namespace Destiny
             SetInnerVertexOnRightEdge();
             SetVertexOnLeftEdge(vertices);
             SetInnerVertexOnRightEdge();
-            */
-            SetVertexIndexCheatMode(vertices);
+           
+            //SetVertexIndexCheatMode(vertices);
             test(vertices);
             GetAllAngle(vertices);
             if(isDebugging)
@@ -332,14 +332,14 @@ namespace Destiny
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "-0.01");
+                            + "-0.00");
                         }
                         else
                         {
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.01");
+                            + "0.00");
                         }
                     }
                     else
@@ -1694,7 +1694,7 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 200;
+            int iteration = 1000;
             double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
