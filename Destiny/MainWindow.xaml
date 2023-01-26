@@ -6,14 +6,19 @@
         xmlns:OpenTK="clr-namespace:OpenTK;assembly=OpenTK.GLControl" 
         xmlns:local="clr-namespace:Destiny"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800">
+        Title="MainWindow" Height="550" Width="800">
     <Grid>
-        <WindowsFormsHost Margin="0,0,0,76" MouseUp="glControl_MouseUp">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <WindowsFormsHost Margin="0,2,0,74" MouseUp="glControl_MouseUp" Grid.ColumnSpan="2">
             <OpenTK:GLControl x:Name="glControl" Load="glControl_Load" Resize="glControl_Resize" Paint="glControl_Paint" MouseClick="glControl_MouseClick" MouseWheel="glControl_MouseWheel" KeyDown="glControl_OnKeyDown" MouseMove="glControl_MouseMove" MouseUp="glControl_MouseUp" MouseDown="glControl_MouseDown"/>
 
         </WindowsFormsHost>
-        <Button x:Name="button_saveObjFile" Content="出力" HorizontalAlignment="Left" Margin="44,434,0,0" VerticalAlignment="Top" Width="96" Background="#FFE20F0F" Click="button_saveObjFile_Click"/>
-        <Button x:Name="button" Content="生成" Margin="208,428,470,24" Click="button_AssembleUnitShape"/>
+        <Button x:Name="button_saveObjFile" Content="出力" HorizontalAlignment="Left" Margin="40,465,0,0" VerticalAlignment="Top" Width="96" Background="#FFE20F0F" Click="button_saveObjFile_Click" Grid.ColumnSpan="2"/>
+        <Button x:Name="button" Content="生成" Margin="178,462,500,46" Click="button_AssembleUnitShape" Grid.ColumnSpan="2"/>
+        <Button x:Name="button_drawReferLine" Content="軸表示" HorizontalAlignment="Center" Margin="0,468,0,0" VerticalAlignment="Top" Width="96" Background="#00FF0F" Click="buttonDrawReferLine" Grid.Column="1"/>
 
 
 

@@ -1,4 +1,10 @@
-﻿using System;
+﻿
+
+
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +14,7 @@ namespace Destiny.Seeker_Sys
 {
     public class PartialDerivative
     {
-        private const double _h = 1e-5;
+        private const double _h = 1e-8;
 
         /// <summary>
         /// 偏導関数を計算するメソッド
@@ -38,7 +44,6 @@ namespace Destiny.Seeker_Sys
 
                 xCopied[index] -= _h;
                 double f2 = f(xCopied);
-
                 return (f1 - f2) / (2.0 * _h);
             };
         }

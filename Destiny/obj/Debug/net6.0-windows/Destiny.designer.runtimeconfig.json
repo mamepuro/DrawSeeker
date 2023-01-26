@@ -12,8 +12,8 @@
       }
     ],
     "additionalProbingPaths": [
-      "C:\\Users\\endo\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\endo\\.nuget\\packages"
+      "C:\\Users\\ayata\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\ayata\\.nuget\\packages"
     ],
     "configProperties": {
       "Microsoft.NETCore.DotNetHostPolicy.SetAppPaths": true
