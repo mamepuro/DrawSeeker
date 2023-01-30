@@ -66,13 +66,16 @@ namespace Destiny
         private int[] _viewport = new int[4];
         private int SelectedPartId = 0;
         private float scale = 1.5f;
+        private float HEXA_radius = 0.5f;
         private float PENTA_radius = 1 / (2 * MathF.Tan(MathF.PI / 5));
         //正十二面体の内接球半径
         private float PENTA_innerball_radius = ((MathF.Sqrt(5) + 1) * (MathF.Sqrt(25 + 10 * MathF.Sqrt(5)))) / (20);
+        private float ICOSA_outerball_radius = MathF.Sqrt(10 + 2 * MathF.Sqrt(5))  / (4);
         private float OCTO_radius = 1 / (2 * (float)Math.Sqrt(3));
         int angle = 0;
         double w = 0.5, h = 0.2, d = 0.7;
         float rad = (90 - dihedralAngle_OCTO / 2) * (float)Math.PI / 180;
+        float rad_ICOSA = (90 - dihedralAngle_ICOSA / 2) * (float)Math.PI / 180;
         float rotatey;
         float rotatez;
         Seeker_Sys.Arcball arcball;
@@ -81,8 +84,10 @@ namespace Destiny
         /// 多面体の面の中心部分の回転軸
         /// </summary>
         Vector3d nor_axis;
+        const float dihedralAngle_HEXA = 90.0f;
         const float dihedralAngle_OCTO = 109.47f;
         const float dihedralAngle_PENTA = 116.56f;
+        const float dihedralAngle_ICOSA = 138.11f;
 
         int vertexcount = 8;
         List<Vertex> vertexes = new List<Vertex>();
@@ -139,6 +144,7 @@ namespace Destiny
             rotatez = OCTO_radius * (float)Math.Sin(rad);
             nor_axis = OpenTKExSys.GetNormalVector(new Vector3d(-0.5, 0, 0), new Vector3d(0.5, 0, 0), new Vector3d(0, rotatey, rotatez));
         }
+
 
         private void SetPENTA_UNIT_pos()
         {
@@ -231,6 +237,21 @@ namespace Destiny
                 72*4,
                 72*5,
             };
+        int[] rotateface_HEXA_UNIT = new int[]
+{
+                0,
+                90,
+                180,
+                270
+};
+        int[] rotateUnit_HEXA_UNIT = new int[]
+        {
+            0,
+            90,
+            180,
+            270,
+            0
+        };
         int[] rotateface_OCTO_UNIT = new int[]
     {
                 0,
@@ -244,6 +265,21 @@ namespace Destiny
             180,
             270,
         };
+        int[] rotateface_ICOSA_UNIT = new int[]
+{
+                0,
+                120,
+                240
+};
+        int[] rotateUnit_ICOSA_UNIT = new int[]
+        {
+                0,
+                72,
+                72*2,
+                72*3,
+                72*4,
+        };
+
         System.Drawing.Color[] colors = new System.Drawing.Color[]
         {
             System.Drawing.Color.Yellow,
@@ -379,10 +415,12 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-            DrawTETRA();
+            //DrawTETRA();
+            //DrawHEXA();
             //DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
+            DrawICOSA();
 
             glControl.SwapBuffers(); //---------------------------------------(8)
         }
@@ -444,6 +482,120 @@ namespace Destiny
                 }
                 GL.PopMatrix();
         }
+        /// <summary>
+        /// 正六面体ベースのユニット折り紙を表示する
+        /// </summary>
+        private void DrawHEXA()
+        {
+            GL.PushMatrix();
+            {
+                //正八面体の上半分と下半分をflagで場合分け
+                for (int flag = 0; flag < 1; flag++)
+                {
+                    //面の数
+                    for (int i = 0; i < 5; i++)
+                    {
+                        //正八面体の１つの面を4つのユニットから作る
+                        for (int j = 0; j < 4; j++)
+                        {
+                            for (int mirror = 0; mirror < 2; mirror++)
+                            {
+                                DrawHEXA_UNIT(rotateface_HEXA_UNIT[j], rotateUnit_HEXA_UNIT[i], flag, i, j, mirror);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            GL.PopMatrix();
+        }
+        /// <summary>
+        /// 正六面体ベースのユニット折り紙を表示する
+        /// </summary>
+        /// <param name="faceAngle"></param>
+        /// <param name="UnitAngle"></param>
+        /// <param name="flag"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        private void DrawHEXA_UNIT(float faceAngle, float UnitAngle, int flag, int i, int j, int mirror)
+        {
+            //faceAngle =　面内のユニットの回転角
+            {
+                for (int faceCount = 0; faceCount < rotateface_HEXA_UNIT.Length; faceCount++)
+                {
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    if (flag == 0)
+                    {
+
+                        GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                        GL.Rotate(_rotateAngleY, 0, 1, 0);
+                        GL.Rotate(_rotateAngleZ, 0, 0, -1);
+                        if (i < 4)
+                        {
+                            GL.Rotate(UnitAngle, 0, 1, 0);
+                            GL.Translate(0, 0, -0.5);
+                            //ここから面をつくる
+                            GL.Translate(0, 0.5, 0);
+                            GL.Rotate(faceAngle, 0, 0, 1);
+                            GL.Translate(0, -0.5, 0);
+                            //ここまで
+                            GL.Rotate(90 - dihedralAngle_HEXA, 1, 0, 0);
+                        }
+                        else
+                        {
+                            GL.Translate(0, 0.5, 0);
+                            GL.Translate(0, 0, -0.5);
+                            GL.Rotate(90, 1, 0, 0);
+                            GL.Translate(0, 0, -0.5);
+                            //ここから面をつくる
+                            GL.Translate(0, 0.5, 0);
+                            GL.Rotate(faceAngle, 0, 0, 1);
+                            GL.Translate(0, -0.5, 0);
+                            //ここまで
+                            GL.Rotate(90 - dihedralAngle_HEXA, 1, 0, 0);
+                        }
+
+                        
+                        GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                        if (mirror != 0)
+                        {
+                            GL.Scale(-1, 1, 1);
+                        }
+                        //GL.Normal3(-Vector3.UnitZ);
+                    }
+                    else
+                    //下半分
+                    {
+                        GL.Rotate(180, 1, 0, 0);
+                        GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
+                        GL.Rotate(_rotateAngleY, 0, -1, 0);
+                        GL.Rotate(_rotateAngleZ, 0, 0, 1);
+                        GL.Rotate(UnitAngle, 0, 1, 0);
+                        GL.Translate(0, 0, -0.5);
+                        GL.Translate(0, rotatey, rotatez);
+                        GL.Rotate(faceAngle, -nor_axis);
+                        GL.Translate(0, -rotatey, -rotatez);
+                        GL.Rotate(90 - dihedralAngle_HEXA / 2, 1, 0, 0);
+                        GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                        if (mirror != 0)
+                        {
+                            GL.Scale(-1, 1, 1);
+                        }
+                        //GL.Normal3(Vector3.UnitZ);
+                    }
+                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges, i + j + flag);
+
+                    GL.PopMatrix();
+
+                }
+
+
+            }
+            GL.PopMatrix();
+        }
+
         /// <summary>
         /// 正八面体ベースのユニット折り紙を表示する
         /// </summary>
@@ -559,6 +711,7 @@ namespace Destiny
             }
             GL.PopMatrix();
         }
+
 
         private void DrawUnitPart(List<Vertex> vertices, List<int[]> faces, int ind)
         {
@@ -739,6 +892,202 @@ namespace Destiny
             }
             GL.PopMatrix();
         }
+
+        /// <summary>
+        /// 正二十面体ベースのユニット折り紙を表示する
+        /// </summary>
+        private void DrawICOSA()
+        {
+            GL.PushMatrix();
+            {
+                //
+                for(int is_under = 0; is_under < 2; is_under++)
+                {
+                    for (int flag = 0; flag < 2; flag++)
+                    {
+                        //正二十面体一周あたり5個のユニット
+                        for (int i = 0; i < 5; i++)
+                        {
+                            //正八面体の１つの面を3つのユニット
+                            for (int j = 0; j < 3; j++)
+                            {
+                                for (int mirror = 0; mirror < 2; mirror++)
+                                {
+                                    DrawICOSA_UNIT(rotateface_ICOSA_UNIT[j], rotateUnit_ICOSA_UNIT[i], flag, i, j, mirror, is_under);
+                                }
+                            }
+
+                        }
+                    }
+                }
+                //正八面体の上半分と下半分をflagで場合分け
+
+
+            }
+            GL.PopMatrix();
+        }
+        /// <summary>
+        /// 正二十面体ベースのユニット折り紙を表示する
+        /// </summary>
+        /// <param name="faceAngle"></param>
+        /// <param name="UnitAngle"></param>
+        /// <param name="flag"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        private void DrawICOSA_UNIT(float faceAngle, float UnitAngle, int flag, int i, int j, int mirror, int is_under)
+        {
+            float anglePENTA = MathF.Acos((float)PENTA_radius / (0.5f * MathF.Sqrt(3))) * 180 / MathF.PI;
+
+            float height = MathF.Tan(MathF.Acos((float)PENTA_radius / (0.5f * MathF.Sqrt(3)))) * (PENTA_radius);
+            float move = (ICOSA_outerball_radius - height);
+            Console.WriteLine(move);
+            //faceAngle =　面内のユニットの回転角
+            {
+                for (int faceCount = 0; faceCount < faceIndex_OCTO_UNIT.GetLength(0); faceCount++)
+                {
+                    GL.PushMatrix();
+                    GL.Scale(scale, scale, scale);
+                    //
+
+                    if(is_under == 0)
+                    {
+                        if (flag == 0)
+                        {
+
+                            GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+
+                            //GL.Rotate(UnitAngle, 0, 1, 0);
+                            //GL.Translate(0, 0, -0.5);
+                            ////ここから面をつくる
+                            GL.Translate(0, -move, 0);
+                            GL.Rotate(UnitAngle, 0, 1, 0);
+                            //正五角形の内接円の半径分だけ移動(双対関係より)
+                            GL.Translate(0, 0, -PENTA_radius);
+                            //二面角分だけ回転する
+                            GL.Rotate(dihedralAngle_ICOSA - anglePENTA - 90, -1, 0, 0);
+                            //ここまでxy平面に乗る正三角形の描画(底辺がy=0)
+                            GL.Translate(0, Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Rotate(faceAngle, 0, 0, 1);
+                            GL.Translate(0, -Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                            if (mirror != 0)
+                            {
+                                GL.Scale(-1, 1, 1);
+                            }
+                            //GL.Normal3(-Vector3.UnitZ);
+                        }
+                        else
+                        //下半分
+                        {
+
+                            GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                            GL.Translate(0, -move, 0);
+                            GL.Rotate(UnitAngle, 0, 1, 0);
+                            //正五角形の内接円の半径分だけ移動(双対関係より)
+                            GL.Translate(0, 0, -PENTA_radius);
+                            //二面角分だけ回転する
+                            GL.Rotate(180, 0, 0, 1);
+                            GL.Rotate(90 - anglePENTA, 1, 0, 0);
+                            //ここまでxy平面に乗る正三角形の描画(底辺がy=0)
+
+                            GL.Translate(0, Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Rotate(faceAngle, 0, 0, 1);
+                            GL.Translate(0, -Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                            if (mirror != 0)
+                            {
+                                GL.Scale(-1, 1, 1);
+                            }
+                            //GL.Normal3(Vector3.UnitZ);
+                        }
+                    }
+                    else
+                    {
+                        if (flag == 0)
+                        {
+
+                            GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+
+                            //GL.Rotate(UnitAngle, 0, 1, 0);
+                            //GL.Translate(0, 0, -0.5);
+                            ////ここから面をつくる
+                            //GL.Translate(0, rotatey, rotatez);
+                            GL.Rotate(180, 1, 0, 0);
+                            GL.Rotate(72, 0, 1, 0);
+                            GL.Translate(0, -move, 0);
+                            GL.Rotate(UnitAngle, 0, 1, 0);
+                            //正五角形の内接円の半径分だけ移動(双対関係より)
+                            GL.Translate(0, 0, -PENTA_radius);
+                            //二面角分だけ回転する
+                            GL.Rotate(dihedralAngle_ICOSA - anglePENTA - 90, -1, 0, 0);
+                            //ここまでxy平面に乗る正三角形の描画(底辺がy=0)
+                            GL.Translate(0, Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Rotate(faceAngle, 0, 0, 1);
+                            GL.Translate(0, -Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                            if (mirror != 0)
+                            {
+                                GL.Scale(-1, 1, 1);
+                            }
+                            //GL.Normal3(-Vector3.UnitZ);
+                        }
+                        else
+                        //下半分
+                        {
+
+                            GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
+                            GL.Rotate(180, 1, 0, 0);
+                            GL.Rotate(72, 0, 1, 0);
+                            GL.Translate(0, -move, 0);
+                            GL.Rotate(UnitAngle, 0, 1, 0);
+                            //正五角形の内接円の半径分だけ移動(双対関係より)
+                            GL.Translate(0, 0, -PENTA_radius);
+                            //二面角分だけ回転する
+                            GL.Rotate(180, 0, 0, 1);
+                            GL.Rotate(90 - anglePENTA, 1, 0, 0);
+                            //ここまでxy平面に乗る正三角形の描画(底辺がy=0)
+
+                            GL.Translate(0, Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Rotate(faceAngle, 0, 0, 1);
+                            GL.Translate(0, -Seeker_Sys.Seeker_ShapeData.OCTO_radius, 0);
+                            GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                            if (mirror != 0)
+                            {
+                                GL.Scale(-1, 1, 1);
+                            }
+                            //GL.Normal3(Vector3.UnitZ);
+                        }
+                    }
+
+                    /*
+                    //angle =10; //-------------------------------------------(10)
+                    GL.Material(MaterialFace.Front, MaterialParameter.Diffuse,
+                colors[faceCount]);
+                    GL.Normal3(Vector3d.Cross((OCTO_UNIT_vertexes[1].VertexPosition - OCTO_UNIT_vertexes[0].VertexPosition), OCTO_UNIT_vertexes[2].VertexPosition - OCTO_UNIT_vertexes[0].VertexPosition));
+                    GL.Begin(PrimitiveType.Polygon);
+                    for (int faceID = 0; faceID < faceIndex_OCTO_UNIT.GetLength(1); faceID++)
+                    {
+
+                        int vertexIndex = faceIndex_OCTO_UNIT[faceCount, faceID];
+                        double x = OCTO_UNIT_vertexes[vertexIndex].VertexX;
+                        double y = OCTO_UNIT_vertexes[vertexIndex].VertexY;
+                        double z = OCTO_UNIT_vertexes[vertexIndex].VertexZ;
+
+                        GL.Vertex3(x, y, z);
+                    }
+                    GL.End();
+                    GL.PopMatrix();*/
+                    DrawUnitPart(MainWindow.vertexes, MainWindow.edges, i + j + flag);
+
+                    GL.PopMatrix();
+
+                }
+
+
+            }
+            GL.PopMatrix();
+        }
+
         /// <summary>
         /// テスト用コード(描画テストに使う)
         /// </summary>

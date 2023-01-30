@@ -287,6 +287,7 @@ namespace Destiny
             float startYPos = 0;
             //将来的にこれは変更する(OCTO以外も選択可能に)
             float endYPos = Seeker_Sys.Seeker_ShapeData.OCTO_radius;
+            //float endYPos = Seeker_Sys.Seeker_ShapeData.HEXA_radius;
             //行あたりの増加分y座標
             float _updateHeight = endYPos / (split + 1);
             //ここから頂点計算

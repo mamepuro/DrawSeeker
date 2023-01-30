@@ -1088,21 +1088,25 @@ namespace Destiny
                 Vector2d mouseMove = new Vector2d(currentMouseX - _mouseX, currentMouseY - _mouseY);
                 float move = 0.01f; //(float)mouseMove.Length * 0.000001f;
                 Console.WriteLine("move: "+move);
-                if(ope == Operation.X)
+                if(opeID != 0)
                 {
-                    vertexes[opeID].VertexX += move;
-                    vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                    if (ope == Operation.X)
+                    {
+                        vertexes[opeID].VertexX += move;
+                        vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                    }
+                    else if (ope == Operation.Y)
+                    {
+                        vertexes[opeID].VertexY += move;
+                        vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                    }
+                    else if (ope == Operation.Z)
+                    {
+                        vertexes[opeID].VertexZ += move;
+                        vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                    }
                 }
-                else if(ope == Operation.Y)
-                {
-                    vertexes[opeID].VertexY += move;
-                    vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
-                }
-                else if (ope == Operation.Z)
-                {
-                    vertexes[opeID].VertexZ += move;
-                    vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
-                }
+
 
                 //_mouseX = currentMouseX;
                 //_mouseY = currentMouseY;
