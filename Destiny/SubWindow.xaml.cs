@@ -354,7 +354,7 @@ namespace Destiny
             _perspectiveProjection = projection;
             GL.LoadMatrix(ref projection);
             GL.MatrixMode(MatrixMode.Modelview); // 視界の設定
-            Matrix4 look = Matrix4.LookAt(3.0f * Vector3.UnitX + 2.0f * Vector3.UnitY,
+            Matrix4 look = Matrix4.LookAt(3.0f * Vector3.UnitX + 1.0f * Vector3.UnitY,
               Vector3.Zero, Vector3.UnitY);
             _modelView = look;
             GL.LoadMatrix(ref look);

@@ -1694,7 +1694,7 @@ namespace Destiny
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 1000;
+            int iteration = 500;
             double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
