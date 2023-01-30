@@ -36,6 +36,7 @@ namespace Destiny
         /// 右クリック中かどうか
         /// </summary>
         private bool _isDraggingRightButton = false;
+        private bool _isDraggingLeftButton = false;
         private float _mouseX = 0;
         private float _mouseY = 0;
         private Vector3d _rotato;
@@ -69,6 +70,16 @@ namespace Destiny
         private bool isDisplayUnit = false;
         int manipulateVertexIndex = 5;
         bool isDrawReferLine = false;
+        bool isDrawHundle = false;
+        enum Operation
+        { 
+            X,
+            Y,
+            Z
+        }
+        Operation ope = Operation.X;
+        int opeID = 0;
+        Vector3d hundle;
         Seeker_Sys.Arcball arcball;
         /// <summary>
         /// 多面体の面の中心部分の回転軸
@@ -193,23 +204,24 @@ namespace Destiny
                 GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
             }
             GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
-            GL.PointSize(6);
+            GL.PointSize(7);
             GL.Disable(EnableCap.Lighting);
             
             GL.Begin(BeginMode.Points);
             for (int vertexpoint = 0; vertexpoint < vertices.Count; vertexpoint++)
             {
+                byte alpha = (byte)vertices[vertexpoint].ID;
                 if (!Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint) && !Seeker_MainSystem.VertexIndexOnUnitEdges.Contains(vertexpoint))
                 {
-                    GL.Color3((byte)0,(byte) 0, (byte)0xFF);
+                    GL.Color4((byte)0,(byte) 0, (byte)0xFF, alpha);
                 }
                 else if(Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint))
                 {
-                    GL.Color3((byte)0xFF, (byte)0, (byte)0);
+                    GL.Color4((byte)0xFF, (byte)0, (byte)0, alpha);
                 }
                 else
                 {
-                    GL.Color3((byte)0, (byte)0xFF, (byte)0);
+                    GL.Color4((byte)0, (byte)0xFF, (byte)0, alpha);
                 }
                 Vertex vertex = vertices[vertexpoint];
                 GL.Vertex3(vertex.VertexX, vertex.VertexY, vertex.VertexZ - 0.003);
@@ -435,7 +447,7 @@ namespace Destiny
                 {
                     GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
                 }
-                //GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
                 GL.Begin(BeginMode.Lines);
                 for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
@@ -604,6 +616,10 @@ namespace Destiny
             {
                 DrawReferLine();
             }
+            if(isDrawHundle)
+            {
+                DrawHundle(hundle);
+            }
             //DrawVertexPoint();
             DrawUnit(vertexes, edges, false);
             //drawBox(); //------------------------------------------------------(7)
@@ -646,6 +662,37 @@ namespace Destiny
             }
             GL.PopMatrix();
         }
+        private void DrawHundle(Vector3d pos)
+        {
+            Vector3d fixedPos = pos + new Vector3d(0, 0, 0.01);
+            GL.PushMatrix();
+            {
+                GL.Rotate(angle, 0, 1, 0);
+                GL.Rotate(anglex, 1, 0, 0);//-------------------------(9)
+                GL.Scale(scale, scale, scale);
+                GL.Disable(EnableCap.Lighting);
+                GL.LineWidth(3);
+                //angle =10; //-------------------------------------------(10)
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color4((byte)255, (byte)0, (byte)0, (byte)253);
+                GL.Vertex3(fixedPos);
+                GL.Vertex3(fixedPos + new Vector3d(0.5,0,0));
+                GL.End();
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color4((byte)0, (byte)255, (byte)0, (byte)254);
+                GL.Vertex3(fixedPos);
+                GL.Vertex3(fixedPos + new Vector3d(0, 0.5, 0));
+                GL.End();
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color4((byte)0, (byte)0, (byte)255, (byte)255);
+                GL.Vertex3(fixedPos);
+                GL.Vertex3(fixedPos + new Vector3d(0, 0, 0.5));
+                GL.End();
+                GL.Enable(EnableCap.Lighting);
+            }
+            GL.LineWidth(1);
+            GL.PopMatrix();
+        }
         /// <summary>
         /// マウスでクリックされた
         /// </summary>
@@ -653,58 +700,50 @@ namespace Destiny
         /// <param name="e"></param>
         private void glControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-
+            isDrawHundle = false;
             //GL.ReadBuffer(ReadBufferMode.ColorAttachment1);
-            float[] pixels = new float[3];
-            GL.ReadPixels(e.X, glControl.Size.Height - e.Y, 1, 1, PixelFormat.Rgb, PixelType.Float, pixels);
+            float[] pixels = new float[4];
+            GL.ReadPixels(e.X, glControl.Size.Height - e.Y, 1, 1, PixelFormat.Rgba, PixelType.Float, pixels);
             pixels[0] = pixels[0] * 255;
             pixels[1] = pixels[1] * 255;
             pixels[2] = pixels[2] * 255;
-            Debug.Print(((int)pixels[0]).ToString() + "," + ((int)pixels[1]).ToString() + "," + ((int)pixels[2]).ToString() + "," + glControl.Size.Width + "," + glControl.Size.Height);
+            pixels[3] = pixels[3] * 255;
+            Console.WriteLine(((int)pixels[0]).ToString() + "," + ((int)pixels[1]).ToString() + "," + ((int)pixels[2]).ToString() + "," + ((int)pixels[3]).ToString() + "," + glControl.Size.Width + "," + glControl.Size.Height);
             for (int index = 0; index < vertexes.Count; index++)
             {
-                //Green の色をIDとする
-                if (vertexes[index].ID == pixels[2])
+                Console.WriteLine(vertexes[index].ID + ","+  pixels[3]);
+                //alpha の色をIDとする
+                if (vertexes[index].ID == (int)pixels[3])
                 {
-                    vertexes[index].VertexX += 0.1;
+                    if (vertexes[index].ID == 0)
+                    {
+                        return;
+                    }
+                    isDrawHundle = true;
+                    hundle = vertexes[index].VertexPosition;
+                    opeID = vertexes[index].ID;
+                    manipulateVertexIndex = opeID;
+                    Console.WriteLine("Now ManiPulate Index is " + manipulateVertexIndex.ToString());
                     break;
                 }
-            }
-            glControl.Refresh();
-
-            /*
-            GL.RenderMode(RenderingMode.Select);
-            Debug.Print("Clicked");
-            GL.RenderMode(RenderingMode.Render);
-            */
-            /*
-            int[] viewport = new int[4];
-            GL.GetInteger(GetPName.Viewport, viewport);
-            int winW = viewport[2];
-            int winH = viewport[3];
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                int sizeBuffer = 2048;
-                int[] pickSelectBuffer = new int[sizeBuffer];
-
-                PreProcessOfObjectPick(
-                    sizeBuffer, pickSelectBuffer,
-                    (uint)e.X, (uint)e.Y, 5, 5);
-                //DrawSelection();
-
-                IList<SelectedObject> selectedObjs = ObjectPickAfterProcessing(pickSelectBuffer,
-                    (uint)e.X, (uint)e.Y);
-
-                SelectedPartId = 0;
-                if (selectedObjs.Count > 0)
+                if((int)pixels[3] == 253)
                 {
-                    int[] selectFlg = selectedObjs[0].Name;
-                    System.Diagnostics.Debug.WriteLine("selectFlg[1] = " + selectFlg[1]);
-                    SelectedPartId = selectFlg[1];
+                    Console.WriteLine("XOpe");
+                    ope = Operation.X;
                 }
-                glControl.Invalidate();
+                else if((int)pixels[3] == 254)
+                {
+                    Console.WriteLine("YOpe");
+                    ope = Operation.Y;
+                }
+                else if((int)pixels[3] == 255 && pixels[0] == 255)
+                {
+                    Console.WriteLine("ZOpe");
+                    ope = Operation.Z;
+                }
             }
-            */
+            
+            glControl.Refresh();
         }
 
         private void glControl_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -731,7 +770,7 @@ namespace Destiny
             GL.GetInteger(GetPName.Viewport, viewport);
             //Debug.Print(viewport[0].ToString() + "," + viewport[1].ToString() + "," + viewport[2].ToString() + "," + viewport[3].ToString());
             glControl.Refresh();
-            Debug.Print("_isDragging" + _isDraggingRightButton);
+            //Debug.Print("_isDragging" + _isDraggingRightButton);
         }
 
         /// <summary>
@@ -1042,6 +1081,32 @@ namespace Destiny
                 //_mouseX = currentMouseX;
                 //_mouseY = currentMouseY;
             }
+            if (_isDraggingLeftButton)
+            {
+                float currentMouseX = e.X;
+                float currentMouseY = e.Y;
+                Vector2d mouseMove = new Vector2d(currentMouseX - _mouseX, currentMouseY - _mouseY);
+                float move = 0.01f; //(float)mouseMove.Length * 0.000001f;
+                Console.WriteLine("move: "+move);
+                if(ope == Operation.X)
+                {
+                    vertexes[opeID].VertexX += move;
+                    vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                }
+                else if(ope == Operation.Y)
+                {
+                    vertexes[opeID].VertexY += move;
+                    vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                }
+                else if (ope == Operation.Z)
+                {
+                    vertexes[opeID].VertexZ += move;
+                    vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
+                }
+
+                //_mouseX = currentMouseX;
+                //_mouseY = currentMouseY;
+            }
             glControl.Refresh();
 
         }
@@ -1060,6 +1125,15 @@ namespace Destiny
                     _isDraggingRightButton = false;
                 }
             }
+            if (e.Button == MouseButtons.Left)
+            {
+                if(_isDraggingLeftButton)
+                {
+                    //isDrawHundle = false;
+                    _isDraggingLeftButton = false;
+                    Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                }
+            }
         }
 
         private void glControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -1072,6 +1146,15 @@ namespace Destiny
                     _mouseX = e.X;
                     _mouseY = e.Y;
                     Debug.Print(_mouseX.ToString() + ", " + _mouseY.ToString() + ": ");
+                }
+            }
+            if (e.Button == MouseButtons.Left)
+            {
+                if (!_isDraggingLeftButton)
+                {
+                    _mouseX = e.X;
+                    _mouseY = e.Y;
+                    _isDraggingLeftButton = true;
                 }
             }
         }

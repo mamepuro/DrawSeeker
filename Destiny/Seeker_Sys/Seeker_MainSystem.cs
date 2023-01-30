@@ -1734,7 +1734,7 @@ namespace Destiny
             }
             Console.WriteLine("計算後の数値");
             GetAllAngle(verteices);
-            InnerBottomErrorZ = verteices[rightEndVertexIndex].VertexZ;
+            InnerBottomErrorZ = verteices[0].VertexZ;
             Console.WriteLine("底辺の内部頂点のz誤差は " + InnerBottomErrorZ.ToString()+"です。");
         }
 

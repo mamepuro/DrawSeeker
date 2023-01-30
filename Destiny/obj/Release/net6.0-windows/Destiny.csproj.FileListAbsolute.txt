@@ -25,3 +25,30 @@ C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Release\ne
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.pdb
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.genruntimeconfig.cache
 C:\Users\ayata\OneDrive - 筑波大学\Develop\DrawSeeker\Destiny\obj\Release\net6.0-windows\ref\Destiny.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.csproj.AssemblyReference.cache
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\MainWindow.g.cs
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\SubWindow.g.cs
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\App.g.cs
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny_MarkupCompile.cache
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny_MarkupCompile.lref
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\refint\Destiny.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.pdb
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\Destiny.exe
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\Destiny.deps.json
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\Destiny.runtimeconfig.json
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\Destiny.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\Destiny.pdb
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\GlmSharp.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\OpenTK.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\bin\Release\net6.0-windows\OpenTK.GLControl.dll
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\MainWindow.baml
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\SubWindow.baml
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.g.resources
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.AssemblyInfoInputs.cache
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.AssemblyInfo.cs
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.csproj.CoreCompileInputs.cache
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.csproj.CopyComplete
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\Destiny.genruntimeconfig.cache
+C:\Users\cgg_endo\dev\DrawSeeker\Destiny\obj\Release\net6.0-windows\ref\Destiny.dll

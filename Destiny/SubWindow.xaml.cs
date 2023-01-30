@@ -379,11 +379,10 @@ namespace Destiny
             //GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new Color4(0,254,0,0));
             //DrawReferLine();
             //DrawVertexPoint();
-            DrawOCTO();
+            DrawTETRA();
+            //DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
-            //DrawOCTO_UNIT(0);
-            //DrawOCTO();
 
             glControl.SwapBuffers(); //---------------------------------------(8)
         }
@@ -416,6 +415,35 @@ namespace Destiny
             GL.PopMatrix();
         }
 
+        /// <summary>
+        /// 正四面体ベースのユニット折り紙を表示する
+        /// </summary>
+        private void DrawTETRA() 
+        {
+
+                GL.PushMatrix();
+                {
+                    //正八面体の上半分と下半分をflagで場合分け
+                    for (int flag = 0; flag < 1; flag++)
+                    {
+                        //正八面体の上/下半分の4面をiで場合分け
+                        for (int i = 0; i < 4; i++)
+                        {
+                            //正八面体の１つの面を3つの
+                            for (int j = 0; j < 3; j++)
+                            {
+                                for (int mirror = 0; mirror < 2; mirror++)
+                                {
+                                    DrawOCTO_UNIT(rotateface_OCTO_UNIT[j], rotateUnit_OCTO_UNIT[i], flag, i, j, mirror);
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+                GL.PopMatrix();
+        }
         /// <summary>
         /// 正八面体ベースのユニット折り紙を表示する
         /// </summary>
