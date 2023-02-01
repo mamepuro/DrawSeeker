@@ -416,11 +416,11 @@ namespace Destiny
             //DrawReferLine();
             //DrawVertexPoint();
             //DrawTETRA();
-            //DrawHEXA();
+            DrawHEXA();
             //DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
-            DrawICOSA();
+            //DrawICOSA();
 
             glControl.SwapBuffers(); //---------------------------------------(8)
         }

@@ -559,7 +559,7 @@ namespace Destiny
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
             Seeker_MainSystem.GetHalfTriangleUnitObjFile(2,"halftriangle");
-            //Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile(4, "halftriangle");
+            //Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile2(2, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
             Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"untitled2.obj", vertexes, edges, angle, scale);
@@ -992,7 +992,7 @@ namespace Destiny
                 vertexes[manipulateVertexIndex].VertexZ -= 0.01;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
                 Console.WriteLine("VertexZ = " + vertexes[manipulateVertexIndex].VertexPosition.Z);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.R)
             {
@@ -1003,7 +1003,7 @@ namespace Destiny
             {
                 vertexes[manipulateVertexIndex].VertexZ += 0.01;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.F)
             {

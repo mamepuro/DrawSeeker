@@ -10,6 +10,7 @@ namespace Destiny.Seeker_Sys
     {
         public static readonly float OCTO_radius = 1 / (2 * (float)Math.Sqrt(3));
         public static readonly float HEXA_radius = 0.5f;
+        public static readonly float PENTA_radius = 1 / (2 * MathF.Tan(MathF.PI / 5));
         public readonly static float dihedralAngle_OCTO = 109.47f;
         public readonly static float dihedralAngle_PENTA = 116.56f;
     }
