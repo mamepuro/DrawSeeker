@@ -17,7 +17,7 @@
 
         </WindowsFormsHost>
         <Button x:Name="button_saveObjFile" Content="出力" HorizontalAlignment="Left" Margin="40,465,0,0" VerticalAlignment="Top" Width="96"  Click="button_saveObjFile_Click" Grid.ColumnSpan="2"/>
-        <!--<Button x:Name="button" Content="生成" Margin="178,462,500,46" Click="button_AssembleUnitShape" Grid.ColumnSpan="2"/>-->
+        <Button x:Name="button" Content="生成" Margin="178,462,500,46" Click="button_AssembleUnitShape" Grid.ColumnSpan="2"/>
         <Button x:Name="button_drawReferLine" Content="軸表示" HorizontalAlignment="Left" Margin="177,465,0,0" VerticalAlignment="Top" Width="96"  Click="buttonDrawReferLine" Grid.Column="1"/>
 
 

@@ -416,8 +416,8 @@ namespace Destiny
             //DrawReferLine();
             //DrawVertexPoint();
             //DrawTETRA();
-            DrawHEXA();
-            //DrawOCTO();
+            //DrawHEXA();
+            DrawOCTO();
             //drawBox(); //------------------------------------------------------(7)
             //DrawPENTA();
             //DrawICOSA();

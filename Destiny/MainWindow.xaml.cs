@@ -402,7 +402,7 @@ namespace Destiny
                 {
                     GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
                 }
-                //GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Begin(BeginMode.Polygon);
                 //GL.Color4(0x0, 0xff, 0xff, 0x20);
                 for (int vertexpoint = 0; vertexpoint < faceCount; vertexpoint++)
@@ -424,7 +424,7 @@ namespace Destiny
                 {
                     GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
                 }
-                //GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
+                GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
 
                 GL.Begin(BeginMode.Polygon);
                 //GL.Color4(0x0, 0xff, 0xff, 0x20);
@@ -736,7 +736,7 @@ namespace Destiny
                     Console.WriteLine("YOpe");
                     ope = Operation.Y;
                 }
-                else if((int)pixels[3] == 255 && pixels[0] == 255)
+                else if((int)pixels[3] == 255 && pixels[2] == 255)
                 {
                     Console.WriteLine("ZOpe");
                     ope = Operation.Z;
@@ -1092,7 +1092,12 @@ namespace Destiny
                 {
                     if (ope == Operation.X)
                     {
-                        vertexes[opeID].VertexX += move;
+                        vertexes[opeID].VertexZ
+                            
+                            
+                            
+                            
+                            += move;
                         vertexes[opeID].VertexPosition = new Vector3d(vertexes[opeID].VertexX, vertexes[opeID].VertexY, vertexes[opeID].VertexZ);
                     }
                     else if (ope == Operation.Y)
