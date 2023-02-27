@@ -585,7 +585,7 @@ namespace Destiny
                             streamWriter.WriteLine("v" +
                             " " + vertexPosX[vertexPoint] + " "
                             + vertexPosY[vertexPoint] + " "
-                            + "0.1");
+                            + "-0.1");
                         }
                         else
                         {
@@ -752,7 +752,7 @@ namespace Destiny
             {
                 for (int vertexPoint = 0; vertexPoint < index; vertexPoint++)
                 {
-                    if (vertexPoint != 0)
+                    if (vertexPoint != 0 || vertexPoint != 1 || vertexPoint < split + 1 + 1 || vertexPoint == index - 1)
                     {
                         if ((vertexPoint) % 2 == 0)
                         {
