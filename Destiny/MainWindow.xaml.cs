@@ -205,8 +205,8 @@ namespace Destiny
             GL.Rotate(angle, 0, 1, 0);
             if (isDisplayUnit)
             {
-                //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
             }
             GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
             GL.PointSize(7);
@@ -274,8 +274,8 @@ namespace Destiny
                 }
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    ////GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0,0,-Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
@@ -303,8 +303,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
@@ -331,8 +331,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, -1, 0);
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 Vector3d p0 = vertices[indexes[0]].VertexPosition;
@@ -357,8 +357,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, 1, 0);
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Begin(BeginMode.Polygon);
@@ -383,8 +383,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, 1, 0);  //-------------------------(9)
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
@@ -410,8 +410,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, 1, 0);
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Begin(BeginMode.Polygon);
@@ -433,8 +433,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, -1, 0);
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
 
@@ -457,8 +457,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, -1, 0);  //-------------------------(9)
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
                 GL.Disable(EnableCap.Light0);
@@ -485,8 +485,8 @@ namespace Destiny
                 GL.Rotate(angle, 0, -1, 0);
                 if (isDisplayUnit)
                 {
-                    //GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
-                    GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
+                    GL.Rotate(90 - Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2, -1, 0, 0);
+                    //GL.Rotate(90 - 70.52  / 2, -1, 0, 0);
                 }
                 GL.Translate(0, 0, -Seeker_MainSystem.InnerBottomErrorZ);
 
