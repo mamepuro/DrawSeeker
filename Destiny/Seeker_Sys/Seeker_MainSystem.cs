@@ -1270,13 +1270,33 @@ namespace Destiny
                 connectVertex.Add(verteices[point]);
             }
 
+            var initialX2 = new double[300];
+            for (int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
+            {
+                if (initialXIndex % 3 == 0)
+                {
+                    initialX2[initialXIndex] = verteices[(int)(initialXIndex / 3)].VertexX;
+                }
+                else if (initialXIndex % 3 == 1)
+                {
+                    initialX2[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexY;
+                }
+                else
+                {
+                    initialX2[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexZ;
+                }
+            }
             //再急降下法の損失関数の式
             Func<double[], double> f = (double[] x) =>
             {
                 //底辺の内部頂点周りの角度の和
                 double sumOfInnerVertexOnButtomEdgeAngle = 0;
+                var e = 0.0;
                 double arcCosSum = 0;
                 double error = 0;
+                double error_length = 0;
+                int weight_1 = 1;
+                int weight_2 = 100;
                 //内部頂点が2piになるように最適化処理をする
                 foreach (var innervertex in innerVertexIndexes)
                 {
@@ -1309,7 +1329,7 @@ namespace Destiny
                         else if(FixedVertexIndexes.Contains(pair[0]))
                         {
                             if (VertexIndexOnUnitEdges.Contains(pair[1]))
-                            {
+                            {/*
                                 if (VertexIndexOnUnitButtomEdge.Contains(pair[1]))
                                 {
                                     arcCosSum += GetArcCos(
@@ -1322,7 +1342,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
 );
                                     //x[pos2ZIndex] = x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                                 }
-                                else
+                                else*/
                                 { 
                                 //
                                 //Console.WriteLine("f 0 v 1です");
@@ -1352,7 +1372,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                         {
                             if (VertexIndexOnUnitEdges.Contains(pair[0]))
                             {
-                                if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
+                                /*if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
                                 {
                                     arcCosSum += GetArcCos(
                                 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1363,7 +1383,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                                 verteices[pair[1]].VertexZ - x[centerZIndex]
 ); //x[pos1ZIndex] = x[pos1YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                                 }
-                                else
+                                else*/
                                 {
                                     //Console.WriteLine("f 1 v 0です");
                                     arcCosSum += GetArcCos(
@@ -1390,7 +1410,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                         }
                         else if (VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
                         {
-                            if (!VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]) )
+                           // if (!VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]) )
                             {
                                 //Console.WriteLine("一番目が呼ばれています");
                                 arcCosSum += GetArcCos(
@@ -1402,6 +1422,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                                 x[pos2ZIndex] - x[centerZIndex]
                                 );
                             }
+                            /*
                             else if(VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]))
                             {
                                 arcCosSum += GetArcCos(
@@ -1438,11 +1459,11 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                             }
                             //x[pos2ZIndex] = x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                             //x[pos1ZIndex] = x[pos1YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
-
+*/
                         }
                         else if (VertexIndexOnUnitEdges.Contains(pair[0]))
                         {
-                            if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
+                            /*if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
                             {
                                 arcCosSum += GetArcCos(
 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1454,7 +1475,7 @@ x[pos2ZIndex] - x[centerZIndex]
 );
                                 //x[pos1ZIndex] = x[pos1YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                             }
-                            else {
+                            else*/ {
                                 //Console.WriteLine("2番目が呼ばれています");
                                 arcCosSum += GetArcCos(
                                 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1468,7 +1489,7 @@ x[pos2ZIndex] - x[centerZIndex]
                         }
                         else if (VertexIndexOnUnitEdges.Contains(pair[1]))
                         {
-                            if(VertexIndexOnUnitButtomEdge.Contains(pair[0]))
+                            /*if(VertexIndexOnUnitButtomEdge.Contains(pair[0]))
                             {
                                 arcCosSum += GetArcCos(
     x[pos1XIndex] - x[centerXIndex],
@@ -1479,7 +1500,7 @@ x[pos2YIndex] - x[centerYIndex],
 x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180)) - x[centerZIndex]);
                                 //x[pos2ZIndex] = x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                             }
-                                else
+                                else*/
                                     {
                                         arcCosSum += GetArcCos(
     x[pos1XIndex] - x[centerXIndex],
@@ -1541,7 +1562,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                         {
                             if (VertexIndexOnUnitEdges.Contains(pair[1]))
                             {
-                                if (VertexIndexOnUnitButtomEdge.Contains(pair[1]))
+                                /*if (VertexIndexOnUnitButtomEdge.Contains(pair[1]))
                                 {
                                     sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
                                 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1553,7 +1574,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
 );
                                     //x[pos2ZIndex] = x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                                 }
-                                else
+                                else*/
                                 {
                                     //
                                     //Console.WriteLine("f 0 v 1です");
@@ -1583,7 +1604,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                         {
                             if (VertexIndexOnUnitEdges.Contains(pair[0]))
                             {
-                                if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
+                                /*if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
                                 {
                                     sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
                                 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1595,7 +1616,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
 );
                                     //x[pos1ZIndex] = x[pos1YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                                 }
-                                else
+                                else*/
                                 {
                                     //Console.WriteLine("f 1 v 0です");
                                     sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
@@ -1622,7 +1643,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                         }
                         else if (VertexIndexOnUnitEdges.Contains(pair[0]) && VertexIndexOnUnitEdges.Contains(pair[1]))
                         {
-                            if (!VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]))
+                            //if (!VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]))
                             {
                                 //Console.WriteLine("一番目が呼ばれています");
                                 sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
@@ -1634,7 +1655,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                                 x[pos2ZIndex] - x[centerZIndex]
                                 );
                             }
-                            else if (VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]))
+                            /*else if (VertexIndexOnUnitButtomEdge.Contains(pair[0]) && !VertexIndexOnUnitButtomEdge.Contains(pair[1]))
                             {
                                 sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1670,12 +1691,12 @@ x[pos2YIndex] - x[centerYIndex],
 x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180)) - x[centerZIndex]);
                                 //x[pos2ZIndex] = x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                                 //x[pos1ZIndex] = x[pos1YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
-                            }
+                            }*/
 
                         }
                         else if (VertexIndexOnUnitEdges.Contains(pair[0]))
                         {
-                            if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
+                            /*if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
                             {
                                 sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
 verteices[pair[0]].VertexX - x[centerXIndex],
@@ -1687,7 +1708,7 @@ x[pos2ZIndex] - x[centerZIndex]
 );
                                 //x[pos1ZIndex] = x[pos1YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                             }
-                            else
+                            else*/
                             {
                                 //Console.WriteLine("2番目が呼ばれています");
                                 sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
@@ -1702,7 +1723,7 @@ x[pos2ZIndex] - x[centerZIndex]
                         }
                         else if (VertexIndexOnUnitEdges.Contains(pair[1]))
                         {
-                            if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
+                            /*if (VertexIndexOnUnitButtomEdge.Contains(pair[0]))
                             {
                                 sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
     x[pos1XIndex] - x[centerXIndex],
@@ -1713,7 +1734,7 @@ x[pos2YIndex] - x[centerYIndex],
 x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180)) - x[centerZIndex]);
                                 //x[pos2ZIndex] = x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
                             }
-                            else
+                            else*/
                             {
                                 sumOfInnerVertexOnButtomEdgeAngle += GetArcCos(
 x[pos1XIndex] - x[centerXIndex],
@@ -1738,15 +1759,20 @@ x[pos2ZIndex] - x[centerZIndex]
                             x[pos2ZIndex] - x[centerZIndex]
                             );
                         }
-
-                }
+                        Vector3d init = new Vector3d(initialX2[centerXIndex], initialX2[centerYIndex], initialX2[centerZIndex]);
+                        Vector3d v = new Vector3d(x[centerXIndex], x[centerYIndex], x[centerZIndex]);
+                        e += (v - init).Length;
+                    }
                     //Console.WriteLine("aa = " + sumOfInnerVertexOnButtomEdgeAngle.ToString());
-                    error += (Math.PI - sumOfInnerVertexOnButtomEdgeAngle) * (Math.PI - sumOfInnerVertexOnButtomEdgeAngle);
+                    
+                    
+                    error += weight_2 * (Math.PI - sumOfInnerVertexOnButtomEdgeAngle) * (Math.PI - sumOfInnerVertexOnButtomEdgeAngle);
                     sumOfInnerVertexOnButtomEdgeAngle = 0;
+                    e = 0;
                 }
                 //return (2 * Math.PI - arcCosSum) * (2 * Math.PI - arcCosSum);
                 // Console.WriteLine(error.ToString());
-                {
+              /*  {
                     
                     foreach (var pair in verteices[leftEndVertexIndex].connectVertexId)
                     {
@@ -1813,12 +1839,15 @@ x[pos2ZIndex] - x[centerZIndex]
                     }
 
                 }
+              */
                 //Console.WriteLine("aa = " + sumOfInnerVertexOnButtomEdgeAngle.ToString());
                 
                 return error;
             };
+            int a = 0;
 
-            List<Func<double[], double>> funcs = new List<Func<double[], double>>();
+
+            List <Func<double[], double>> funcs = new List<Func<double[], double>>();
             //底辺の内部頂点周りの角度の和
             double sumOfInnerVertexOnButtomEdgeAngle = 0;
             double arcCosSum = 0;
@@ -2168,6 +2197,8 @@ x[pos2ZIndex] - x[centerZIndex]
             funcs.Add(fs);
             //とりあえず100頂点分用意する
             var initialX = new double[300];
+            
+            var initialX3 = new double[300];
             //頂点数*3個分変数を再急降下法用に格納する
             for (int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
             {
@@ -2184,13 +2215,43 @@ x[pos2ZIndex] - x[centerZIndex]
                     initialX[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexZ;
                 }
             }
+
             /*foreach (var verte in initialX)
             {
                 Console.WriteLine(verte);
             }*/
-            int iteration = 500;
+            int iteration = 50000;
             double learningRate = 0.001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
+
+            for (int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
+            {
+                if (initialXIndex % 3 == 0)
+                {
+                    initialX3[initialXIndex] = verteices[(int)(initialXIndex / 3)].VertexX;
+                }
+                else if (initialXIndex % 3 == 1)
+                {
+                    initialX3[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexY;
+                }
+                else
+                {
+                    initialX3[initialXIndex] = verteices[(int)(initialXIndex) / 3].VertexZ;
+                }
+            }
+
+            Func<double[], double> f2 = (double[] x) =>
+            {
+                double e = 0;
+                for(int i = 0; i < verteices.Count; i++)
+                {
+
+                    Vector3d init = new Vector3d(initialX2[i * 3], initialX2[i * 3 + 1], initialX2[i * 3 + 2]);
+                    Vector3d v = new Vector3d(verteices[i].VertexX, verteices[i].VertexY, verteices[i].VertexZ);
+                    e += (v - init).Length;
+                }
+                return e;
+            };
             //double[] answer = Seeker_Sys.SGD.Compute(funcs, initialX, iteration, learningRate);
             /*var optimizer = new SteepestDescentMethodMV(f, initialX, learningRate);
             var xHistory = new List<double[]>();
@@ -2218,11 +2279,11 @@ x[pos2ZIndex] - x[centerZIndex]
                     }
                     else
                     {
-                        if(VertexIndexOnUnitButtomEdge.Contains((int)(i / 3)))
-                        {
-                            verteices[(int)(i / 3)].VertexZ = answer[i - 1] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
-                        }
-                        else
+                        //if(VertexIndexOnUnitButtomEdge.Contains((int)(i / 3)))
+                        //{
+                        //    verteices[(int)(i / 3)].VertexZ = answer[i - 1] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
+                        //}
+                        //else
                         {
                             verteices[(int)(i / 3)].VertexZ = answer[i];
                         }
@@ -2230,6 +2291,32 @@ x[pos2ZIndex] - x[centerZIndex]
                     }
                 }
             }
+            /*double[] answer2 = Seeker_Sys.SteepestDescentMethodMV.Compute(f2, initialX3, iteration - 495, learningRate );
+            for (int i = 0; i < verteices.Count * 3; i++)
+            {
+                {
+                    if (i % 3 == 0)
+                    {
+                        verteices[(int)(i / 3)].VertexX = answer2[i];
+                    }
+                    else if (i % 3 == 1)
+                    {
+                        verteices[(int)(i / 3)].VertexY = answer2[i];
+                    }
+                    else
+                    {
+                        //if(VertexIndexOnUnitButtomEdge.Contains((int)(i / 3)))
+                        //{
+                        //    verteices[(int)(i / 3)].VertexZ = answer[i - 1] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 180));
+                        //}
+                        //else
+                        {
+                            verteices[(int)(i / 3)].VertexZ = answer2[i];
+                        }
+
+                    }
+                }
+            }*/
             for (int i = 0; i < verteices.Count; i++)
             {
                 verteices[i].VertexPosition = new Vector3d(verteices[i].VertexX, verteices[i].VertexY, verteices[i].VertexZ);
