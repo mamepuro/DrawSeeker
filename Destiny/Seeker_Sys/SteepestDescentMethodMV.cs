@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Destiny.Seeker_Sys
 {
@@ -67,13 +68,20 @@ namespace Destiny.Seeker_Sys
             var xn = new double[initialX.Length];
             Array.Copy(initialX, xn, xn.Length);
 
-            for (int i = 0; i < iteration; ++i)
+            using (StreamWriter streamWriter = new StreamWriter("gradLog.txt", false, Encoding.UTF8))
             {
-                double[] gradient = Gradient.Compute(f, xn);
-
-                for (int j = 0; j < xn.Length; ++j)
+                for (int i = 0; i < iteration; ++i)
                 {
-                    xn[j] -= learningRate * gradient[j];
+                    double[] gradient = Gradient.Compute(f, xn);
+                    streamWriter.WriteLine(Seeker_MainSystem.GetGradVecLength(gradient).ToString());
+                    if(Seeker_MainSystem.GetGradVecLength(gradient) < 1e-4)
+                    {
+                        break;
+                    }
+                    for (int j = 0; j < xn.Length; ++j)
+                    {
+                        xn[j] -= learningRate * gradient[j];
+                    }
                 }
             }
 
@@ -92,7 +100,8 @@ namespace Destiny.Seeker_Sys
 
         /// <summary>
         /// 現在の解を更新するメソッド
-        /// </summary>
+        /// </summary>]
+        
         public void Update()
         {
             double[] gradient = Gradient.Compute(_f, _xn);
