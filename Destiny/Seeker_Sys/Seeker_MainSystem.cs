@@ -892,16 +892,6 @@ namespace Destiny
                     Console.WriteLine(string.Join(", ", c));
                 }
             }
-            //頂点[5]周りの接続情報表示
-            Console.WriteLine("頂点[5]周りの接続情報を開示します");
-            foreach (var c in vertices[5].connectVertexId)
-            {
-                foreach (var nc in c)
-                {
-                    Console.WriteLine(nc);
-                }
-                //Console.WriteLine(c[0] + " : "+ c[1]);
-            }
         }
 
         /// <summary>
@@ -2232,7 +2222,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
                 Console.WriteLine(verte);
             }*/
             int iteration = 50000;
-            double learningRate = 0.0000001;
+            double learningRate = 0.000001;
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
 
             for (int initialXIndex = 0; initialXIndex < 3 * verteices.Count; initialXIndex++)
@@ -2345,7 +2335,7 @@ x[pos2YIndex] * (-Math.Tan(Seeker_Sys.Seeker_ShapeData.dihedralAngle_OCTO / 2 / 
             GetInnerAngleSum(1, verteices);
             GetInnerAngleSum(2, verteices);
             GetInnerAngleSum(3, verteices);
-            GetInnerAngleSum(4, verteices);
+            //GetInnerAngleSum(4, verteices);
         }
 
         public static void GetAllAngle(List<Vertex> verteices)

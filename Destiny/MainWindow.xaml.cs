@@ -551,7 +551,7 @@ namespace Destiny
             Seeker_MainSystem.GetHalfTriangleUnitObjFile(4,"halftriangle");
             //Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile2(2, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
-            Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
+            Seeker_MainSystem.LoadObjFlie(@"suc.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"untitled2.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => Math.Cos(x[0]) * Math.Cos(x[0]) * Math.Cos(x[1]) * Math.Cos(x[1]);// * Math.Cos(x[2]) * Math.Cos(x[2]);//x[0] * x[0] + x[1] * x[1] + 1.0;
@@ -561,7 +561,7 @@ namespace Destiny
             double[] answer = Seeker_Sys.SteepestDescentMethodMV.Compute(f, initialX, iteration, learningRate);
             Console.WriteLine("最小値は"+answer[0].ToString() + " " + answer[1].ToString() + " " + answer[2].ToString() + " (" + Math.Cos(answer[0]) * Math.Cos(answer[0]) * Math.Cos(answer[1]) * Math.Cos(answer[1]) + ")");
              arcball = new Seeker_Sys.Arcball(glControl.Size.Height / 2);
-            Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+            //Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 0, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
         }
         
         private void glControl_Resize(object sender, EventArgs e)
@@ -1007,25 +1007,25 @@ namespace Destiny
             {
                 vertexes[manipulateVertexIndex].VertexX -= 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 0, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.H)
             {
                 vertexes[manipulateVertexIndex].VertexX += 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 0, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.G)
             {
                 vertexes[manipulateVertexIndex].VertexY -= 0.001;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 0, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.T)
             {
                 vertexes[manipulateVertexIndex].VertexY += 0.1;
                 vertexes[manipulateVertexIndex].VertexPosition = new Vector3d(vertexes[manipulateVertexIndex].VertexX, vertexes[manipulateVertexIndex].VertexY, vertexes[manipulateVertexIndex].VertexZ);
-                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 0, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
             }
             if (e.KeyCode == Keys.M)
             {
@@ -1138,7 +1138,7 @@ namespace Destiny
                 {
                     //isDrawHundle = false;
                     _isDraggingLeftButton = false;
-                    Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 5, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
+                    Seeker_MainSystem.SetAdjustedUnitVertexes(vertexes, 0, Seeker_MainSystem.InnnerVertexIndex, Seeker_MainSystem.InnerVertexIndexOnButtomEdge);
                 }
             }
         }
