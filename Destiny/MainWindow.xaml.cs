@@ -94,6 +94,7 @@ namespace Destiny
         /// ユニットの下端の(上下ひっくり返した部分)頂点インデックス
         /// </summary>
         int bottomVertexIndex = 0;
+        int okVertexPoint = 13;
         public MainWindow()
         {
             InitializeComponent();
@@ -216,11 +217,11 @@ namespace Destiny
             for (int vertexpoint = 0; vertexpoint < vertices.Count; vertexpoint++)
             {
                 byte alpha = (byte)vertices[vertexpoint].ID;
-                if (!Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint) && !Seeker_MainSystem.VertexIndexOnUnitEdges.Contains(vertexpoint))
+                if (!Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint) && !Seeker_MainSystem.VertexIndexOnUnitEdges.Contains(vertexpoint) && vertexpoint != okVertexPoint)
                 {
                     GL.Color4((byte)0,(byte) 0, (byte)0xFF, alpha);
                 }
-                else if(Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint))
+                else if(Seeker_MainSystem.FixedVertexIndexes.Contains(vertexpoint) || vertexpoint == okVertexPoint)
                 {
                     GL.Color4((byte)0xFF, (byte)0, (byte)0, alpha);
                 }
@@ -548,10 +549,12 @@ namespace Destiny
                 Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             }*/
             //Seeker_MainSystem.GetTriangleUnitObjFile(2, "aaa");
-            Seeker_MainSystem.GetHalfTriangleUnitObjFile(4,"halftriangle");
+            //Seeker_MainSystem.GetHalfTriangleUnitObjFile(4,"halftriangle");
+            Seeker_MainSystem.GetHalfTriangleUnitObjFiler2(4, "halftriangle");
             //Seeker_MainSystem.GetPleatHalfTriangleUnitObjFile2(2, "halftriangle");
             //Seeker_MainSystem.LoadObjFlie(@"halftriangle2.obj", vertexes, edges, angle, scale);
-            Seeker_MainSystem.LoadObjFlie(@"suc.obj", vertexes, edges, angle, scale);
+            //Seeker_MainSystem.LoadObjFlie(@"suc.obj", vertexes, edges, angle, scale);
+            Seeker_MainSystem.LoadObjFlie(@"halftriangle.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"untitled2.obj", vertexes, edges, angle, scale);
             //Seeker_MainSystem.LoadObjFlie(@"testData.obj", vertexes, edges, angle, scale);
             Func<double[], double> f = x => Math.Cos(x[0]) * Math.Cos(x[0]) * Math.Cos(x[1]) * Math.Cos(x[1]);// * Math.Cos(x[2]) * Math.Cos(x[2]);//x[0] * x[0] + x[1] * x[1] + 1.0;
